@@ -1,0 +1,32 @@
+{
+  "name": "knee-forward",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --mode local-preview --host 127.0.0.1",
+    "build": "tsc -b && vite build && node scripts/generate-sw.mjs && node scripts/asset-boundary-tests.mjs",
+    "build:local": "tsc -b && vite build --mode local-preview && node scripts/generate-sw.mjs --include-pending-media && node scripts/asset-boundary-tests.mjs --local",
+    "preview": "vite preview --host 127.0.0.1",
+    "preview:local": "npm run build:local && vite preview --host 127.0.0.1",
+    "test:state": "esbuild scripts/state-tests.ts --bundle --platform=node --format=esm --outfile=/tmp/knee-forward-state-tests.mjs --log-level=warning && node /tmp/knee-forward-state-tests.mjs",
+    "test:catalog": "esbuild scripts/exercise-catalog-tests.ts --bundle --platform=node --format=esm --outfile=/tmp/knee-forward-catalog-tests.mjs --log-level=warning && node /tmp/knee-forward-catalog-tests.mjs",
+    "test:media": "node scripts/cdc-media-tests.mjs && node scripts/gymvisual-media-tests.mjs && esbuild scripts/media-catalog-tests.ts --bundle --platform=node --format=esm --outfile=/tmp/knee-forward-media-tests.mjs --log-level=warning && node /tmp/knee-forward-media-tests.mjs && esbuild scripts/media-context-render-tests.tsx --bundle --platform=node --format=cjs --jsx=automatic --outfile=/tmp/knee-forward-media-context-tests.cjs --log-level=warning && node /tmp/knee-forward-media-context-tests.cjs && esbuild scripts/media-visual-quality-tests.tsx --bundle --platform=node --format=cjs --jsx=automatic --outfile=/tmp/knee-forward-media-quality-tests.cjs --log-level=warning && node /tmp/knee-forward-media-quality-tests.cjs",
+    "test:build-modes": "node scripts/build-mode-tests.mjs",
+    "test": "npm run typecheck && npm run test:state && npm run test:catalog && npm run test:media",
+    "typecheck": "tsc -b --pretty false"
+  },
+  "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "@vitejs/plugin-react": "^5.0.2",
+    "esbuild": "^0.28.2",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.2"
+  }
+}

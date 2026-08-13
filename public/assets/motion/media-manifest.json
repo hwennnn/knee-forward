@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 2,
+  "collection": "Knee Forward CDC motion references",
+  "retrievedAt": "2026-08-12",
+  "creator": "Centers for Disease Control and Prevention",
+  "licenseId": "PD-USGov-HHS-CDC",
+  "licenseStatus": "Public domain in the United States as works of the U.S. federal government",
+  "reuseUrl": "https://www.cdc.gov/other/agencymaterials.html",
+  "attributionText": "Centers for Disease Control and Prevention, Growing Stronger—Strength Training for Older Adults, via Wikimedia Commons. Public domain (U.S. federal work).",
+  "endorsementDisclaimer": "Use of these materials does not imply endorsement by CDC, HHS, or the United States Government of Knee Forward or any product, service, or exercise plan.",
+  "clinicalDisclaimer": "These clips are optional orientation references on Learn detail only, not ACL rehabilitation protocols, prescriptions, phase evidence, or clinical clearance. Only step-up and lunge are mapped. Follow the movement, range, dose, and restrictions provided by the treating clinician.",
+  "changesMade": "Format-only conversion from GIF to WebM with MP4 fallback; source frames were centered on a padded white canvas without changing substantive exercise content; a poster PNG was extracted from the converted presentation. Source GIFs are not served at runtime.",
+  "runtimePolicy": "WebM first with MP4 fallback and a PNG poster. Never serve GIF at runtime.",
+  "assets": [
+    {
+      "id": "hip-abduction",
+      "sourceTitle": "Hip abduction-CDC strength training for older adults.gif",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Hip_abduction-CDC_strength_training_for_older_adults.gif",
+      "originalFileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/db/Hip_abduction-CDC_strength_training_for_older_adults.gif",
+      "creator": "Centers for Disease Control and Prevention",
+      "licenseId": "PD-USGov-HHS-CDC",
+      "licenseStatus": "Public domain in the United States as a work of the U.S. federal government",
+      "reuseUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "attributionText": "Centers for Disease Control and Prevention, Growing Stronger—Strength Training for Older Adults, via Wikimedia Commons. Public domain (U.S. federal work).",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/hip-abduction.webm",
+          "publicUrl": "/assets/motion/hip-abduction.webm",
+          "mimeType": "video/webm",
+          "sha256": "fa8245e8c8344651c3be22874711e1826ebaec259fadfa18b1088e8412b77748"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/hip-abduction.mp4",
+          "publicUrl": "/assets/motion/hip-abduction.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 19011,
+          "sha256": "c303e8316aa169792231f78df598465a69b74d4b92440ec607dd48f1ed15fd3d"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/hip-abduction-poster.png",
+          "publicUrl": "/assets/motion/hip-abduction-poster.png",
+          "mimeType": "image/png",
+          "sha256": "d576f8601ce9297aebc1e5d2feab478371c5a422b2b3dcb55753aee1dd3956c2"
+        }
+      },
+      "changesMade": "Format-only conversion from GIF to WebM with MP4 fallback; source frames were centered on a padded white canvas and a poster PNG was extracted.",
+      "visualScope": "research_only",
+      "mappingStatus": "unmapped",
+      "clinicalReviewStatus": "pending",
+      "retrievedAt": "2026-08-12"
+    },
+    {
+      "id": "knee-curl",
+      "sourceTitle": "Knee curl-CDC strength training for older adults.gif",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Knee_curl-CDC_strength_training_for_older_adults.gif",
+      "originalFileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Knee_curl-CDC_strength_training_for_older_adults.gif",
+      "creator": "Centers for Disease Control and Prevention",
+      "licenseId": "PD-USGov-HHS-CDC",
+      "licenseStatus": "Public domain in the United States as a work of the U.S. federal government",
+      "reuseUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "attributionText": "Centers for Disease Control and Prevention, Growing Stronger—Strength Training for Older Adults, via Wikimedia Commons. Public domain (U.S. federal work).",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/knee-curl.webm",
+          "publicUrl": "/assets/motion/knee-curl.webm",
+          "mimeType": "video/webm",
+          "sha256": "e5b6c396f02a352d881db5fbd0d6bd822c5d9d29354d660530470ad1fb4df516"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/knee-curl.mp4",
+          "publicUrl": "/assets/motion/knee-curl.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 24631,
+          "sha256": "7323f48725c7f913048a6931665a7898ef9cde67318bb59b34066a2d3000347e"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/knee-curl-poster.png",
+          "publicUrl": "/assets/motion/knee-curl-poster.png",
+          "mimeType": "image/png",
+          "sha256": "671f8582a5c68169b75284593cc41dd64fc02b56225f06ad780ad5da5bd5186e"
+        }
+      },
+      "changesMade": "Format-only conversion from GIF to WebM with MP4 fallback; source frames were centered on a padded white canvas and a poster PNG was extracted.",
+      "visualScope": "research_only",
+      "mappingStatus": "unmapped",
+      "clinicalReviewStatus": "pending",
+      "retrievedAt": "2026-08-12"
+    },
+    {
+      "id": "knee-extension",
+      "sourceTitle": "Knee extension-CDC strength training for older adults.gif",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Knee_extension-CDC_strength_training_for_older_adults.gif",
+      "originalFileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/05/Knee_extension-CDC_strength_training_for_older_adults.gif",
+      "creator": "Centers for Disease Control and Prevention",
+      "licenseId": "PD-USGov-HHS-CDC",
+      "licenseStatus": "Public domain in the United States as a work of the U.S. federal government",
+      "reuseUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "attributionText": "Centers for Disease Control and Prevention, Growing Stronger—Strength Training for Older Adults, via Wikimedia Commons. Public domain (U.S. federal work).",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/knee-extension.webm",
+          "publicUrl": "/assets/motion/knee-extension.webm",
+          "mimeType": "video/webm",
+          "sha256": "5aa1ea1263ba6d3f4fe3cd9145aad46950620a8521530362ad0060ee59edff9f"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/knee-extension.mp4",
+          "publicUrl": "/assets/motion/knee-extension.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 31861,
+          "sha256": "a251a844067485cfa7c87da0ef27fcb0903934fa76dc6fd22b5cbec002e4c8aa"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/knee-extension-poster.png",
+          "publicUrl": "/assets/motion/knee-extension-poster.png",
+          "mimeType": "image/png",
+          "sha256": "06d729316c595a7a64b46024aca292592dfe477242cc6af9b0cdb9f87a090dcc"
+        }
+      },
+      "changesMade": "Format-only conversion from GIF to WebM with MP4 fallback; source frames were centered on a padded white canvas and a poster PNG was extracted.",
+      "visualScope": "research_only",
+      "mappingStatus": "unmapped",
+      "clinicalReviewStatus": "pending",
+      "retrievedAt": "2026-08-12"
+    },
+    {
+      "id": "lunge",
+      "sourceTitle": "Lunge-CDC strength training for older adults.gif",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lunge-CDC_strength_training_for_older_adults.gif",
+      "originalFileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/af/Lunge-CDC_strength_training_for_older_adults.gif",
+      "creator": "Centers for Disease Control and Prevention",
+      "licenseId": "PD-USGov-HHS-CDC",
+      "licenseStatus": "Public domain in the United States as a work of the U.S. federal government",
+      "reuseUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "attributionText": "Centers for Disease Control and Prevention, Growing Stronger—Strength Training for Older Adults, via Wikimedia Commons. Public domain (U.S. federal work).",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/lunge.webm",
+          "publicUrl": "/assets/motion/lunge.webm",
+          "mimeType": "video/webm",
+          "sha256": "9a4f0ceead70cfe6d7e1b3184a5276a9b0b9216d2701cd8b77a8f580d979d5b6"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/lunge.mp4",
+          "publicUrl": "/assets/motion/lunge.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 30066,
+          "sha256": "ffc221a8a582406020499a32839632b5402351b4e30510ae0f5dee3a485dfefa"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/lunge-poster.png",
+          "publicUrl": "/assets/motion/lunge-poster.png",
+          "mimeType": "image/png",
+          "sha256": "85450ad28c3392a1781a683478d7d16c1a37abc9ec036f338ed1a5efcc927114"
+        }
+      },
+      "changesMade": "Format-only conversion from GIF to WebM with MP4 fallback; source frames were centered on a padded white canvas and a poster PNG was extracted.",
+      "visualScope": "generic_pattern",
+      "mappingStatus": "mapped",
+      "mappedExerciseId": "supported-forward-lunge",
+      "clinicalReviewStatus": "pending",
+      "retrievedAt": "2026-08-12"
+    },
+    {
+      "id": "squat",
+      "sourceTitle": "Squat-CDC strength training for older adults.gif",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Squat-CDC_strength_training_for_older_adults.gif",
+      "originalFileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Squat-CDC_strength_training_for_older_adults.gif",
+      "creator": "Centers for Disease Control and Prevention",
+      "licenseId": "PD-USGov-HHS-CDC",
+      "licenseStatus": "Public domain in the United States as a work of the U.S. federal government",
+      "reuseUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "attributionText": "Centers for Disease Control and Prevention, Growing Stronger—Strength Training for Older Adults, via Wikimedia Commons. Public domain (U.S. federal work).",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/squat.webm",
+          "publicUrl": "/assets/motion/squat.webm",
+          "mimeType": "video/webm",
+          "sha256": "dbf526f9ab6757c38b8e616da5b22ffdba577a58e91aae5f1f17a5b3e9d276d4"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/squat.mp4",
+          "publicUrl": "/assets/motion/squat.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 32089,
+          "sha256": "280ce4125fa27ed038cc9344b89c525b323f6707c637b1e8787e2fc49f817640"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/squat-poster.png",
+          "publicUrl": "/assets/motion/squat-poster.png",
+          "mimeType": "image/png",
+          "sha256": "9ab2489987e9bf23d5ccb7f8034fa2d39ee86e7f459ee98c7b38b453b23cd94e"
+        }
+      },
+      "changesMade": "Format-only conversion from GIF to WebM with MP4 fallback; source frames were centered on a padded white canvas and a poster PNG was extracted.",
+      "visualScope": "research_only",
+      "mappingStatus": "unmapped",
+      "clinicalReviewStatus": "pending",
+      "retrievedAt": "2026-08-12"
+    },
+    {
+      "id": "step-up",
+      "sourceTitle": "Step up-CDC strength training for older adults.gif",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Step_up-CDC_strength_training_for_older_adults.gif",
+      "originalFileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Step_up-CDC_strength_training_for_older_adults.gif",
+      "creator": "Centers for Disease Control and Prevention",
+      "licenseId": "PD-USGov-HHS-CDC",
+      "licenseStatus": "Public domain in the United States as a work of the U.S. federal government",
+      "reuseUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "attributionText": "Centers for Disease Control and Prevention, Growing Stronger—Strength Training for Older Adults, via Wikimedia Commons. Public domain (U.S. federal work).",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/step-up.webm",
+          "publicUrl": "/assets/motion/step-up.webm",
+          "mimeType": "video/webm",
+          "sha256": "32a697b9e4a191ec069347d1112507f1628a00f3ee262ebe4fc48ad602012e54"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/step-up.mp4",
+          "publicUrl": "/assets/motion/step-up.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 24105,
+          "sha256": "db8b116743f9f725725a9d20478f3e31a750ba93033351bd5944bfe9c19350b4"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/step-up-poster.png",
+          "publicUrl": "/assets/motion/step-up-poster.png",
+          "mimeType": "image/png",
+          "sha256": "c240909ed899f0a6a47f5a2aac65bfd23a6df28c7c655fb7e259b27212f95944"
+        }
+      },
+      "changesMade": "Format-only conversion from GIF to WebM with MP4 fallback; source frames were centered on a padded white canvas and a poster PNG was extracted.",
+      "visualScope": "generic_pattern",
+      "mappingStatus": "mapped",
+      "mappedExerciseId": "step-up",
+      "clinicalReviewStatus": "pending",
+      "retrievedAt": "2026-08-12"
+    },
+    {
+      "id": "toe-stand",
+      "sourceTitle": "Toe stand-CDC strength training for older adults.gif",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Toe_stand-CDC_strength_training_for_older_adults.gif",
+      "originalFileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/10/Toe_stand-CDC_strength_training_for_older_adults.gif",
+      "creator": "Centers for Disease Control and Prevention",
+      "licenseId": "PD-USGov-HHS-CDC",
+      "licenseStatus": "Public domain in the United States as a work of the U.S. federal government",
+      "reuseUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "attributionText": "Centers for Disease Control and Prevention, Growing Stronger—Strength Training for Older Adults, via Wikimedia Commons. Public domain (U.S. federal work).",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/toe-stand.webm",
+          "publicUrl": "/assets/motion/toe-stand.webm",
+          "mimeType": "video/webm",
+          "sha256": "b53e1a8937eb3b4efe0f3d458d649354c626594da9abca1f8b89cc93e1b0ea32"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/toe-stand.mp4",
+          "publicUrl": "/assets/motion/toe-stand.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 15630,
+          "sha256": "c4b1e91dab43ceff3fcae7b9dfd30fcf4d44e07ef4b4220efcf9f99eb1f2057a"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/toe-stand-poster.png",
+          "publicUrl": "/assets/motion/toe-stand-poster.png",
+          "mimeType": "image/png",
+          "sha256": "2d46b8675e8641f8b8e5f3498128980e99c357f5da822fadd97004b766c2ae2b"
+        }
+      },
+      "changesMade": "Format-only conversion from GIF to WebM with MP4 fallback; source frames were centered on a padded white canvas and a poster PNG was extracted.",
+      "visualScope": "research_only",
+      "mappingStatus": "unmapped",
+      "clinicalReviewStatus": "pending",
+      "retrievedAt": "2026-08-12"
+    }
+  ]
+}
