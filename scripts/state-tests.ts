@@ -183,6 +183,51 @@ const invalidCalendarDate = structuredClone(initialState) as unknown as { profil
 invalidCalendarDate.profile.plannedSurgeryDate = "2026-02-31";
 assert.throws(() => parseState(invalidCalendarDate), /surgery date is invalid/);
 
+const namedProfile = structuredClone(initialState);
+namedProfile.profile.displayName = "  Alex  ";
+namedProfile.profile.onboardingComplete = true;
+assert.equal(parseState(namedProfile).profile.displayName, "Alex");
+
+const invalidProfileName = structuredClone(initialState);
+invalidProfileName.profile.displayName = "x".repeat(41);
+assert.throws(() => parseState(invalidProfileName), /profile name is invalid/);
+
+const legacyProfile = structuredClone(initialState) as unknown as { profile: Record<string, unknown> };
+delete legacyProfile.profile.affectedKnee;
+delete legacyProfile.profile.rehabStage;
+delete legacyProfile.profile.currentPhaseId;
+assert.deepEqual(
+  {
+    affectedKnee: parseState(legacyProfile).profile.affectedKnee,
+    rehabStage: parseState(legacyProfile).profile.rehabStage,
+    currentPhaseId: parseState(legacyProfile).profile.currentPhaseId,
+  },
+  { affectedKnee: "right", rehabStage: "pre_surgery", currentPhaseId: "prehab" },
+);
+
+const invalidKnee = structuredClone(initialState) as unknown as { profile: { affectedKnee: string } };
+invalidKnee.profile.affectedKnee = "both";
+assert.throws(() => parseState(invalidKnee), /affected knee is invalid/);
+
+const invalidStage = structuredClone(initialState) as unknown as { profile: { rehabStage: string } };
+invalidStage.profile.rehabStage = "unknown";
+assert.throws(() => parseState(invalidStage), /rehab path is invalid/);
+
+const invalidPhase = structuredClone(initialState) as unknown as { profile: { currentPhaseId: string } };
+invalidPhase.profile.currentPhaseId = "week-12";
+assert.throws(() => parseState(invalidPhase), /rehab phase is invalid/);
+
+const mismatchedPhase = structuredClone(initialState);
+mismatchedPhase.profile.rehabStage = "non_surgical";
+assert.throws(() => parseState(mismatchedPhase), /phase does not match/);
+
+const changedPhase = structuredClone(initialState);
+changedPhase.profile.rehabStage = "post_surgery";
+changedPhase.profile.currentPhaseId = "protect-and-settle";
+changedPhase.planClinicianConfirmed = true;
+assert.equal(parseState(changedPhase).planClinicianConfirmed, false, "a phase change must invalidate an incompatible plan confirmation");
+assert.doesNotThrow(() => parseState(changedPhase), "an old plan must remain available for review after a phase change");
+
 const invalidReminderDate = structuredClone(initialState) as unknown as { reminderDismissedOn: string };
 invalidReminderDate.reminderDismissedOn = "2026-13-01";
 assert.throws(() => parseState(invalidReminderDate), /reminder acknowledgement is invalid/);

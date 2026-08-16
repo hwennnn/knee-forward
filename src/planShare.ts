@@ -1,4 +1,4 @@
-import { exercises, seedData } from "./data";
+import { exercises } from "./data";
 import type { ExerciseDose, ExerciseRecord, LocalAppState } from "./types";
 
 export interface SharedPlan {
@@ -97,11 +97,9 @@ export function createSharedPlanUrl(state: LocalAppState, location: Pick<Locatio
 }
 
 export function applySharedPlan(state: LocalAppState, plan: SharedPlan): LocalAppState {
-  const activeEpisode = seedData.episodes.find((episode) => episode.id === state.activeEpisodeId);
-  if (!activeEpisode) throw new Error("The active rehab episode could not be found.");
   const incompatible = plan.exercises.some(({ id }) => {
     const exercise = exerciseCatalog.find((item) => item.id === id);
-    return !exercise || !exercise.eligiblePhaseIds.includes(activeEpisode.currentPhaseId);
+    return !exercise || !exercise.eligiblePhaseIds.includes(state.profile.currentPhaseId);
   });
   if (incompatible) throw new Error("This plan includes exercises outside your current rehab phase.");
   return {

@@ -26,6 +26,10 @@ export const initialState: LocalAppState = {
   schemaVersion: 1,
   profile: {
     onboardingComplete: false,
+    displayName: "",
+    affectedKnee: "right",
+    rehabStage: "pre_surgery",
+    currentPhaseId: "prehab",
     plannedSurgeryDate: null,
   },
   activeEpisodeId: "episode-right-acl-2026",
@@ -54,6 +58,9 @@ const exerciseCatalog: readonly ExerciseRecord[] = exercises;
 const knownExerciseIds = new Set<string>(exerciseCatalog.map((exercise) => exercise.id));
 const planEligibleExerciseIds = new Set<string>(exerciseCatalog.filter((exercise) => exercise.planEligible !== false).map((exercise) => exercise.id));
 const knownEpisodeIds = new Set<string>(seedData.episodes.map((episode) => episode.id));
+const knownPhaseIds = new Set<string>(seedData.phases.map((phase) => phase.id));
+const lateralityValues = new Set(["left", "right"]);
+const rehabStageValues = new Set(["pre_surgery", "post_surgery", "non_surgical"]);
 const swellingValues = new Set(["none", "mild", "moderate", "marked"]);
 const sessionExerciseStatuses = new Set<SessionExerciseStatus>(["completed", "partial", "skipped", "stopped"]);
 
@@ -300,13 +307,6 @@ export function parseState(value: unknown): LocalAppState {
   if (!activeEpisode || activeEpisode.status !== "active" || activeEpisode.id !== seedData.activeEpisodeId) {
     throw new Error("Only the current active rehabilitation episode can be restored.");
   }
-  const incompatibleExercise = planExerciseIds.find((exerciseId) => {
-    const exercise = exerciseCatalog.find((item) => item.id === exerciseId);
-    return !exercise || exercise.planEligible === false || !(exercise.eligiblePhaseIds as readonly string[]).includes(activeEpisode.currentPhaseId);
-  });
-  if (incompatibleExercise) {
-    throw new Error("The saved plan contains an exercise that is not eligible for the active rehabilitation phase.");
-  }
   const rawDoses = value.doses === undefined ? {} : value.doses;
   if (!isRecord(rawDoses)) throw new Error("The saved dose collection is invalid.");
   const doses: Record<string, ExerciseDose> = {};
@@ -334,19 +334,48 @@ export function parseState(value: unknown): LocalAppState {
   }
   const rawProfile = value.profile;
   const profile = isRecord(rawProfile) ? rawProfile : {};
+  const displayName = profile.displayName;
+  if (displayName !== undefined && !validString(displayName, 40)) {
+    throw new Error("The saved profile name is invalid.");
+  }
+  const affectedKnee = profile.affectedKnee ?? initialState.profile.affectedKnee;
+  if (typeof affectedKnee !== "string" || !lateralityValues.has(affectedKnee)) {
+    throw new Error("The saved affected knee is invalid.");
+  }
+  const rehabStage = profile.rehabStage ?? initialState.profile.rehabStage;
+  if (typeof rehabStage !== "string" || !rehabStageValues.has(rehabStage)) {
+    throw new Error("The saved rehab path is invalid.");
+  }
+  const currentPhaseId = profile.currentPhaseId ?? initialState.profile.currentPhaseId;
+  if (typeof currentPhaseId !== "string" || !knownPhaseIds.has(currentPhaseId)) {
+    throw new Error("The saved rehab phase is invalid.");
+  }
+  const phaseMatchesStage = rehabStage === "pre_surgery"
+    ? currentPhaseId === "prehab"
+    : rehabStage === "post_surgery"
+      ? currentPhaseId !== "prehab"
+      : currentPhaseId !== "prehab" && currentPhaseId !== "protect-and-settle";
+  if (!phaseMatchesStage) throw new Error("The saved rehab phase does not match the rehab path.");
   const plannedSurgeryDate = profile.plannedSurgeryDate;
   if (plannedSurgeryDate !== undefined && plannedSurgeryDate !== null && !validISODate(plannedSurgeryDate)) {
     throw new Error("The saved surgery date is invalid.");
   }
+  const planMatchesCurrentPhase = planExerciseIds.every((exerciseId) => exerciseCatalog
+    .find((exercise) => exercise.id === exerciseId)
+    ?.eligiblePhaseIds.includes(currentPhaseId));
 
   return {
     schemaVersion: 1,
     profile: {
       onboardingComplete: profile.onboardingComplete === true,
+      displayName: (displayName as string | undefined)?.trim() ?? "",
+      affectedKnee: affectedKnee as LocalAppState["profile"]["affectedKnee"],
+      rehabStage: rehabStage as LocalAppState["profile"]["rehabStage"],
+      currentPhaseId,
       plannedSurgeryDate: (plannedSurgeryDate as LocalAppState["profile"]["plannedSurgeryDate"] | undefined) ?? null,
     },
     activeEpisodeId,
-    planClinicianConfirmed: value.planClinicianConfirmed === true,
+    planClinicianConfirmed: value.planClinicianConfirmed === true && planMatchesCurrentPhase,
     reminderTime,
     reminderDays: [...new Set(reminderDays as number[])].sort(),
     reminderDismissedOn: (dismissed as LocalAppState["reminderDismissedOn"] | undefined) ?? null,

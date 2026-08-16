@@ -8,6 +8,7 @@ import {
 } from "@phosphor-icons/react";
 import { EmptyState } from "./components";
 import { exercises } from "./data";
+import { AppSelect } from "./FormControls";
 import type { LocalAppState, SessionExerciseLog, SessionSetLog } from "./types";
 
 type SessionsByDay = readonly { dateKey: string; dateLabel: string; label: string; done: boolean; today: boolean }[];
@@ -123,12 +124,7 @@ export function ProgressPage({ state, sessionsByDay }: ProgressPageProps) {
       <section className="history-section tracking-exercise-history">
         <div className="section-heading tracking-history-heading">
           <div><h2>Exercise history</h2><p>Recorded values are not targets.</p></div>
-          {availableExercises.length > 0 && <label className="tracking-exercise-picker" htmlFor="tracking-exercise-select">
-            <span>Exercise</span>
-            <select id="tracking-exercise-select" value={selectedExerciseId} onChange={(event) => setSelectedExerciseId(event.target.value)}>
-              {availableExercises.map((exercise) => <option key={exercise.id} value={exercise.id}>{exercise.name}</option>)}
-            </select>
-          </label>}
+          {availableExercises.length > 0 && <AppSelect className="tracking-exercise-picker" label="Exercise" value={selectedExerciseId} onChange={setSelectedExerciseId} options={availableExercises.map((exercise) => ({ id: exercise.id, label: exercise.name }))} />}
         </div>
         {latestRecorded ? <>
           <div className="tracking-history-metrics">

@@ -199,6 +199,10 @@ export interface LocalAppState {
   schemaVersion: 1;
   profile: {
     onboardingComplete: boolean;
+    displayName: string;
+    affectedKnee: Laterality;
+    rehabStage: EpisodeStage;
+    currentPhaseId: string;
     plannedSurgeryDate: ISODate | null;
   };
   activeEpisodeId: string;

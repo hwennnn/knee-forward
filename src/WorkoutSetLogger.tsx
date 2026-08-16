@@ -1,6 +1,7 @@
 import { useId } from "react";
 import { CheckCircle } from "@phosphor-icons/react";
 import type { ExerciseDose, SessionSetLog } from "./types";
+import { AppCheckbox, AppCompactNumberField } from "./FormControls";
 
 export interface WorkoutSetLoggerProps {
   exerciseName: string;
@@ -35,12 +36,6 @@ function isValidSet(set: SessionSetLog, repsRequired: boolean) {
     ? !repsRequired
     : Number.isInteger(set.reps) && set.reps >= 1 && set.reps <= 500;
   return loadIsValid && repsAreValid;
-}
-
-function numericValue(value: string) {
-  if (value === "") return null;
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
 }
 
 export function WorkoutSetLogger({
@@ -104,53 +99,41 @@ export function WorkoutSetLogger({
                 <tr key={setNumber} className="set-logger__row">
                   <th scope="row" className="set-logger__set-number">{setNumber}</th>
                   <td className="set-logger__input-cell">
-                    <input
+                    <AppCompactNumberField
                       className="set-logger__input set-logger__input--load"
-                      type="number"
-                      min={0}
-                      max={1000}
+                      minValue={0}
+                      maxValue={1000}
                       step={0.5}
                       inputMode="decimal"
-                      autoComplete="off"
-                      aria-label={`Set ${setNumber} performed load in kilograms`}
-                      value={set.loadKg ?? ""}
-                      onChange={(event) => {
-                        const value = numericValue(event.currentTarget.value);
+                      ariaLabel={`Set ${setNumber} performed load in kilograms`}
+                      value={set.loadKg}
+                      onChange={(value) => {
                         if (value === null || (value >= 0 && value <= 1000)) updateSet(index, { loadKg: value });
                       }}
                     />
                   </td>
                   <td className="set-logger__input-cell">
-                    <input
+                    <AppCompactNumberField
                       className="set-logger__input set-logger__input--reps"
-                      type="number"
-                      min={1}
-                      max={500}
+                      minValue={1}
+                      maxValue={500}
                       step={1}
                       inputMode="numeric"
-                      autoComplete="off"
-                      aria-label={`Set ${setNumber} performed repetitions`}
-                      value={set.reps ?? ""}
-                      onChange={(event) => {
-                        const value = numericValue(event.currentTarget.value);
+                      ariaLabel={`Set ${setNumber} performed repetitions`}
+                      value={set.reps}
+                      onChange={(value) => {
                         if (value === null || (Number.isInteger(value) && value >= 1 && value <= 500)) updateSet(index, { reps: value });
                       }}
                     />
                   </td>
                   <td className="set-logger__done-cell">
-                    <label
+                    <AppCheckbox
                       className="set-logger__done-target"
-                      style={{ minWidth: 44, minHeight: 44, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-                    >
-                      <input
-                        className="set-logger__checkbox"
-                        type="checkbox"
-                        aria-label={`Mark set ${setNumber} done`}
-                        checked={set.completed}
-                        disabled={completionDisabled}
-                        onChange={(event) => updateSet(index, { completed: event.currentTarget.checked })}
-                      />
-                    </label>
+                      ariaLabel={`Mark set ${setNumber} done`}
+                      checked={set.completed}
+                      disabled={completionDisabled}
+                      onChange={(completed) => updateSet(index, { completed })}
+                    />
                   </td>
                 </tr>
               );

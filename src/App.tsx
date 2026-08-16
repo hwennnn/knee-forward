@@ -17,7 +17,6 @@ import {
   Info,
   Lock,
   LinkSimple,
-  MagnifyingGlass,
   Play,
   Plus,
   ShieldCheck,
@@ -36,6 +35,7 @@ import { ProgressPage } from "./ProgressPage";
 import { initialPostResponse, performedSetOutcome, previousSetsForExercise } from "./sessionTracking";
 import { exportRecoveryData, exportState, importState, loadState, saveState } from "./storage";
 import { WorkoutSetLogger } from "./WorkoutSetLogger";
+import { AppCheckbox, AppDatePicker, AppNumberField, AppSearchField, AppSelect, AppSlider, AppTextArea, AppTextField, AppTimeField } from "./FormControls";
 import { applySharedPlan, createSharedPlanUrl, decodeSharedPlan } from "./planShare";
 import type { SharedPlan } from "./planShare";
 import type { StorageRecovery } from "./storage";
@@ -66,6 +66,22 @@ function stageLabel(stage: EpisodeStage) {
   if (stage === "pre_surgery") return "Pre-surgery";
   if (stage === "post_surgery") return "Post-surgery";
   return "Non-surgical";
+}
+
+function profileSetupComplete(state: LocalAppState) {
+  return state.profile.onboardingComplete && state.profile.displayName.trim().length > 0;
+}
+
+function phasesForStage(stage: EpisodeStage) {
+  if (stage === "pre_surgery") return rehabPhases.filter((phase) => phase.id === "prehab");
+  if (stage === "post_surgery") return rehabPhases.filter((phase) => phase.id !== "prehab");
+  return rehabPhases.filter((phase) => phase.id !== "prehab" && phase.id !== "protect-and-settle");
+}
+
+function defaultPhaseForStage(stage: EpisodeStage) {
+  if (stage === "pre_surgery") return "prehab";
+  if (stage === "post_surgery") return "protect-and-settle";
+  return "rebuild-capacity";
 }
 
 function consumeSharedPlanFromLocation(): { plan: SharedPlan | null; error: string | null } {
@@ -186,7 +202,7 @@ function App() {
   const [sharedPlanResult] = useState(consumeSharedPlanFromLocation);
   const tab = tabFromPathname(window.location.pathname);
   const [modal, setModal] = useState<"onboarding" | "share-import" | "safety" | "settings" | "reminder" | "checkin" | "postcheck" | "dose" | "customize" | "pause-session" | "discard-session" | "stop-session" | null>(
-    loadedState.recovery ? null : sharedPlanResult.plan ? "share-import" : loadedState.state.profile.onboardingComplete ? null : "onboarding",
+    loadedState.recovery ? null : sharedPlanResult.plan ? "share-import" : profileSetupComplete(loadedState.state) ? null : "onboarding",
   );
   const [selectedExercise, setSelectedExercise] = useState<ExerciseRecord | null>(null);
   const [doseExercise, setDoseExercise] = useState<ExerciseRecord | null>(null);
@@ -237,11 +253,14 @@ function App() {
 
   const activeEpisode = episodeCatalog.find((episode) => episode.id === state.activeEpisodeId) ?? episodeCatalog[0];
   if (!activeEpisode) throw new Error("No rehabilitation episode is configured.");
+  const currentPhase = rehabPhases.find((phase) => phase.id === state.profile.currentPhaseId) ?? rehabPhases[0];
+  if (!currentPhase) throw new Error("No rehabilitation phase is configured.");
   const planExercises = state.planExerciseIds
     .map((id) => exerciseCatalog.find((exercise) => exercise.id === id))
     .filter((exercise): exercise is ExerciseRecord => Boolean(exercise));
   const missingDoseCount = planExercises.filter((exercise) => !doseIsComplete(state.doses[exercise.id])).length;
-  const planReady = state.planClinicianConfirmed && missingDoseCount === 0;
+  const incompatiblePlanCount = planExercises.filter((exercise) => !exercise.eligiblePhaseIds.includes(state.profile.currentPhaseId)).length;
+  const planReady = state.planClinicianConfirmed && missingDoseCount === 0 && incompatiblePlanCount === 0;
   const shareLink = useMemo(() => {
     try {
       return { url: createSharedPlanUrl(state, window.location), error: null };
@@ -515,14 +534,14 @@ function App() {
       <div className="workout-shell">
         <header className="workout-topbar">
           <button className="icon-button" onClick={leaveSession} aria-label="Leave workout"><X size={23} /></button>
-          <div><strong>Prehab foundations</strong><span>{draft.currentExerciseIndex + 1} of {draft.exercises.length}</span></div>
+          <div><strong>{currentPhase.shortName} plan</strong><span>{draft.currentExerciseIndex + 1} of {draft.exercises.length}</span></div>
           <span className="workout-percent">{Math.round((handledExerciseCount / draft.exercises.length) * 100)}%</span>
         </header>
         <div className="workout-progress"><span style={{ width: `${((draft.currentExerciseIndex + 1) / draft.exercises.length) * 100}%` }} /></div>
         <main className="workout-main">
           <div className="workout-media"><ExerciseVisual media={exercise.media} /></div>
           <section className="workout-copy">
-            <p className="kicker">{activeEpisode.knee === "right" ? "Right" : "Left"} knee · recorded plan</p>
+            <p className="kicker">{state.profile.affectedKnee === "right" ? "Right" : "Left"} knee · recorded plan</p>
             <h1>{exercise.name}</h1>
             <p className="workout-dose">Clinician target: {doseLabel(currentDraftExercise.prescribedDose)}</p>
             {currentDraftExercise.prescribedDose.rangeNote && <p className="range-note">Range note: {currentDraftExercise.prescribedDose.rangeNote}</p>}
@@ -600,8 +619,8 @@ function App() {
           <span>Knee Forward</span>
         </a>
         <div className="episode-card">
-          <span className="episode-card__knee">{activeEpisode.knee[0].toUpperCase()}</span>
-          <div><strong>{activeEpisode.knee === "right" ? "Right" : "Left"} knee</strong><span>{stageLabel(activeEpisode.stage)} · active</span></div>
+          <span className="episode-card__knee">{state.profile.affectedKnee[0].toUpperCase()}</span>
+          <div><strong>{state.profile.affectedKnee === "right" ? "Right" : "Left"} knee</strong><span>{stageLabel(state.profile.rehabStage)} · {currentPhase.shortName}</span></div>
           <CaretDown size={16} />
         </div>
         <nav className="desktop-nav" aria-label="Primary navigation">
@@ -639,6 +658,7 @@ function App() {
           exercises={planExercises}
           planReady={planReady}
           missingDoseCount={missingDoseCount}
+          incompatiblePlanCount={incompatiblePlanCount}
           reminderDue={reminderDue}
           onPlan={() => window.location.assign(pathForTab("plan"))}
           onDismissReminder={() => setState((previous) => ({ ...previous, reminderDismissedOn: todayKey }))}
@@ -647,6 +667,7 @@ function App() {
           state={state}
           exercises={planExercises}
           missingDoseCount={missingDoseCount}
+          incompatiblePlanCount={incompatiblePlanCount}
           onDose={openDose}
           onCustomize={() => setModal("customize")}
           onConfirm={() => setState((previous) => ({ ...previous, planClinicianConfirmed: true }))}
@@ -668,11 +689,11 @@ function App() {
       {modal === "onboarding" && <OnboardingModal state={state} setState={setState} onClose={() => setModal(null)} />}
       {modal === "share-import" && sharedPlanResult.plan && <SharedPlanImportModal
         plan={sharedPlanResult.plan}
-        onClose={() => setModal(state.profile.onboardingComplete ? null : "onboarding")}
+        onClose={() => setModal(profileSetupComplete(state) ? null : "onboarding")}
         onImport={() => {
           try {
             setState(applySharedPlan(state, sharedPlanResult.plan!));
-            setModal(state.profile.onboardingComplete ? null : "onboarding");
+            setModal(profileSetupComplete(state) ? null : "onboarding");
             setToast("Plan imported. Review it before confirming.");
           } catch (error) {
             setToast(error instanceof Error ? error.message : "This plan could not be imported.");
@@ -736,7 +757,7 @@ function App() {
           try {
             const imported = await importState(file);
             setState(imported);
-            setModal(imported.profile.onboardingComplete ? null : "onboarding");
+            setModal(profileSetupComplete(imported) ? null : "onboarding");
             setToast("Backup imported");
           } catch (error) {
             setToast(error instanceof Error ? error.message : "Could not import backup");
@@ -753,7 +774,7 @@ function NavItem({ icon, label, active, href }: { icon: React.ReactElement; labe
   return <a className={`nav-item${active ? " nav-item--active" : ""}`} aria-current={active ? "page" : undefined} href={href}>{icon}<span>{label}</span></a>;
 }
 
-function TodayPage({ state, completedThisWeek, sessionsByDay, onStart, onDiscardDraft, onReminder, onSafety, onExercise, exercises: planExercises, planReady, missingDoseCount, reminderDue, onPlan, onDismissReminder }: {
+function TodayPage({ state, completedThisWeek, sessionsByDay, onStart, onDiscardDraft, onReminder, onSafety, onExercise, exercises: planExercises, planReady, missingDoseCount, incompatiblePlanCount, reminderDue, onPlan, onDismissReminder }: {
   state: LocalAppState;
   completedThisWeek: number;
   sessionsByDay: { dateKey: string; dateLabel: string; label: string; done: boolean; today: boolean }[];
@@ -765,6 +786,7 @@ function TodayPage({ state, completedThisWeek, sessionsByDay, onStart, onDiscard
   exercises: readonly ExerciseRecord[];
   planReady: boolean;
   missingDoseCount: number;
+  incompatiblePlanCount: number;
   reminderDue: boolean;
   onPlan: () => void;
   onDismissReminder: () => void;
@@ -773,7 +795,7 @@ function TodayPage({ state, completedThisWeek, sessionsByDay, onStart, onDiscard
     <div className="page-content">
       <header className="page-heading">
         <p>{todayLabel()}</p>
-        <h1>Today&apos;s rehab.</h1>
+        <h1>{state.profile.displayName ? `Today's rehab, ${state.profile.displayName}.` : "Today's rehab."}</h1>
       </header>
       {reminderDue && <section className="due-banner" role="status">
         <Alarm size={24} weight="fill" />
@@ -784,7 +806,7 @@ function TodayPage({ state, completedThisWeek, sessionsByDay, onStart, onDiscard
         <article className="session-hero">
           <div className="session-hero__top">
             <div>
-              <h2>Prehab foundations</h2>
+              <h2>Your recorded plan</h2>
               <p>{planExercises.length} exercises</p>
             </div>
             <div className="session-mark"><Barbell size={32} weight="duotone" /></div>
@@ -797,7 +819,11 @@ function TodayPage({ state, completedThisWeek, sessionsByDay, onStart, onDiscard
             ? <SafetyBanner tone="success"><strong>Session in progress.</strong> Resume at exercise {state.sessionDraft.currentExerciseIndex + 1} of {state.sessionDraft.exercises.length}.</SafetyBanner>
             : planReady
             ? <SafetyBanner tone="success"><strong>Plan ready.</strong> Check symptoms before you start.</SafetyBanner>
-            : <SafetyBanner tone="warning"><strong>Setup needed.</strong> {missingDoseCount > 0 ? `Add doses for ${missingDoseCount} exercise${missingDoseCount === 1 ? "" : "s"}.` : "Confirm this plan."}</SafetyBanner>}
+            : <SafetyBanner tone="warning"><strong>Setup needed.</strong> {incompatiblePlanCount > 0
+              ? `Review ${incompatiblePlanCount} exercise${incompatiblePlanCount === 1 ? "" : "s"} for your current phase.`
+              : missingDoseCount > 0
+                ? `Add doses for ${missingDoseCount} exercise${missingDoseCount === 1 ? "" : "s"}.`
+                : "Confirm this plan."}</SafetyBanner>}
           <div className="hero-actions">
             <button className="primary-button primary-button--large" onClick={state.sessionDraft || planReady ? onStart : onPlan}>{state.sessionDraft || planReady ? <Play size={20} weight="fill" /> : <SlidersHorizontal size={20} />} {state.sessionDraft ? "Resume session" : planReady ? "Start session" : "Set up plan"}</button>
             <button className="secondary-button" onClick={onReminder}><Alarm size={20} /> {state.reminderTime}</button>
@@ -833,37 +859,38 @@ function TodayPage({ state, completedThisWeek, sessionsByDay, onStart, onDiscard
   );
 }
 
-function PlanPage({ state, exercises: planExercises, missingDoseCount, onDose, onCustomize, onConfirm }: {
+function PlanPage({ state, exercises: planExercises, missingDoseCount, incompatiblePlanCount, onDose, onCustomize, onConfirm }: {
   state: LocalAppState;
   exercises: readonly ExerciseRecord[];
   missingDoseCount: number;
+  incompatiblePlanCount: number;
   onDose: (exercise: ExerciseRecord) => void;
   onCustomize: () => void;
   onConfirm: () => void;
 }) {
-  const episode = episodeCatalog.find((item) => item.id === state.activeEpisodeId) ?? episodeCatalog[0];
-  if (!episode) return null;
   return (
     <div className="page-content">
-      <header className="page-heading"><p>{episode.knee} knee · {stageLabel(episode.stage)}</p><h1>Your rehab plan.</h1></header>
+      <header className="page-heading"><p>{state.profile.affectedKnee} knee · {stageLabel(state.profile.rehabStage)}</p><h1>Your rehab plan.</h1></header>
       <SafetyBanner>Use only exercises and doses from your physiotherapist.</SafetyBanner>
       <div className="plan-layout">
         <section className="plan-list">
-          <div className="section-heading"><div><h2>Prehab foundations</h2></div><button className="secondary-button" onClick={onCustomize}><SlidersHorizontal size={18} /> Customize</button></div>
+          <div className="section-heading"><div><h2>Recorded exercises</h2></div><button className="secondary-button" onClick={onCustomize}><SlidersHorizontal size={18} /> Customize</button></div>
           {planExercises.map((exercise) => <RoutineRow key={exercise.id} exercise={exercise} dose={doseLabel(state.doses[exercise.id])} onOpen={() => onDose(exercise)} />)}
           <div className={`plan-confirmation${state.planClinicianConfirmed ? " plan-confirmation--confirmed" : ""}`}>
             <div>
               {state.planClinicianConfirmed ? <CheckCircle size={23} weight="fill" /> : <ShieldCheck size={23} />}
               <span>
-                <strong>{state.planClinicianConfirmed ? "Plan confirmed" : missingDoseCount ? "Doses needed" : "Ready to confirm"}</strong>
+                <strong>{state.planClinicianConfirmed ? "Plan confirmed" : incompatiblePlanCount ? "Phase review needed" : missingDoseCount ? "Doses needed" : "Ready to confirm"}</strong>
                 <small>{state.planClinicianConfirmed
                   ? "Changes require confirmation again."
-                  : missingDoseCount
+                  : incompatiblePlanCount
+                    ? `${incompatiblePlanCount} exercise${incompatiblePlanCount === 1 ? " is" : "s are"} outside the selected phase. Customize the plan before confirming.`
+                    : missingDoseCount
                     ? `${missingDoseCount} exercise${missingDoseCount === 1 ? " is" : "s are"} missing a dose.`
                     : "Confirm only if this matches your clinician's plan."}</small>
               </span>
             </div>
-            <button className="primary-button" disabled={missingDoseCount > 0 || state.planClinicianConfirmed} onClick={onConfirm}>
+            <button className="primary-button" disabled={missingDoseCount > 0 || incompatiblePlanCount > 0 || state.planClinicianConfirmed} onClick={onConfirm}>
               <Check size={18} weight="bold" /> {state.planClinicianConfirmed ? "Confirmed" : "Confirm plan"}
             </button>
           </div>
@@ -872,8 +899,8 @@ function PlanPage({ state, exercises: planExercises, missingDoseCount, onDose, o
           <h2>Rehab path</h2>
           <p>Your clinician decides when you progress.</p>
           {rehabPhases.map((phase) => (
-            <div className={`phase-step${phase.id === episode.currentPhaseId ? " phase-step--active" : ""}`} key={phase.id}>
-              <span>{phase.id === episode.currentPhaseId ? <Check size={16} weight="bold" /> : <Lock size={15} />}</span>
+            <div className={`phase-step${phase.id === state.profile.currentPhaseId ? " phase-step--active" : ""}`} key={phase.id}>
+              <span>{phase.id === state.profile.currentPhaseId ? <Check size={16} weight="bold" /> : <Lock size={15} />}</span>
               <div><strong>{phase.shortName}</strong><small>{phase.summary}</small></div>
             </div>
           ))}
@@ -898,7 +925,7 @@ function LearnPage({ search, setSearch, filter, setFilter, exercises: results, o
       <header className="page-heading"><p>Exercise library</p><h1>Understand each movement.</h1></header>
       <SafetyBanner tone="warning">General guidance only. Use movements cleared for your knee.</SafetyBanner>
       <div className="library-toolbar">
-        <label className="search-box"><MagnifyingGlass size={20} /><span className="sr-only">Search exercises</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search exercises" /></label>
+        <AppSearchField value={search} onChange={setSearch} placeholder="Search exercises" label="Search exercises" />
         <div className="filter-tabs" role="group" aria-label="Exercise filters">
           {(["all", "prehab", "strength", "mobility"] as const).map((value) => <button key={value} aria-pressed={filter === value} className={filter === value ? "active" : ""} onClick={() => setFilter(value)}>{value === "all" ? "All" : value[0].toUpperCase() + value.slice(1)}</button>)}
         </div>
@@ -943,7 +970,7 @@ function CheckInModal({ pain, setPain, swelling, setSwelling, flags, setFlags, r
 }) {
   return <Modal title="How is your knee right now?" onClose={onClose}>
     <p className="modal-intro">Use this check to notice changes. It is not medical clearance.</p>
-    <label className="field-block"><span>Current knee pain <strong>{pain}/10</strong></span><input type="range" min="0" max="10" value={pain} onChange={(event) => setPain(Number(event.target.value))} /></label>
+    <AppSlider label="Current knee pain" value={pain} onChange={setPain} suffix="/10" />
     <fieldset className="field-block"><legend>Swelling compared with your usual baseline</legend><div className="segment-control">{(["none", "mild", "moderate", "marked"] as const).map((value) => <button type="button" key={value} aria-pressed={swelling === value} className={swelling === value ? "active" : ""} onClick={() => setSwelling(value)}>{value}</button>)}</div></fieldset>
     <div className="check-list">
       <CheckToggle checked={flags.aboveBaseline} onChange={(checked) => setFlags({ ...flags, aboveBaseline: checked })} label="Pain, warmth, stiffness, or swelling is above my usual baseline" />
@@ -961,7 +988,7 @@ function CheckInModal({ pain, setPain, swelling, setSwelling, flags, setFlags, r
 }
 
 function CheckToggle({ checked, onChange, label }: { checked: boolean; onChange: (value: boolean) => void; label: string }) {
-  return <label className="check-toggle"><input type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} /><span><Check size={15} weight="bold" /></span>{label}</label>;
+  return <AppCheckbox className="check-toggle" checked={checked} onChange={onChange} label={label} />;
 }
 
 function ActionConfirmModal({ title, message, confirmLabel, warning = false, onClose, onConfirm }: {
@@ -985,9 +1012,9 @@ function PostCheckModal({ pain, setPain, swelling, setSwelling, note, setNote, o
   pain: number; setPain: (value: number) => void; swelling: SessionLog["swellingAfter"]; setSwelling: (value: SessionLog["swellingAfter"]) => void; note: string; setNote: (value: string) => void; onClose: () => void; onFinish: () => void;
 }) {
   return <Modal title="How did your knee respond?" onClose={onClose}>
-    <label className="field-block"><span>Knee pain now <strong>{pain}/10</strong></span><input type="range" min="0" max="10" value={pain} onChange={(event) => setPain(Number(event.target.value))} /></label>
+    <AppSlider label="Knee pain now" value={pain} onChange={setPain} suffix="/10" />
     <fieldset className="field-block"><legend>Swelling now</legend><div className="segment-control">{(["none", "mild", "moderate", "marked"] as const).map((value) => <button type="button" key={value} aria-pressed={swelling === value} className={swelling === value ? "active" : ""} onClick={() => setSwelling(value)}>{value}</button>)}</div></fieldset>
-    <label className="field-block"><span>Note for next time</span><textarea maxLength={10_000} value={note} onChange={(event) => setNote(event.target.value)} placeholder="Load, range, discomfort, or a question for your physio" /></label>
+    <AppTextArea label="Note for next time" maxLength={10_000} value={note} onChange={setNote} placeholder="Load, range, discomfort, or a question for your physio" />
     <SafetyBanner>If pain, warmth, stiffness, or swelling rises and does not settle with your agreed response plan, contact your clinician.</SafetyBanner>
     <div className="modal-actions"><button className="secondary-button" onClick={onClose}>Back</button><button className="primary-button" onClick={onFinish}><CheckCircle size={18} weight="fill" /> Save session</button></div>
   </Modal>;
@@ -998,12 +1025,12 @@ function DoseModal({ exercise, dose, onClose, onSave }: { exercise: ExerciseReco
     <form onSubmit={onSave}>
       <SafetyBanner tone="warning">Copy your prescribed dose. Leave uncertain fields blank.</SafetyBanner>
       <div className="form-grid">
-        <label><span>Sets</span><input name="sets" type="number" min="1" max="50" defaultValue={dose?.sets ?? ""} /></label>
-        <label><span>Reps per set</span><input name="reps" type="number" min="1" max="500" defaultValue={dose?.reps ?? ""} /></label>
-        <label><span>Hold (seconds)</span><input name="hold" type="number" min="1" max="3600" defaultValue={dose?.holdSeconds ?? ""} /></label>
-        <label><span>Duration (minutes)</span><input name="duration" type="number" min="0.25" max="480" step="0.25" defaultValue={dose?.durationMinutes ?? ""} /></label>
-        <label><span>Load (kg)</span><input name="load" type="number" min="0" max="1000" step="0.5" defaultValue={dose?.loadKg ?? ""} /></label>
-        <label className="form-grid__full"><span>Approved range or setup note</span><input name="range" type="text" maxLength={1_000} defaultValue={dose?.rangeNote ?? ""} placeholder="Example: only the range my physio showed me" /></label>
+        <AppNumberField label="Sets" name="sets" minValue={1} maxValue={50} defaultValue={dose?.sets ?? undefined} />
+        <AppNumberField label="Reps per set" name="reps" minValue={1} maxValue={500} defaultValue={dose?.reps ?? undefined} />
+        <AppNumberField label="Hold (seconds)" name="hold" minValue={1} maxValue={3600} defaultValue={dose?.holdSeconds ?? undefined} />
+        <AppNumberField label="Duration (minutes)" name="duration" minValue={0.25} maxValue={480} step={0.25} defaultValue={dose?.durationMinutes ?? undefined} />
+        <AppNumberField label="Load (kg)" name="load" minValue={0} maxValue={1000} step={0.5} defaultValue={dose?.loadKg ?? undefined} />
+        <AppTextField className="form-grid__full" label="Approved range or setup note" name="range" maxLength={1_000} defaultValue={dose?.rangeNote ?? ""} placeholder="Example: only the range my physio showed me" />
       </div>
       <div className="modal-actions"><button type="button" className="secondary-button" onClick={onClose}>Cancel</button><button className="primary-button" type="submit">Save dose</button></div>
     </form>
@@ -1011,8 +1038,7 @@ function DoseModal({ exercise, dose, onClose, onSave }: { exercise: ExerciseReco
 }
 
 function CustomizePlanModal({ state, setState, onClose }: { state: LocalAppState; setState: React.Dispatch<React.SetStateAction<LocalAppState>>; onClose: () => void }) {
-  const episode = episodeCatalog.find((item) => item.id === state.activeEpisodeId);
-  const eligible = exerciseCatalog.filter((exercise) => exercise.planEligible !== false && episode && exercise.eligiblePhaseIds.includes(episode.currentPhaseId));
+  const eligible = exerciseCatalog.filter((exercise) => exercise.planEligible !== false && exercise.eligiblePhaseIds.includes(state.profile.currentPhaseId));
   const toggleExercise = (exerciseId: string) => {
     setState((previous) => {
       const included = previous.planExerciseIds.includes(exerciseId);
@@ -1045,7 +1071,7 @@ function CustomizePlanModal({ state, setState, onClose }: { state: LocalAppState
 
 function ReminderModal({ state, setState, onClose, onCalendar }: { state: LocalAppState; setState: React.Dispatch<React.SetStateAction<LocalAppState>>; onClose: () => void; onCalendar: () => void }) {
   return <Modal title="Set your rehab rhythm" onClose={onClose}>
-    <label className="field-block"><span>Preferred time</span><input className="time-input" type="time" value={state.reminderTime} onChange={(event) => setState((previous) => ({ ...previous, reminderTime: event.target.value, reminderDismissedOn: null }))} /></label>
+    <AppTimeField label="Preferred time" value={state.reminderTime} onChange={(reminderTime) => setState((previous) => ({ ...previous, reminderTime, reminderDismissedOn: null }))} />
     <fieldset className="field-block"><legend>Usher me on</legend><div className="day-picker">{dayLabels.map((label, day) => {
       const selected = state.reminderDays.includes(day);
       return <button type="button" key={`${label}-${day}`} aria-label={dayNames[day]} aria-pressed={selected} className={selected ? "active" : ""} onClick={() => setState((previous) => ({ ...previous, reminderDismissedOn: null, reminderDays: previous.reminderDays.includes(day) ? previous.reminderDays.filter((item) => item !== day) : [...previous.reminderDays, day].sort() }))}>{label}</button>;
@@ -1072,13 +1098,84 @@ function OnboardingModal({ state, setState, onClose }: {
   setState: React.Dispatch<React.SetStateAction<LocalAppState>>;
   onClose: () => void;
 }) {
-  return <Modal title="Welcome to Knee Forward" onClose={onClose} dismissible={state.profile.onboardingComplete}>
-    <p className="modal-intro">Record the plan your physiotherapist gave you, then log each session.</p>
-    <SafetyBanner>Your dates, check-ins, and history stay in this browser. Plan links include only exercises and doses.</SafetyBanner>
-    <div className="modal-actions"><button className="primary-button" onClick={() => {
-      setState((previous) => ({ ...previous, profile: { ...previous.profile, onboardingComplete: true } }));
+  const [displayName, setDisplayName] = useState(state.profile.displayName);
+  const [affectedKnee, setAffectedKnee] = useState<LocalAppState["profile"]["affectedKnee"]>(state.profile.affectedKnee);
+  const [rehabStage, setRehabStage] = useState<LocalAppState["profile"]["rehabStage"]>(state.profile.rehabStage);
+  const [currentPhaseId, setCurrentPhaseId] = useState(state.profile.currentPhaseId);
+  const [surgeryDate, setSurgeryDate] = useState<LocalAppState["profile"]["plannedSurgeryDate"]>(state.profile.plannedSurgeryDate);
+  const [reminderTime, setReminderTime] = useState(state.reminderTime);
+  const [reminderDays, setReminderDays] = useState<readonly number[]>(state.reminderDays);
+  const cleanName = displayName.trim();
+
+  return <Modal title="Set up your local profile" onClose={onClose} dismissible={profileSetupComplete(state)}>
+    <p className="modal-intro">Choose what Knee Forward calls you and when it should nudge you.</p>
+    <form onSubmit={(event) => {
+      event.preventDefault();
+      if (!cleanName) return;
+      setState((previous) => ({
+        ...previous,
+        profile: {
+          ...previous.profile,
+          displayName: cleanName,
+          affectedKnee,
+          rehabStage,
+          currentPhaseId,
+          plannedSurgeryDate: rehabStage === "non_surgical" ? null : surgeryDate,
+          onboardingComplete: true,
+        },
+        planClinicianConfirmed: false,
+        reminderTime,
+        reminderDays,
+        reminderDismissedOn: null,
+      }));
       onClose();
-    }}>Get started</button></div>
+    }}>
+      <AppTextField className="onboarding-name-field" label="Name or nickname" autoComplete="nickname" maxLength={40} value={displayName} onChange={setDisplayName} required />
+      <div className="onboarding-context-grid">
+        <fieldset className="field-block">
+          <legend>Affected knee</legend>
+          <div className="segment-control segment-control--two">
+            {(["left", "right"] as const).map((knee) => <button type="button" key={knee} className={affectedKnee === knee ? "active" : ""} aria-pressed={affectedKnee === knee} onClick={() => setAffectedKnee(knee)}>{knee}</button>)}
+          </div>
+        </fieldset>
+        <AppSelect
+          label="Rehab path"
+          value={rehabStage}
+          options={[
+            { id: "pre_surgery", label: "Pre-surgery" },
+            { id: "post_surgery", label: "Post-surgery" },
+            { id: "non_surgical", label: "Non-surgical" },
+          ]}
+          onChange={(value) => {
+            const nextStage = value as EpisodeStage;
+            setRehabStage(nextStage);
+            setCurrentPhaseId(defaultPhaseForStage(nextStage));
+          }}
+        />
+        <AppSelect label="Current phase" value={currentPhaseId} options={phasesForStage(rehabStage).map((phase) => ({ id: phase.id, label: phase.name }))} onChange={setCurrentPhaseId} />
+        {rehabStage !== "non_surgical" && <AppDatePicker label={rehabStage === "post_surgery" ? "Surgery date" : "Planned surgery date"} value={surgeryDate} onChange={setSurgeryDate} optional />}
+      </div>
+      <p className="field-help">Choose the phase your clinician has confirmed. A date never advances your plan automatically.</p>
+      <div className="onboarding-reminder-grid">
+        <AppTimeField label="Preferred time" value={reminderTime} onChange={setReminderTime} />
+        <fieldset className="field-block">
+          <legend>Reminder days</legend>
+          <div className="day-picker">{dayLabels.map((label, day) => {
+            const selected = reminderDays.includes(day);
+            return <button
+              type="button"
+              key={`${label}-${day}`}
+              aria-label={dayNames[day]}
+              aria-pressed={selected}
+              className={selected ? "active" : ""}
+              onClick={() => setReminderDays((previous) => previous.includes(day) ? previous.filter((item) => item !== day) : [...previous, day].sort())}
+            >{label}</button>;
+          })}</div>
+        </fieldset>
+      </div>
+      <SafetyBanner>This profile stays in this browser. Shared plan links never include your name, surgery date, check-ins, or history.</SafetyBanner>
+      <div className="modal-actions"><button className="primary-button" type="submit" disabled={!cleanName}>Save profile</button></div>
+    </form>
   </Modal>;
 }
 
@@ -1099,9 +1196,34 @@ function SettingsModal({ state, setState, onClose, onExport, onImport, shareUrl,
   shareUrl: string;
   onShare: () => void;
 }) {
+  const contextLocked = state.sessionDraft !== null;
+  const updateContext = (patch: Partial<Pick<LocalAppState["profile"], "affectedKnee" | "rehabStage" | "currentPhaseId">>) => {
+    if (contextLocked) return;
+    setState((previous) => ({
+      ...previous,
+      profile: { ...previous.profile, ...patch },
+      planClinicianConfirmed: false,
+    }));
+  };
   return <Modal title="Settings" onClose={onClose}>
-    <section className="settings-section"><h3>Private details</h3><label className="field-block"><span>Planned surgery date</span><input className="settings-input" type="date" value={state.profile.plannedSurgeryDate ?? ""} onChange={(event) => setState((previous) => ({ ...previous, profile: { ...previous.profile, plannedSurgeryDate: (event.target.value || null) as LocalAppState["profile"]["plannedSurgeryDate"] } }))} /></label></section>
-    <section className="settings-section"><h3>Share plan</h3><p>Includes exercises and doses only.</p><label className="field-block"><span>Plan link</span><input className="settings-input" readOnly value={shareUrl} onFocus={(event) => event.currentTarget.select()} /></label><button className="secondary-button" disabled={!shareUrl} onClick={onShare}><LinkSimple size={18} /> Copy link</button></section>
+    <section className="settings-section"><h3>Profile</h3><AppTextField label="Name or nickname" autoComplete="nickname" maxLength={40} value={state.profile.displayName} onChange={(displayName) => setState((previous) => ({ ...previous, profile: { ...previous.profile, displayName: displayName.slice(0, 40) } }))} /></section>
+    <section className="settings-section">
+      <h3>Rehab context</h3>
+      <fieldset className="field-block" disabled={contextLocked}>
+        <legend>Affected knee</legend>
+        <div className="segment-control segment-control--two">{(["left", "right"] as const).map((knee) => <button type="button" key={knee} className={state.profile.affectedKnee === knee ? "active" : ""} aria-pressed={state.profile.affectedKnee === knee} onClick={() => updateContext({ affectedKnee: knee })}>{knee}</button>)}</div>
+      </fieldset>
+      <AppSelect label="Rehab path" disabled={contextLocked} value={state.profile.rehabStage} options={[{ id: "pre_surgery", label: "Pre-surgery" }, { id: "post_surgery", label: "Post-surgery" }, { id: "non_surgical", label: "Non-surgical" }]} onChange={(value) => {
+        const rehabStage = value as EpisodeStage;
+        updateContext({ rehabStage, currentPhaseId: defaultPhaseForStage(rehabStage) });
+      }} />
+      <AppSelect label="Current phase" disabled={contextLocked} value={state.profile.currentPhaseId} options={phasesForStage(state.profile.rehabStage).map((phase) => ({ id: phase.id, label: phase.name }))} onChange={(currentPhaseId) => updateContext({ currentPhaseId })} />
+      {state.profile.rehabStage !== "non_surgical" && <AppDatePicker label={state.profile.rehabStage === "post_surgery" ? "Surgery date" : "Planned surgery date"} value={state.profile.plannedSurgeryDate} onChange={(plannedSurgeryDate) => setState((previous) => ({ ...previous, profile: { ...previous.profile, plannedSurgeryDate } }))} optional />}
+      {contextLocked
+        ? <SafetyBanner tone="warning">Finish or discard the saved session before changing knee or phase.</SafetyBanner>
+        : <p className="field-help">Changing knee or phase requires you to review and confirm the recorded plan again.</p>}
+    </section>
+    <section className="settings-section"><h3>Share plan</h3><p>Includes exercises and doses only.</p><AppTextField label="Plan link" readOnly value={shareUrl} onFocus={(event) => event.currentTarget.select()} /><button className="secondary-button" disabled={!shareUrl} onClick={onShare}><LinkSimple size={18} /> Copy link</button></section>
     <section className="settings-section"><h3>Backup</h3><p>Backups include all data stored in this browser.</p><div className="settings-actions"><button className="secondary-button" onClick={onExport}><DownloadSimple size={18} /> Export backup</button><button className="secondary-button" onClick={onImport}><UploadSimple size={18} /> Import backup</button></div></section>
   </Modal>;
 }
