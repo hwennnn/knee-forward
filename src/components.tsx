@@ -82,7 +82,7 @@ function MotionExerciseVisual({ media, autoplay, loop }: {
       aria-label={media.alt}
       data-media-kind="motion"
       data-media-provider={provider}
-      data-media-label={media.visualScope === "generic_pattern" ? "General reference" : "Exact variation"}
+      data-media-label={media.visualScope === "generic_pattern" ? "General reference" : undefined}
       data-motion-state={motionState}
       data-native-width={nativeWidth}
       data-native-height={nativeHeight}
@@ -127,7 +127,7 @@ export function ExerciseVisual({
       className={`exercise-visual${compact ? " exercise-visual--compact" : ""}`}
       role="img"
       aria-label={media.alt}
-      data-media-label={media.visualScope === "generic_pattern" ? "General reference" : "Exact variation"}
+      data-media-label={media.visualScope === "generic_pattern" ? "General reference" : undefined}
       data-media-kind={media.kind === "image" ? "still-image" : "illustration"}
       data-native-width={nativeWidth}
       data-native-height={nativeHeight}
@@ -220,28 +220,18 @@ export function Modal({ title, children, onClose, wide = false, dismissible = tr
   );
 }
 
-function MediaDisclosure({ exerciseId, media, label }: {
-  exerciseId: string;
+function MediaDisclosure({ media, label }: {
   media: ExerciseStillMedia | ExerciseMotionMedia;
   label: "Still image" | "Motion demonstration";
 }) {
   const provenance = media as Partial<ExerciseMediaProvenance>;
   const attribution = provenance.attributionText ?? "Original reference illustration bundled with Knee Forward.";
-  const reviewStatus = provenance.clinicalReviewStatus;
-  const headingId = `media-license-${exerciseId}`;
   return (
-    <section className="media-disclosure" aria-labelledby={headingId}>
-      <div className="media-disclosure__heading">
+    <details className="media-disclosure">
+      <summary className="media-disclosure__heading">
         <FilmStrip size={20} weight="duotone" aria-hidden="true" />
-        <div>
-          <h3 id={headingId}>{label} source &amp; rights</h3>
-          {reviewStatus && (
-            <span className={`media-review-status media-review-status--${reviewStatus}`}>
-              {reviewStatus === "reviewed" ? "Visual mapping reviewed" : reviewStatus === "rejected" ? "Visual mapping rejected" : "Visual review pending"}
-            </span>
-          )}
-        </div>
-      </div>
+        <span>{label} source</span>
+      </summary>
       <p className="media-disclosure__attribution">{attribution}</p>
       {(provenance.creator || provenance.licenseId || provenance.permissionText) && (
         <p className="media-disclosure__meta">
@@ -259,11 +249,10 @@ function MediaDisclosure({ exerciseId, media, label }: {
       {provenance.visualScope === "generic_pattern" && (
         <div className="media-scope-warning">
           <Warning size={18} weight="fill" aria-hidden="true" />
-          <p>This visual is a general reference, not an exact demonstration of the named exercise. Your prescribed setup, range, load, and support may differ.</p>
+          <p>General movement reference. Your setup may differ.</p>
         </div>
       )}
-      {provenance.visualScope === "exact_variation" && <p className="media-scope-label">Scope: Exact exercise variation.</p>}
-    </section>
+    </details>
   );
 }
 
@@ -285,9 +274,8 @@ export function ExerciseDetail({ exercise, onBack, demoMedia }: {
           </div>
           {demoMedia && (
             <div className="detail-motion-block">
-              <p className="detail-motion-label">Motion reference</p>
+              <p className="detail-motion-label">Demo</p>
               <MotionExerciseVisual media={demoMedia} autoplay={!reducedMotion} loop={!reducedMotion} />
-              <p className="motion-reference-note">Movement reference only, not clearance or a prescribed range or load.</p>
               {reducedMotion && <p className="reduced-motion-note">A static poster is shown because reduced motion is enabled.</p>}
             </div>
           )}
@@ -296,9 +284,7 @@ export function ExerciseDetail({ exercise, onBack, demoMedia }: {
           <p className="kicker">{exercise.category.replaceAll("_", " ")}</p>
           <h1>{exercise.name}</h1>
           <p className="lede">{exercise.description}</p>
-          <SafetyBanner>
-            Use the range, load, and variation your physiotherapist approved. This visual is an orientation aid.
-          </SafetyBanner>
+          <SafetyBanner>Follow the range and load your physiotherapist approved.</SafetyBanner>
           <h3>Form cues</h3>
           <ul className="cue-list">
             {exercise.cues.map((cue) => <li key={cue}><Check size={17} weight="bold" />{cue}</li>)}
@@ -307,7 +293,7 @@ export function ExerciseDetail({ exercise, onBack, demoMedia }: {
           <ul className="plain-list">
             {exercise.stopSignals.map((signal) => <li key={signal}>{signal}</li>)}
           </ul>
-          <MediaDisclosure exerciseId={exercise.id} media={disclosedMedia} label={demoMedia ? "Motion demonstration" : "Still image"} />
+          <MediaDisclosure media={disclosedMedia} label={demoMedia ? "Motion demonstration" : "Still image"} />
         </div>
       </div>
     </section>

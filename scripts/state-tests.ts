@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { initialPostResponse, performedSetOutcome, previousSetsForExercise } from "../src/sessionTracking";
-import { initialState, parseState } from "../src/storage";
+import { importState, initialState, parseState } from "../src/storage";
 import type { LocalAppState } from "../src/types";
 
 const exerciseId = "single-leg-knee-extension-machine";
@@ -178,5 +178,18 @@ const invalidDraft = structuredClone(draftState) as unknown as {
 };
 invalidDraft.sessionDraft.exercises[0]!.sets[0]!.reps = 1.5;
 assert.throws(() => parseState(invalidDraft), /invalid repetition count/);
+
+const invalidCalendarDate = structuredClone(initialState) as unknown as { profile: { plannedSurgeryDate: string } };
+invalidCalendarDate.profile.plannedSurgeryDate = "2026-02-31";
+assert.throws(() => parseState(invalidCalendarDate), /surgery date is invalid/);
+
+const invalidReminderDate = structuredClone(initialState) as unknown as { reminderDismissedOn: string };
+invalidReminderDate.reminderDismissedOn = "2026-13-01";
+assert.throws(() => parseState(invalidReminderDate), /reminder acknowledgement is invalid/);
+
+await assert.rejects(
+  () => importState(new File([new Uint8Array(2_000_001)], "oversized.json", { type: "application/json" })),
+  /limit is 2 MB/,
+);
 
 console.log("State parser tests passed.");

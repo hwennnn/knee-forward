@@ -24,6 +24,10 @@ const emptyDose = (): ExerciseDose => ({
 
 export const initialState: LocalAppState = {
   schemaVersion: 1,
+  profile: {
+    onboardingComplete: false,
+    plannedSurgeryDate: null,
+  },
   activeEpisodeId: "episode-right-acl-2026",
   planClinicianConfirmed: false,
   reminderTime: "18:30",
@@ -59,6 +63,13 @@ function isRecord(value: unknown): value is UnknownRecord {
 
 function validString(value: unknown, maxLength = 2_000): value is string {
   return typeof value === "string" && value.length <= maxLength;
+}
+
+function validISODate(value: unknown): value is NonNullable<LocalAppState["profile"]["plannedSurgeryDate"]> {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const [year, month, day] = value.split("-").map(Number);
+  const date = new Date(Date.UTC(year!, month! - 1, day));
+  return date.getUTCFullYear() === year && date.getUTCMonth() === month! - 1 && date.getUTCDate() === day;
 }
 
 function nullableNumber(value: unknown, min: number, max: number, integer = false): number | null {
@@ -318,12 +329,22 @@ export function parseState(value: unknown): LocalAppState {
     throw new Error("The saved plan confirmation is invalid.");
   }
   const dismissed = value.reminderDismissedOn;
-  if (dismissed !== undefined && dismissed !== null && (typeof dismissed !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(dismissed))) {
+  if (dismissed !== undefined && dismissed !== null && !validISODate(dismissed)) {
     throw new Error("The saved reminder acknowledgement is invalid.");
+  }
+  const rawProfile = value.profile;
+  const profile = isRecord(rawProfile) ? rawProfile : {};
+  const plannedSurgeryDate = profile.plannedSurgeryDate;
+  if (plannedSurgeryDate !== undefined && plannedSurgeryDate !== null && !validISODate(plannedSurgeryDate)) {
+    throw new Error("The saved surgery date is invalid.");
   }
 
   return {
     schemaVersion: 1,
+    profile: {
+      onboardingComplete: profile.onboardingComplete === true,
+      plannedSurgeryDate: (plannedSurgeryDate as LocalAppState["profile"]["plannedSurgeryDate"] | undefined) ?? null,
+    },
     activeEpisodeId,
     planClinicianConfirmed: value.planClinicianConfirmed === true,
     reminderTime,
@@ -379,6 +400,7 @@ export function exportState(state: LocalAppState) {
 }
 
 export async function importState(file: File): Promise<LocalAppState> {
+  if (file.size > 2_000_000) throw new Error("This backup is too large. The limit is 2 MB.");
   try {
     return parseState(JSON.parse(await file.text()));
   } catch (error) {

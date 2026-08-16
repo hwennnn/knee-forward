@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { CheckCircle } from "@phosphor-icons/react";
 import type { ExerciseDose, SessionSetLog } from "./types";
 
 export interface WorkoutSetLoggerProps {
@@ -53,6 +54,7 @@ export function WorkoutSetLogger({
   const repsRequired = prescribedDose.reps !== null;
   const completedSets = sets.filter((set) => set.completed).length;
   const completedRows = sets.filter((set) => set.completed);
+  const nextSetIndex = sets.findIndex((set) => !set.completed);
   const recordedLoadVolume = completedRows.length && completedRows.every((set) => set.reps !== null && set.loadKg !== null)
     ? completedRows.reduce((total, set) => total + ((set.reps ?? 0) * (set.loadKg ?? 0)), 0)
     : null;
@@ -73,11 +75,15 @@ export function WorkoutSetLogger({
     <fieldset className="set-logger" aria-describedby={descriptionId}>
       <legend className="set-logger__legend">Log performed sets for {exerciseName}</legend>
       <div id={descriptionId} className="set-logger__intro">
-        <p><strong>Clinician target:</strong> {doseDescription(prescribedDose)}.</p>
-        <p><strong>Previous history:</strong> Reference only. It is not today&apos;s result.</p>
-        <p><strong>Performed today:</strong> Enter what you actually completed.</p>
-        <p><strong>Load convention:</strong> Use kilograms the same way as your recorded plan. Do not add body weight unless that plan does.</p>
+        <p><strong>Target:</strong> {doseDescription(prescribedDose)}</p>
+        {previousSets?.[0] && <p><strong>Last time:</strong> {previousDescription(previousSets[0])}</p>}
       </div>
+
+      {nextSetIndex >= 0 && <button
+        className="primary-button set-logger__quick-log"
+        disabled={!isValidSet(sets[nextSetIndex]!, repsRequired)}
+        onClick={(event) => { event.preventDefault(); updateSet(nextSetIndex, { completed: true }); }}
+      ><CheckCircle size={19} weight="fill" /> Log set {nextSetIndex + 1}</button>}
 
       <div className="set-logger__table-wrap">
         <table className="set-logger__table">
@@ -85,7 +91,6 @@ export function WorkoutSetLogger({
           <thead>
             <tr>
               <th scope="col">Set</th>
-              <th scope="col">Previous <small>History only</small></th>
               <th scope="col">kg</th>
               <th scope="col">Reps</th>
               <th scope="col">Done</th>
@@ -98,7 +103,6 @@ export function WorkoutSetLogger({
               return (
                 <tr key={setNumber} className="set-logger__row">
                   <th scope="row" className="set-logger__set-number">{setNumber}</th>
-                  <td className="set-logger__previous">{previousDescription(previousSets?.[index])}</td>
                   <td className="set-logger__input-cell">
                     <input
                       className="set-logger__input set-logger__input--load"
@@ -156,7 +160,7 @@ export function WorkoutSetLogger({
       </div>
 
       <p className="set-logger__summary" aria-live="polite">
-        Today&apos;s observation: {completedSets} of {sets.length} sets completed. Recorded load-volume: {recordedLoadVolume === null ? "unavailable" : `${recordedLoadVolume} kg-reps`}. This is not a target.
+        {completedSets} of {sets.length} sets logged{recordedLoadVolume === null ? "" : ` · ${recordedLoadVolume} kg-reps`}.
       </p>
     </fieldset>
   );

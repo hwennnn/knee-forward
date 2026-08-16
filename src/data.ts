@@ -739,20 +739,6 @@ export const routines = [
     safetyNote: SAFETY_NOTICE,
     updatedAt: "2026-08-12T09:00:00+08:00",
   },
-  {
-    id: "routine-left-maintenance",
-    episodeId: "episode-left-knee-2024",
-    phaseId: "return-and-maintain",
-    name: "Maintenance reference",
-    description: "A retired routine retained with its original episode rather than mixed into the active plan.",
-    status: "retired",
-    items: [
-      { id: "routine-left-1", exerciseId: "stationary-bike", order: 1, dose: clinicianDose, side: "both" },
-      { id: "routine-left-2", exerciseId: "single-leg-balance", order: 2, dose: clinicianDose, side: "alternating" },
-    ],
-    safetyNote: SAFETY_NOTICE,
-    updatedAt: "2025-01-20T10:30:00+08:00",
-  },
 ] as const satisfies readonly RehabRoutine[];
 
 export const seedData = {
@@ -766,20 +752,7 @@ export const seedData = {
       status: "active",
       stage: "pre_surgery",
       currentPhaseId: "prehab",
-      startedOn: "2026-08-12",
-      plannedSurgeryDate: "2026-12-12",
-      notes: "Planned surgery is approximately four months away. Confirm the date and all restrictions with the care team.",
       updatedAt: "2026-08-12T09:00:00+08:00",
-    },
-    {
-      id: "episode-left-knee-2024",
-      title: "Left knee rehabilitation",
-      knee: "left",
-      status: "completed",
-      stage: "post_surgery",
-      currentPhaseId: "return-and-maintain",
-      notes: "Previous ACL reconstruction retained separately for local history. Exact dates and procedure details have not been entered.",
-      updatedAt: "2025-01-20T10:30:00+08:00",
     },
   ],
   phases: rehabPhases,

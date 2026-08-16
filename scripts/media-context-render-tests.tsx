@@ -56,7 +56,7 @@ const renderDetail = (context: ExerciseMediaContext, allowPendingLearningMedia =
 
 const learnDetail = renderDetail("learn", true);
 assert.match(learnDetail, /data-media-source="\/sharp-still\.webp"/);
-assert.ok(learnDetail.includes("Motion reference"));
+assert.ok(learnDetail.includes("Demo"));
 assert.doesNotMatch(learnDetail, /Play motion|Show still|Pause motion/);
 assert.match(learnDetail, /<video/);
 assert.match(learnDetail, /autoPlay=""/);

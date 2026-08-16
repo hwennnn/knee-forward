@@ -6,7 +6,7 @@ Knee Forward is a local-first ACL rehabilitation companion. It helps someone rec
 
 - Guest-first use with no sign-in or server
 - Real static URLs for Today, Plan, Learn, and Progress, so refreshing or reopening a browser tab preserves the current section
-- Separate right-knee active prehab and left-knee historical episodes
+- Private first-run onboarding stored in the browser
 - The seven exercises from the first pre-surgery rehab visit
 - Editable sets, repetitions, holds, duration, load, and range notes supplied by a physiotherapist
 - A required dosage-complete confirmation gate before a recorded plan can run
@@ -21,6 +21,7 @@ Knee Forward is a local-first ACL rehabilitation companion. It helps someone rec
 - Local reminders plus an `.ics` calendar download
 - Progress history, weekly adherence, and symptom-response summaries
 - Validated JSON backup and restore, with non-destructive recovery for unreadable local data
+- Plan-only share links with confirmed import; dates, symptoms, notes, reminders, and history are excluded
 - Installable PWA shell with offline support after the first production load
 - System light and dark modes, reduced-motion support, and responsive desktop/mobile layouts
 
@@ -51,11 +52,11 @@ npm run preview
 
 Motion appears below the primary still on every Learn detail page in local and production builds. Runtime video uses WebM first with MP4 fallback; GIF is never served. Reduced-motion preferences receive a static poster. Motion files are delivered on demand and excluded from the offline precache. The original Gym visual GIFs are preserved under `work/source-motion-gifs/gymvisual/` for provenance, and public derivatives remain credited and tracked in a checksum manifest under `public/assets/motion/gymvisual/`.
 
-Twenty-seven Gym visual assets provide 32 approved exercise mappings in the Learn detail view. Exact variations and general movement references are labeled separately wherever the dataset setup differs from the named rehabilitation exercise. The 16 original 1024 px WebP exercise stills remain pending visual review; no visual represents medical clearance.
+Twenty-seven Gym visual assets provide 32 exercise mappings in the Learn detail view. General movement references are labeled wherever the dataset setup differs from the named rehabilitation exercise. No visual represents medical clearance.
 
 ## Data and privacy
 
-The MVP stores plan settings and session history in browser `localStorage` under `knee-forward:state:v1`. Nothing is uploaded. Use **Settings > Export backup** before clearing browser storage or moving devices.
+Knee Forward stores settings and history in browser `localStorage` under `knee-forward:state:v1`. Nothing is uploaded. Surgery dates are entered only in local Settings and are not included in the public seed or plan links. Full backups include all local data, so treat exported files as private.
 
 Performed set history is an observation record. Previous and highest values are never treated as a recommendation, a progression target, or clearance to increase load.
 

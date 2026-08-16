@@ -12,9 +12,11 @@
     "test:state": "esbuild scripts/state-tests.ts --bundle --platform=node --format=esm --outfile=/tmp/knee-forward-state-tests.mjs --log-level=warning && node /tmp/knee-forward-state-tests.mjs",
     "test:catalog": "esbuild scripts/exercise-catalog-tests.ts --bundle --platform=node --format=esm --outfile=/tmp/knee-forward-catalog-tests.mjs --log-level=warning && node /tmp/knee-forward-catalog-tests.mjs",
     "test:navigation": "esbuild scripts/navigation-tests.ts --bundle --platform=node --format=esm --outfile=/tmp/knee-forward-navigation-tests.mjs --log-level=warning && node /tmp/knee-forward-navigation-tests.mjs",
+    "test:share": "esbuild scripts/plan-share-tests.ts --bundle --platform=node --format=esm --outfile=/tmp/knee-forward-plan-share-tests.mjs --log-level=warning && node /tmp/knee-forward-plan-share-tests.mjs",
+    "test:logger": "esbuild scripts/workout-logger-tests.tsx --bundle --platform=node --format=cjs --jsx=automatic --outfile=/tmp/knee-forward-logger-tests.cjs --log-level=warning && node /tmp/knee-forward-logger-tests.cjs",
     "test:media": "node scripts/cdc-media-tests.mjs && node scripts/gymvisual-media-tests.mjs && esbuild scripts/media-catalog-tests.ts --bundle --platform=node --format=esm --outfile=/tmp/knee-forward-media-tests.mjs --log-level=warning && node /tmp/knee-forward-media-tests.mjs && esbuild scripts/media-context-render-tests.tsx --bundle --platform=node --format=cjs --jsx=automatic --outfile=/tmp/knee-forward-media-context-tests.cjs --log-level=warning && node /tmp/knee-forward-media-context-tests.cjs && esbuild scripts/media-visual-quality-tests.tsx --bundle --platform=node --format=cjs --jsx=automatic --outfile=/tmp/knee-forward-media-quality-tests.cjs --log-level=warning && node /tmp/knee-forward-media-quality-tests.cjs",
     "test:build-modes": "node scripts/build-mode-tests.mjs",
-    "test": "npm run typecheck && npm run test:state && npm run test:catalog && npm run test:navigation && npm run test:media",
+    "test": "npm run typecheck && npm run test:state && npm run test:catalog && npm run test:navigation && npm run test:share && npm run test:logger && npm run test:media",
     "typecheck": "tsc -b --pretty false"
   },
   "dependencies": {

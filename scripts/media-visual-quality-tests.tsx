@@ -14,7 +14,7 @@ const still = {
 
 const stillMarkup = renderToStaticMarkup(<ExerciseVisual media={still} />);
 assert.match(stillMarkup, /data-media-kind="still-image"/);
-assert.match(stillMarkup, /data-media-label="Exact variation"/);
+assert.doesNotMatch(stillMarkup, /data-media-label=/);
 assert.match(stillMarkup, /data-native-width="1200"/);
 assert.match(stillMarkup, /data-upscale-policy="native-size-cap"/);
 assert.match(stillMarkup, /src="\/still\.webp"/);
@@ -65,7 +65,7 @@ const exercise = {
 
 const initialDetailMarkup = renderToStaticMarkup(<ExerciseDetailForContext exercise={exercise} context="learn" onBack={() => undefined} />);
 assert.match(initialDetailMarkup, /data-motion-available="true"/);
-assert.ok(initialDetailMarkup.includes("Motion reference"));
+assert.ok(initialDetailMarkup.includes("Demo"));
 assert.doesNotMatch(initialDetailMarkup, /Play motion|Show still|Pause motion/);
 assert.doesNotMatch(initialDetailMarkup, /aria-pressed/);
 assert.match(initialDetailMarkup, /<video/);

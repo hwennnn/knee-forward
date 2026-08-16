@@ -197,6 +197,10 @@ export interface SessionLog {
 
 export interface LocalAppState {
   schemaVersion: 1;
+  profile: {
+    onboardingComplete: boolean;
+    plannedSurgeryDate: ISODate | null;
+  };
   activeEpisodeId: string;
   planClinicianConfirmed: boolean;
   reminderTime: string;

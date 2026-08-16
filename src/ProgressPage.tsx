@@ -109,7 +109,7 @@ export function ProgressPage({ state, sessionsByDay }: ProgressPageProps) {
 
   return (
     <div className="page-content">
-      <header className="page-heading"><p>Local history · this device</p><h1>Notice your knee’s response.</h1></header>
+      <header className="page-heading"><p>Progress</p><h1>Your recorded history.</h1></header>
       <div className="metric-grid tracking-metrics">
         <article><CalendarCheck size={24} /><strong>{sortedSessions.length}</strong><span>sessions logged</span></article>
         <article><Barbell size={24} /><strong>{sortedSessions.reduce((sum, item) => sum + item.completedExerciseIds.length, 0)}</strong><span>exercises completed</span></article>
@@ -117,12 +117,12 @@ export function ProgressPage({ state, sessionsByDay }: ProgressPageProps) {
         <article><ChartLineUp size={24} /><strong>{averagePainChange}</strong><span>average pain change</span></article>
       </div>
       <section className="progress-chart">
-        <div className="section-heading"><div><h2>Last 7 days</h2><p>A mark means a session was recorded. It is not medical clearance.</p></div></div>
+        <div className="section-heading"><div><h2>Last 7 days</h2></div></div>
         <div className="bar-chart">{sessionsByDay.map((day) => <div key={day.dateKey} role="img" aria-label={`${day.dateLabel}: ${day.done ? "session recorded" : "no session recorded"}${day.today ? ", today" : ""}`}><span aria-hidden="true" style={{ height: day.done ? "82%" : "10%" }} className={day.done ? "done" : ""} /><small aria-hidden="true">{day.label}</small></div>)}</div>
       </section>
       <section className="history-section tracking-exercise-history">
         <div className="section-heading tracking-history-heading">
-          <div><h2>Recorded exercise history</h2><p>High values are history markers, not targets or medical clearance.</p></div>
+          <div><h2>Exercise history</h2><p>Recorded values are not targets.</p></div>
           {availableExercises.length > 0 && <label className="tracking-exercise-picker" htmlFor="tracking-exercise-select">
             <span>Exercise</span>
             <select id="tracking-exercise-select" value={selectedExerciseId} onChange={(event) => setSelectedExerciseId(event.target.value)}>
@@ -133,7 +133,7 @@ export function ProgressPage({ state, sessionsByDay }: ProgressPageProps) {
         {latestRecorded ? <>
           <div className="tracking-history-metrics">
             <article><span>Sessions recorded</span><strong>{selectedExerciseHistory.length}</strong></article>
-            <article><span>Highest recorded load</span><strong>{formatMetric(highestRecordedLoad, " kg")}</strong><small>History marker</small></article>
+            <article><span>Highest recorded load</span><strong>{formatMetric(highestRecordedLoad, " kg")}</strong></article>
             <article><span>Total reps, latest session</span><strong>{formatMetric(totalReps(latestCompletedSets))}</strong></article>
             <article><span>Latest recorded load-volume</span><strong>{formatMetric(loadVolume(latestCompletedSets), " kg-reps")}</strong></article>
           </div>
@@ -155,7 +155,7 @@ export function ProgressPage({ state, sessionsByDay }: ProgressPageProps) {
               </article>;
             })}
           </div>
-        </> : <EmptyState><strong>No recorded exercise details</strong><span>Earlier sessions do not include set-level exercise history. New recorded sessions will appear here.</span></EmptyState>}
+        </> : <EmptyState><strong>No exercise history yet</strong><span>Log a session to start tracking sets, reps, and load.</span></EmptyState>}
       </section>
       <section className="history-section">
         <h2>Recent sessions</h2>
