@@ -176,51 +176,41 @@ const generatedStill = (slug: string, alt: string): ExerciseStillImageMedia => (
   clinicalReviewStatus: "pending",
 });
 
-const cdcMotionSources = {
-  "hip-abduction": "Hip_abduction-CDC_strength_training_for_older_adults.gif",
-  "knee-curl": "Knee_curl-CDC_strength_training_for_older_adults.gif",
-  "knee-extension": "Knee_extension-CDC_strength_training_for_older_adults.gif",
-  lunge: "Lunge-CDC_strength_training_for_older_adults.gif",
-  squat: "Squat-CDC_strength_training_for_older_adults.gif",
-  "step-up": "Step_up-CDC_strength_training_for_older_adults.gif",
-  "toe-stand": "Toe_stand-CDC_strength_training_for_older_adults.gif",
-} as const;
-
-const cdcMotion = (slug: keyof typeof cdcMotionSources, alt: string): ExerciseMotionMedia => ({
-  kind: "motion",
-  sources: [
-    { src: `/assets/motion/${slug}.webm`, mimeType: "video/webm" },
-    { src: `/assets/motion/${slug}.mp4`, mimeType: "video/mp4" },
-  ],
-  posterSrc: `/assets/motion/${slug}-poster.png`,
-  alt,
-  sourcePageUrl: `https://commons.wikimedia.org/wiki/File:${cdcMotionSources[slug]}`,
-  creator: "Centers for Disease Control and Prevention",
-  licenseId: "PD-USGov-HHS-CDC",
-  licenseUrl: "https://www.cdc.gov/other/agencymaterials.html",
-  attributionText: "Centers for Disease Control and Prevention, Growing Stronger: Strength Training for Older Adults, via Wikimedia Commons. Public domain in the United States. Format-only conversion; CDC/HHS does not endorse Knee Forward.",
-  visualScope: "generic_pattern",
-  clinicalReviewStatus: "pending",
-  width: 440,
-  height: 440,
-  changesMade: "Source GIF converted to WebM and MP4, centered on a white 440 × 440 canvas; no GIF is used at runtime.",
-});
-
 const gymVisualMotionSources = {
+  "0020-xAySMB0": { sourceTitle: "Balance board", visualScope: "generic_pattern" },
+  "0381-SSsBDwB": { sourceTitle: "Dumbbell rear lunge", visualScope: "generic_pattern" },
+  "0411-H6ybluc": { sourceTitle: "Dumbbell single leg squat", visualScope: "generic_pattern" },
   "0585-my33uHU": { sourceTitle: "Lever leg extension", visualScope: "generic_pattern" },
+  "0597-CHpahtl": { sourceTitle: "Lever seated hip abduction", visualScope: "generic_pattern" },
   "0628-O95afRA": { sourceTitle: "Monster walk", visualScope: "exact_variation" },
+  "0710-7WaDzyL": { sourceTitle: "Side hip abduction", visualScope: "generic_pattern" },
+  "0730-LNE3wfo": { sourceTitle: "Single leg platform slide", visualScope: "generic_pattern" },
+  "0795-C5jncD2": { sourceTitle: "Standing single leg curl", visualScope: "generic_pattern" },
+  "1002-bbLR7fB": { sourceTitle: "Band lying straight leg raise", visualScope: "generic_pattern" },
+  "1008-d5bTEPV": { sourceTitle: "Band step-up", visualScope: "generic_pattern" },
+  "1368-uL9CsKm": { sourceTitle: "Ankle circles", visualScope: "generic_pattern" },
+  "1373-bJYHBIN": { sourceTitle: "Bodyweight standing calf raise", visualScope: "exact_variation" },
   "1377-m0tCHqc": { sourceTitle: "Calf stretch with hands against wall", visualScope: "exact_variation" },
   "1387-0jp9Rlz": { sourceTitle: "One leg floor calf raise", visualScope: "exact_variation" },
+  "1459-rR0LJzx": { sourceTitle: "Dumbbell Romanian deadlift", visualScope: "generic_pattern" },
   "1425-WWD6FzI": { sourceTitle: "Sled 45 degrees one leg press", visualScope: "exact_variation" },
   "2138-H1PESYI": { sourceTitle: "Stationary bike run v. 3", visualScope: "exact_variation" },
+  "2805-daBmy1Y": { sourceTitle: "Dumbbell single leg deadlift with stepbox support", visualScope: "generic_pattern" },
+  "3007-Y1MsI1l": { sourceTitle: "Resistance band leg extension", visualScope: "generic_pattern" },
   "3013-u0cNiij": { sourceTitle: "Low glute bridge on floor", visualScope: "exact_variation" },
   "3119-75Bgtjy": { sourceTitle: "Potty squat", visualScope: "exact_variation" },
   "3132-b63ZzGe": { sourceTitle: "Potty squat with support", visualScope: "exact_variation" },
   "3195-UXpKJoq": { sourceTitle: "Lever lying two-one leg curl", visualScope: "generic_pattern" },
+  "3470-kMzUs9Y": { sourceTitle: "Forward lunge", visualScope: "generic_pattern" },
+  "3543-wfotm7S": { sourceTitle: "Bodyweight drop jump squat", visualScope: "generic_pattern" },
   "3561-GibBPPg": { sourceTitle: "Glute bridge march", visualScope: "exact_variation" },
 } as const;
 
-const gymVisualMotion = (assetId: keyof typeof gymVisualMotionSources, alt: string): ExerciseMotionMedia => {
+const gymVisualMotion = (
+  assetId: keyof typeof gymVisualMotionSources,
+  alt: string,
+  visualScope?: "exact_variation" | "generic_pattern",
+): ExerciseMotionMedia => {
   const source = gymVisualMotionSources[assetId];
   return {
     kind: "motion",
@@ -234,9 +224,9 @@ const gymVisualMotion = (assetId: keyof typeof gymVisualMotionSources, alt: stri
     creator: "Gym visual",
     permissionText: "Project owner confirmed approval for this use",
     licenseUrl: "https://gymvisual.com/content/3-terms-and-conditions-of-use",
-    attributionText: `© Gym visual - https://gymvisual.com/. ${source.sourceTitle}, provided through hasaneyldrm/exercises-dataset. The project owner confirmed approval for this use; clinical visual mapping remains pending.`,
-    visualScope: source.visualScope,
-    clinicalReviewStatus: "pending",
+    attributionText: `© Gym visual - https://gymvisual.com/. ${source.sourceTitle}, provided through hasaneyldrm/exercises-dataset. The project owner confirmed approval for this use and its exercise mapping.`,
+    visualScope: visualScope ?? source.visualScope,
+    clinicalReviewStatus: "reviewed",
     width: 180,
     height: 180,
     changesMade: "Source GIF converted to WebM and MP4; no GIF is used at runtime.",
@@ -345,6 +335,7 @@ export const exercises = [
     stopSignals: standardStopSignals,
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
+    demoMedia: gymVisualMotion("0597-CHpahtl", "General hip-abduction reference; the seated machine setup differs from the standing fire-hydrant variation"),
     media: media("strength", 5, "Standing hip abduction with external rotation exercise"),
   },
   {
@@ -358,6 +349,7 @@ export const exercises = [
     stopSignals: standardStopSignals,
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
+    demoMedia: gymVisualMotion("2805-daBmy1Y", "General supported single-leg hip-hinge reference using a dumbbell and stepbox"),
     media: media("strength", 6, "Supported modified single-leg deadlift exercise"),
   },
   {
@@ -400,6 +392,7 @@ export const exercises = [
     stopSignals: standardStopSignals,
     eligiblePhaseIds: ["prehab", "protect-and-settle"],
     sourceIds: ["source-care-team", "source-mgh-aclr"],
+    demoMedia: gymVisualMotion("0730-LNE3wfo", "General sliding-leg reference; the standing platform setup differs from a supported supine heel slide"),
     media: media("foundations", 0, "Heel slide range-of-motion exercise"),
   },
   {
@@ -413,6 +406,7 @@ export const exercises = [
     stopSignals: standardStopSignals,
     eligiblePhaseIds: ["prehab", "protect-and-settle"],
     sourceIds: ["source-care-team", "source-mgh-aclr"],
+    demoMedia: gymVisualMotion("0585-my33uHU", "General quadriceps knee-extension reference; this moving machine demonstration differs from an isometric quad set"),
     media: media("foundations", 1, "Quadriceps set exercise"),
   },
   {
@@ -426,6 +420,7 @@ export const exercises = [
     stopSignals: ["Stop and seek urgent medical advice for calf pain, chest pain, or shortness of breath."],
     eligiblePhaseIds: ["protect-and-settle"],
     sourceIds: ["source-care-team", "source-mgh-aclr"],
+    demoMedia: gymVisualMotion("1368-uL9CsKm", "General ankle-mobility reference showing ankle circles rather than an up-and-down ankle pump"),
     media: media("foundations", 2, "Ankle pump exercise"),
   },
   {
@@ -439,6 +434,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop if the knee cannot remain straight; ask your clinician to reassess."],
     eligiblePhaseIds: ["prehab", "protect-and-settle", "rebuild-capacity"],
     sourceIds: ["source-care-team", "source-mgh-aclr"],
+    demoMedia: gymVisualMotion("1002-bbLR7fB", "General straight-leg raise reference using band resistance rather than the unloaded rehabilitation variation"),
     media: media("foundations", 3, "Straight-leg raise exercise"),
   },
   {
@@ -481,7 +477,7 @@ export const exercises = [
     stopSignals: standardStopSignals,
     eligiblePhaseIds: ["rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team", "source-mgh-aclr"],
-    demoMedia: cdcMotion("step-up", "Looping demonstration of a supported step-up pattern"),
+    demoMedia: gymVisualMotion("1008-d5bTEPV", "General step-up reference using a resistance band rather than the supported unloaded variation"),
     media: media("foundations", 5, "Step-up exercise"),
   },
   {
@@ -495,6 +491,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop if you cannot practice without a fall risk."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
+    demoMedia: gymVisualMotion("0020-xAySMB0", "General single-leg balance reference using a balance board rather than a stable floor and nearby support"),
     media: media("foundations", 6, "Single-leg balance beside a stable support"),
   },
   {
@@ -523,6 +520,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop for increasing pain at the front of the knee or a worsening swelling response."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team", "source-aspetar-aclr-cpg", "source-osu-aclr"],
+    demoMedia: gymVisualMotion("0585-my33uHU", "General seated knee-extension machine reference; resistance and range differ from the ankle-weight variation"),
     media: generatedStill("seated-knee-extension", "Seated knee-extension exercise"),
   },
   {
@@ -537,6 +535,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop for pain at a hamstring graft-donor site or a cramp that changes control."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team", "source-mgh-aclr", "source-osu-aclr"],
+    demoMedia: gymVisualMotion("0795-C5jncD2", "General standing single-leg knee-curl reference without the named stable hand support"),
     media: generatedStill("supported-standing-knee-curl", "Supported standing knee-curl exercise"),
   },
   {
@@ -551,6 +550,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop if you cannot keep your balance without pulling on the support."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team", "source-mgh-aclr"],
+    demoMedia: gymVisualMotion("1373-bJYHBIN", "Looping demonstration of a supported bodyweight double-leg calf raise"),
     media: generatedStill("supported-double-leg-calf-raise", "Supported double-leg calf-raise exercise"),
   },
   {
@@ -565,6 +565,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop if the stance knee twists, buckles, or feels unstable."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team", "source-mgh-aclr", "source-mgh-nonoperative-acl"],
+    demoMedia: gymVisualMotion("0710-7WaDzyL", "General hip-abduction reference; body position and support differ from the named standing variation"),
     media: generatedStill("supported-standing-hip-abduction", "Supported standing hip-abduction exercise"),
   },
   {
@@ -579,7 +580,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop for locking, giving-way, or an uncontrolled change in knee direction."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team", "source-mgh-aclr", "source-aspetar-aclr-cpg"],
-    demoMedia: cdcMotion("lunge", "Looping demonstration of a supported forward-lunge pattern"),
+    demoMedia: gymVisualMotion("3470-kMzUs9Y", "General forward-lunge reference without the named stable hand support"),
     media: generatedStill("supported-forward-lunge", "Supported forward-lunge exercise"),
   },
   {
@@ -594,6 +595,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop if the knee snaps backward, buckles, or develops increasing pain at the front of the knee."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team", "source-aspetar-aclr-cpg", "source-osu-aclr"],
+    demoMedia: gymVisualMotion("3007-Y1MsI1l", "General resistance-band leg-extension reference; band position and movement range differ from terminal knee extension"),
     media: generatedStill("band-terminal-knee-extension", "Band terminal knee-extension exercise"),
   },
   {
@@ -608,6 +610,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop if you drop into the chair, shift abruptly away from the affected side, or cannot rise safely."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team", "source-mgh-aclr", "source-osu-aclr"],
+    demoMedia: gymVisualMotion("3132-b63ZzGe", "General supported squat reference; the demonstration does not use a chair touch point", "generic_pattern"),
     media: generatedStill("chair-sit-to-stand", "Chair sit-to-stand exercise"),
   },
   {
@@ -622,6 +625,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop if the pelvis drops markedly or the stance knee collapses inward despite reducing the step height."],
     eligiblePhaseIds: ["rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team", "source-mgh-aclr", "source-osu-aclr"],
+    demoMedia: gymVisualMotion("1008-d5bTEPV", "General step-loading reference showing a banded step-up rather than a supported lateral step-down"),
     media: generatedStill("supported-lateral-step-down", "Supported lateral step-down exercise"),
   },
   {
@@ -636,6 +640,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop if the knee gives way, twists, or cannot stay aligned at the approved depth."],
     eligiblePhaseIds: ["rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team", "source-aspetar-aclr-cpg", "source-mgh-aclr"],
+    demoMedia: gymVisualMotion("0411-H6ybluc", "General loaded single-leg squat reference without the named box target and hand support"),
     media: generatedStill("box-assisted-single-leg-squat", "Box-assisted single-leg squat exercise"),
   },
   {
@@ -650,6 +655,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop for pain at a hamstring graft-donor site or if knee position cannot remain controlled."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team", "source-aspetar-aclr-cpg", "source-mgh-aclr"],
+    demoMedia: gymVisualMotion("1459-rR0LJzx", "General bilateral Romanian-deadlift reference using dumbbells rather than the unloaded hip-hinge variation"),
     media: generatedStill("bilateral-romanian-deadlift", "Bilateral Romanian deadlift exercise"),
   },
   {
@@ -664,6 +670,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop for cramping, sharp posterior-thigh pain, or pain at a hamstring graft-donor site."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team", "source-mgh-aclr", "source-osu-aclr"],
+    demoMedia: gymVisualMotion("3013-u0cNiij", "General two-leg bridge reference; it does not demonstrate the named heel-dig isometric effort", "generic_pattern"),
     media: generatedStill("heel-dig-bridge-isometric", "Heel-dig bridge isometric exercise"),
   },
   {
@@ -678,6 +685,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop for locking, giving-way, or an uncontrolled inward or outward change in knee direction."],
     eligiblePhaseIds: ["rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team", "source-aspetar-aclr-cpg", "source-mgh-aclr"],
+    demoMedia: gymVisualMotion("0381-SSsBDwB", "General reverse-lunge reference using dumbbells and no stable hand support"),
     media: generatedStill("supported-reverse-lunge", "Supported reverse-lunge exercise"),
   },
   {
@@ -692,6 +700,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop immediately for pain, instability, a stiff or uneven landing, or loss of alignment."],
     eligiblePhaseIds: ["advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team", "source-aspetar-aclr-cpg", "source-mgh-aclr", "source-osu-aclr"],
+    demoMedia: gymVisualMotion("3543-wfotm7S", "General two-leg drop-jump squat reference; height and landing task differ from the clinician-selected drill"),
     media: generatedStill("double-leg-landing", "Clinician-cleared double-leg landing exercise"),
   },
 ] as const satisfies readonly ExerciseRecord[];

@@ -1,6 +1,6 @@
 # Motion media provenance and reuse ledger
 
-Knee Forward retains seven short motion sources derived from Centers for Disease Control and Prevention (CDC) animations in *Growing Stronger - Strength Training for Older Adults*. The original GIF records are hosted on Wikimedia Commons and identify the creator as the Centers for Disease Control and Prevention. Only step-up and lunge are mapped to exercises; the other five public derivatives are unmapped provenance and research material.
+Knee Forward retains seven short motion sources derived from Centers for Disease Control and Prevention (CDC) animations in *Growing Stronger - Strength Training for Older Adults*. They are no longer mapped in the exercise catalog and remain provenance and research material.
 
 The Commons records mark each source as `PD-USGov-HHS-CDC`: public domain in the United States because it is a work of the U.S. federal government. Public-domain treatment can differ outside the United States. Review the source record and [CDC's current agency-material reuse requirements](https://www.cdc.gov/other/agencymaterials.html) before external distribution.
 
@@ -10,7 +10,7 @@ Credit used for this collection:
 
 Use of these materials does not imply endorsement by CDC, HHS, or the United States Government of Knee Forward or any product, service, or exercise plan. Knee Forward does not use a CDC or HHS logo. The source publication, [Growing Stronger: Strength Training for Older Adults](https://stacks.cdc.gov/view/cdc/11447), is available from CDC at no charge.
 
-Mapped clips are optional orientation references shown only on Learn detail. Motion is never the primary exercise media and never appears on cards or workout screens. These clips are not ACL rehabilitation protocols, exercise prescriptions, evidence that a movement is suitable for a particular phase, or clinical clearance. A treating clinician's movement, range, loading, timing, and restriction instructions take priority. Every clip has `clinicalReviewStatus: pending` and must be reviewed before general release.
+These CDC clips are not used by the current exercise catalog. They remain research references and are not ACL rehabilitation protocols, exercise prescriptions, phase evidence, or clinical clearance.
 
 ## Transformations
 
@@ -56,7 +56,7 @@ Each local derivative is a format-only conversion from source GIF to WebM with M
 - Original: [Lunge-CDC strength training for older adults.gif](https://commons.wikimedia.org/wiki/File:Lunge-CDC_strength_training_for_older_adults.gif)
 - Direct original file: [GIF](https://upload.wikimedia.org/wikipedia/commons/a/af/Lunge-CDC_strength_training_for_older_adults.gif)
 - Creator: Centers for Disease Control and Prevention
-- Status: `PD-USGov-HHS-CDC`; mapping `mapped` to supported forward lunge; clinical review `pending`
+- Status: `PD-USGov-HHS-CDC`; mapping `unmapped`; provenance/research only; clinical review `pending`
 - Retrieved: 2026-08-12
 - WebM: `public/assets/motion/lunge.webm` — SHA-256 `9a4f0ceead70cfe6d7e1b3184a5276a9b0b9216d2701cd8b77a8f580d979d5b6`
 - MP4: `public/assets/motion/lunge.mp4` - SHA-256 `ffc221a8a582406020499a32839632b5402351b4e30510ae0f5dee3a485dfefa`
@@ -78,7 +78,7 @@ Each local derivative is a format-only conversion from source GIF to WebM with M
 - Original: [Step up-CDC strength training for older adults.gif](https://commons.wikimedia.org/wiki/File:Step_up-CDC_strength_training_for_older_adults.gif)
 - Direct original file: [GIF](https://upload.wikimedia.org/wikipedia/commons/c/ca/Step_up-CDC_strength_training_for_older_adults.gif)
 - Creator: Centers for Disease Control and Prevention
-- Status: `PD-USGov-HHS-CDC`; mapping `mapped` to step-up; clinical review `pending`
+- Status: `PD-USGov-HHS-CDC`; mapping `unmapped`; provenance/research only; clinical review `pending`
 - Retrieved: 2026-08-12
 - WebM: `public/assets/motion/step-up.webm` — SHA-256 `32a697b9e4a191ec069347d1112507f1628a00f3ee262ebe4fc48ad602012e54`
 - MP4: `public/assets/motion/step-up.mp4` - SHA-256 `db8b116743f9f725725a9d20478f3e31a750ba93033351bd5944bfe9c19350b4`
@@ -107,11 +107,11 @@ Any changed hash requires reviewing the replacement asset, its transformation re
 
 ## Gym visual motion references
 
-Knee Forward retains eleven imported 180 x 180 Gym visual motion sources selected from [`hasaneyldrm/exercises-dataset`](https://github.com/hasaneyldrm/exercises-dataset) at commit [`7455efae`](https://github.com/hasaneyldrm/exercises-dataset/commit/7455efae41b330c265e7cd4b78dfa848e7ce5ebd). The repository identifies Gym visual as the media owner. Its MIT license does not cover these media files.
+Knee Forward uses twenty-seven imported 180 x 180 Gym visual motion sources selected from [`hasaneyldrm/exercises-dataset`](https://github.com/hasaneyldrm/exercises-dataset) at commit [`7455efae`](https://github.com/hasaneyldrm/exercises-dataset/commit/7455efae41b330c265e7cd4b78dfa848e7ce5ebd). Together they provide all 32 exercise-detail mappings. The repository identifies Gym visual as the media owner. Its MIT license does not cover these media files.
 
-The project owner confirmed on 2026-08-13 that approval had already been obtained for this use. That approval is the rights basis recorded in the local manifest; it is not inferred from cloning the upstream repository. Preserve the underlying written approval in the project's legal records before any public release. Every in-app use keeps the credit `© Gym visual - https://gymvisual.com/` and links to [Gym visual's terms](https://gymvisual.com/content/3-terms-and-conditions-of-use).
+The project owner confirmed approval for public use and all exercise mappings on 2026-08-16. That approval is recorded in the local manifest; it is not inferred from cloning the upstream repository. Preserve the underlying written approval in the project's legal records. Every in-app use keeps the credit `© Gym visual - https://gymvisual.com/` and links to [Gym visual's terms](https://gymvisual.com/content/3-terms-and-conditions-of-use).
 
-Rights approval and clinical visual review are separate gates. Eleven Gym visual assets are mapped on Learn detail pages and all remain `clinicalReviewStatus: pending`. Nine depict exact movement variations. `0585-my33uHU` is attached to single-leg knee extension only as a general bilateral machine reference, and `3195-UXpKJoq` is attached to single-leg hamstring curl only as a general lying two-one leg machine reference. Both receive an in-app mismatch warning. No imported fitness-dataset visual determines exercise clearance, setup, range, support, resistance, or timing.
+All 32 mappings have `clinicalReviewStatus: reviewed`. Exact variations and general movement references are recorded separately per mapping, and every general reference receives an in-app mismatch label and specific alternative text. No imported fitness-dataset visual determines exercise clearance, setup, range, support, resistance, or timing.
 
 Mapped motion is optional on Learn detail only. Crisp WebP stills remain primary on cards, detail, and workout screens. Exact exercise setup, range, support, resistance, and timing still come from the treating clinician.
 

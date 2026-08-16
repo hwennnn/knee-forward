@@ -1,15 +1,8 @@
 import { createHash } from "node:crypto";
-import { readdir, readFile, rm, writeFile } from "node:fs/promises";
+import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join, relative, sep } from "node:path";
 
 const outputDirectory = new URL("../dist/", import.meta.url);
-const pendingMediaDirectory = new URL("../dist/assets/motion/", import.meta.url);
-const includePendingMedia = process.argv.includes("--include-pending-media");
-
-if (!includePendingMedia) {
-  await rm(pendingMediaDirectory, { recursive: true, force: true });
-}
-
 async function collectFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
   const nested = await Promise.all(entries.map(async (entry) => {

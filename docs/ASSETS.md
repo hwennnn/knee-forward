@@ -48,6 +48,6 @@ The panels were cropped from the source sheets, centered on individual square ca
 - Optional motion: Learn detail only, after the still and explanatory content.
 - Runtime motion: WebM first, MP4 fallback, and a static poster.
 - Runtime GIF: prohibited. Original Gym visual GIFs are preserved only under `work/source-motion-gifs/gymvisual/` for provenance.
-- Clinical status: all generated stills and mapped motion references remain pending clinical review. None is medical clearance.
+- Clinical status: the 32 motion mappings are approved; generated stills remain pending visual review. None is medical clearance.
 
 Motion provenance, rights, transformations, mapping decisions, and checksums are documented in [`MEDIA_LICENSES.md`](MEDIA_LICENSES.md) and the two media manifests.

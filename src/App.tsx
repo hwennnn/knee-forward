@@ -867,10 +867,8 @@ function LearnPage({ search, setSearch, filter, setFilter, exercises: results, o
         <div><FilmStrip size={22} weight="duotone" aria-hidden="true" /></div>
         <div>
           <h2>About the motion demos</h2>
-          <p>Motion references are optional video demonstrations with source and rights details shown beside the visual. The library shows only the closest credible match for each exercise. Rights approval does not clinically validate a movement match, so each demonstration remains an orientation aid.</p>
+          <p>Every exercise includes an approved dataset animation below its primary still. Exact matches and general movement references are labeled separately; the written setup and your clinician's instructions take priority.</p>
           <div className="media-credit-links">
-            <a href="https://stacks.cdc.gov/view/cdc/11447" target="_blank" rel="noreferrer">Free CDC publication <ArrowRight size={16} /></a>
-            <a href="https://www.cdc.gov/other/agencymaterials.html" target="_blank" rel="noreferrer">CDC reuse terms <ArrowRight size={16} /></a>
             <a href="https://github.com/hasaneyldrm/exercises-dataset" target="_blank" rel="noreferrer">Exercise dataset <ArrowRight size={16} /></a>
             <a href="https://gymvisual.com/content/3-terms-and-conditions-of-use" target="_blank" rel="noreferrer">Gym visual terms <ArrowRight size={16} /></a>
           </div>

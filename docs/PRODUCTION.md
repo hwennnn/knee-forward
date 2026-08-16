@@ -73,7 +73,7 @@ The bundled images are original AI-generated orientation illustrations. Before g
 - Track source, creator, license, checksum, modifications, visual scope, and clinical review status for every asset.
 - Never reuse the supplied reference-app screenshots.
 
-Seven CDC motion references and seven approved Gym visual GIF references are included only for local evaluation while their `clinicalReviewStatus` remains `pending`. The project owner confirmed approval for the Gym visual use; its manifest records provenance and hashes. The default `npm run build` removes `dist/assets/motion` before service-worker generation and then asserts that the files and service-worker cache entries are absent. `npm run build:local` opts into them and asserts that every local media file was included; the UI additionally requires a loopback hostname. Do not weaken either boundary. A clip can enter the production build only after its clinical review status is changed to `reviewed`, its release decision is documented, and the build allowlist is updated deliberately.
+Twenty-seven approved Gym visual sources provide motion coverage for all 32 exercise detail pages. The manifest records exact versus general-pattern scope, approval status, provenance, and hashes. Production and local builds both include these files, but the service worker never precaches motion; videos remain on-demand network resources with native range handling.
 
 ## Health-data posture
 
@@ -86,6 +86,6 @@ Session logs are health-adjacent data. Before launch, complete a jurisdiction-sp
 - Test offline updates and service-worker cache invalidation.
 - Measure Core Web Vitals on budget Android and iPhone devices.
 - Complete clinician review of copy, phases, warnings, and media.
-- Assert that a production artifact and `sw.js` contain no media whose clinical review status is pending.
+- Assert that production contains every approved mapped motion file and that `sw.js` does not precache video.
 - Add privacy, terms, emergency, and regional medical-disclaimer pages.
 - Test Supabase RLS with multiple real accounts before launch.

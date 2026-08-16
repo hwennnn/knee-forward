@@ -17,7 +17,7 @@ Knee Forward is a local-first ACL rehabilitation companion. It helps someone rec
 - Post-session pain, swelling, and note logging
 - Exercise-level history with completed-set counts, highest recorded load, repetitions, and recorded load-volume
 - A phase-aware learning library with 32 exercises and crisp WebP stills as the primary media for cards, detail, and workouts
-- Optional Learn-detail motion for two mapped CDC references and eleven mapped Gym visual references, served as WebM with MP4 fallback and never as runtime GIF
+- Approved Learn-detail motion for all 32 exercises from the Gym visual exercise dataset, served as WebM with MP4 fallback and never as runtime GIF
 - Local reminders plus an `.ics` calendar download
 - Progress history, weekly adherence, and symptom-response summaries
 - Validated JSON backup and restore, with non-destructive recovery for unreadable local data
@@ -33,7 +33,7 @@ npm run dev
 
 Open the local URL printed by Vite.
 
-To open the local preview with the pending motion references at a fixed address:
+To open the local preview at a fixed address:
 
 ```bash
 npm run build:local
@@ -49,9 +49,9 @@ npm run build
 npm run preview
 ```
 
-The production build physically removes all motion files that are still awaiting clinical review before it generates the offline cache. `npm run build:local` is intentionally local-only and includes those files for evaluation on a loopback address. Motion appears below the primary still on Learn detail pages. Runtime video uses WebM first with MP4 fallback; GIF is never served. Reduced-motion preferences receive a static poster. The original Gym visual GIFs are preserved under `work/source-motion-gifs/gymvisual/` for provenance, and public derivatives remain credited and tracked in a checksum manifest under `public/assets/motion/gymvisual/`.
+Motion appears below the primary still on every Learn detail page in local and production builds. Runtime video uses WebM first with MP4 fallback; GIF is never served. Reduced-motion preferences receive a static poster. Motion files are delivered on demand and excluded from the offline precache. The original Gym visual GIFs are preserved under `work/source-motion-gifs/gymvisual/` for provenance, and public derivatives remain credited and tracked in a checksum manifest under `public/assets/motion/gymvisual/`.
 
-CDC step-up and lunge plus eleven Gym visual assets are mapped in the Learn detail view. Nine Gym visual references depict exact movement variations; the knee-extension and hamstring-curl references are clearly identified as general machine references because their setup differs from the named variation. All mappings and the 16 original 1024 px WebP exercise stills remain pending clinical review; none represents medical clearance.
+Twenty-seven Gym visual assets provide 32 approved exercise mappings in the Learn detail view. Exact variations and general movement references are labeled separately wherever the dataset setup differs from the named rehabilitation exercise. The 16 original 1024 px WebP exercise stills remain pending visual review; no visual represents medical clearance.
 
 ## Data and privacy
 

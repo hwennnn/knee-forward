@@ -1,36 +1,142 @@
 {
-  "schemaVersion": 2,
-  "collection": "Knee Forward Gym visual motion research references",
-  "retrievedAt": "2026-08-13",
+  "schemaVersion": 3,
+  "collection": "Knee Forward Gym visual motion demonstrations",
+  "retrievedAt": "2026-08-16",
   "upstreamRepository": "https://github.com/hasaneyldrm/exercises-dataset",
   "upstreamCommit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
   "creator": "Gym visual",
   "rightsBasis": "user_confirmed_approval",
-  "rightsNote": "The project owner stated on 2026-08-13 that approval had already been obtained for this use. Preserve that approval outside the code repository before public release.",
+  "rightsNote": "The project owner confirmed approval for public use and all exercise mappings on 2026-08-16. Preserve the underlying approval in the project's legal records.",
   "termsUrl": "https://gymvisual.com/content/3-terms-and-conditions-of-use",
   "attributionText": "© Gym visual - https://gymvisual.com/",
-  "clinicalDisclaimer": "Rights approval is separate from clinical review. These animations are optional orientation aids on Learn detail only, not ACL prescriptions, phase evidence, medical clearance, or substitutes for the primary still. Clinician-selected variation, setup, range, load, support, and timing take priority.",
-  "changesMade": "Original 180 x 180 source GIFs are preserved under work/source-motion-gifs/gymvisual and excluded from runtime. Runtime derivatives were transcoded to WebM with MP4 fallback; source JPG posters were retained without visual modification.",
-  "runtimePolicy": "WebM first with MP4 fallback and a JPG poster. Never serve GIF at runtime.",
+  "clinicalDisclaimer": "These animations are orientation aids, not prescriptions or clearance. General-pattern mappings are labeled in the interface and the clinician-selected setup, range, load, support, and timing take priority.",
+  "changesMade": "Original 180 x 180 GIFs are archived outside runtime. Runtime derivatives use WebM with MP4 fallback and retain the source JPG poster.",
+  "runtimePolicy": "WebM first with MP4 fallback and a JPG poster. Never serve GIF at runtime. Motion is delivered on demand and excluded from service-worker precaching.",
   "assets": [
     {
-      "assetId": "0628-O95afRA",
-      "datasetExerciseId": "0628",
-      "mediaId": "O95afRA",
-      "sourceTitle": "monster walk",
-      "sourceGifPath": "videos/0628-O95afRA.gif",
-      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/0628-O95afRA.gif",
-      "sourcePosterPath": "images/0628-O95afRA.jpg",
-      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0628-O95afRA.gif",
+      "assetId": "0020-xAySMB0",
+      "datasetExerciseId": "0020",
+      "mediaId": "xAySMB0",
+      "sourceTitle": "balance board",
+      "sourceGifPath": "videos/0020-xAySMB0.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/0020-xAySMB0.gif",
+      "sourcePosterPath": "images/0020-xAySMB0.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0020-xAySMB0.gif",
       "attributionText": "© Gym visual - https://gymvisual.com/",
-      "visualScope": "exact_variation",
       "mappingStatus": "mapped",
-      "mappedExerciseId": "lateral-band-walk",
-      "clinicalReviewStatus": "pending",
+      "mappings": [
+        {
+          "exerciseId": "single-leg-balance",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
       "localFiles": {
-        "webm": { "repositoryPath": "public/assets/motion/gymvisual/0628-O95afRA.webm", "publicUrl": "/assets/motion/gymvisual/0628-O95afRA.webm", "mimeType": "video/webm", "bytes": 13460, "sha256": "8890392cc1af83dcfa1e3752cf2a409fc2e9a1e3a1eb56010c14539a717d0522" },
-        "mp4": { "repositoryPath": "public/assets/motion/gymvisual/0628-O95afRA.mp4", "publicUrl": "/assets/motion/gymvisual/0628-O95afRA.mp4", "mimeType": "video/mp4", "bytes": 9505, "sha256": "f694fbfd3f6ce27f8fdccda47060d9482abc6645a588702e18205da079d584a4" },
-        "poster": { "repositoryPath": "public/assets/motion/gymvisual/0628-O95afRA.jpg", "publicUrl": "/assets/motion/gymvisual/0628-O95afRA.jpg", "mimeType": "image/jpeg", "bytes": 6037, "sha256": "c8b91b5d619e06b86b07c9d4ace65b2085d3e3aa76d42b41d8f4a33062003d16" }
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/0020-xAySMB0.webm",
+          "publicUrl": "/assets/motion/gymvisual/0020-xAySMB0.webm",
+          "mimeType": "video/webm",
+          "bytes": 11447,
+          "sha256": "c56b378f3a8efa75d5538bf8e79010232053f21cae6fd65d6d785a5ec1d4ae4e"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/0020-xAySMB0.mp4",
+          "publicUrl": "/assets/motion/gymvisual/0020-xAySMB0.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 9782,
+          "sha256": "c4c22854e2519a6675cfeee35d3614cb8c08c560abe36a7c706c61f30d112ae4"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/0020-xAySMB0.jpg",
+          "publicUrl": "/assets/motion/gymvisual/0020-xAySMB0.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 6603,
+          "sha256": "807f67fd3ad31213109a24544944093ca2defecc0d787a50301ce70b8af99902"
+        }
+      }
+    },
+    {
+      "assetId": "0381-SSsBDwB",
+      "datasetExerciseId": "0381",
+      "mediaId": "SSsBDwB",
+      "sourceTitle": "dumbbell rear lunge",
+      "sourceGifPath": "videos/0381-SSsBDwB.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/0381-SSsBDwB.gif",
+      "sourcePosterPath": "images/0381-SSsBDwB.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0381-SSsBDwB.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "supported-reverse-lunge",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/0381-SSsBDwB.webm",
+          "publicUrl": "/assets/motion/gymvisual/0381-SSsBDwB.webm",
+          "mimeType": "video/webm",
+          "bytes": 12342,
+          "sha256": "c263c983043149c1d31eed1d849c0c43ad68b9815866b2263389215fd4faed35"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/0381-SSsBDwB.mp4",
+          "publicUrl": "/assets/motion/gymvisual/0381-SSsBDwB.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 9266,
+          "sha256": "b86c8b295f44e7f7b317a605203157b36db7e11f012b4d76fd8c512a8ff50819"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/0381-SSsBDwB.jpg",
+          "publicUrl": "/assets/motion/gymvisual/0381-SSsBDwB.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 4557,
+          "sha256": "e093548672c56f87bfc09d1a4bccc1905d143cee3bcf48bdd09984e954111b24"
+        }
+      }
+    },
+    {
+      "assetId": "0411-H6ybluc",
+      "datasetExerciseId": "0411",
+      "mediaId": "H6ybluc",
+      "sourceTitle": "dumbbell single leg squat",
+      "sourceGifPath": "videos/0411-H6ybluc.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/0411-H6ybluc.gif",
+      "sourcePosterPath": "images/0411-H6ybluc.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0411-H6ybluc.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "box-assisted-single-leg-squat",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/0411-H6ybluc.webm",
+          "publicUrl": "/assets/motion/gymvisual/0411-H6ybluc.webm",
+          "mimeType": "video/webm",
+          "bytes": 15282,
+          "sha256": "5d654940a0a799ace0253f75902092560375af0ac689bb29064be573b2b08f67"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/0411-H6ybluc.mp4",
+          "publicUrl": "/assets/motion/gymvisual/0411-H6ybluc.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 11300,
+          "sha256": "b8969ec1e07c050731822048bb8b48b1ec27142edab23d2cf9f57a5c39aa5bfc"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/0411-H6ybluc.jpg",
+          "publicUrl": "/assets/motion/gymvisual/0411-H6ybluc.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 6171,
+          "sha256": "c2d7a1152221b14b43957c0a1db47ddd06f920689396fbb41ae1db9f23348211"
+        }
       }
     },
     {
@@ -43,14 +149,426 @@
       "sourcePosterPath": "images/0585-my33uHU.jpg",
       "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0585-my33uHU.gif",
       "attributionText": "© Gym visual - https://gymvisual.com/",
-      "visualScope": "generic_pattern",
       "mappingStatus": "mapped",
-      "mappedExerciseId": "single-leg-knee-extension-machine",
-      "clinicalReviewStatus": "pending",
+      "mappings": [
+        {
+          "exerciseId": "single-leg-knee-extension-machine",
+          "visualScope": "generic_pattern"
+        },
+        {
+          "exerciseId": "quad-set",
+          "visualScope": "generic_pattern"
+        },
+        {
+          "exerciseId": "seated-knee-extension",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
       "localFiles": {
-        "webm": { "repositoryPath": "public/assets/motion/gymvisual/0585-my33uHU.webm", "publicUrl": "/assets/motion/gymvisual/0585-my33uHU.webm", "mimeType": "video/webm", "bytes": 14961, "sha256": "8bb01870e209ed9c47a01555a2d955cb4f2110355ce4be98f55c88f0998cbc95" },
-        "mp4": { "repositoryPath": "public/assets/motion/gymvisual/0585-my33uHU.mp4", "publicUrl": "/assets/motion/gymvisual/0585-my33uHU.mp4", "mimeType": "video/mp4", "bytes": 11512, "sha256": "b32bf2d7a023914d79fc0a6234c5421ad32272fce4379f57cc846f69be4576eb" },
-        "poster": { "repositoryPath": "public/assets/motion/gymvisual/0585-my33uHU.jpg", "publicUrl": "/assets/motion/gymvisual/0585-my33uHU.jpg", "mimeType": "image/jpeg", "bytes": 8379, "sha256": "8260e83245c6da09118b738fea5121c4c6f448017680fb77f038c34b7361943a" }
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/0585-my33uHU.webm",
+          "publicUrl": "/assets/motion/gymvisual/0585-my33uHU.webm",
+          "mimeType": "video/webm",
+          "bytes": 14961,
+          "sha256": "8bb01870e209ed9c47a01555a2d955cb4f2110355ce4be98f55c88f0998cbc95"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/0585-my33uHU.mp4",
+          "publicUrl": "/assets/motion/gymvisual/0585-my33uHU.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 11512,
+          "sha256": "b32bf2d7a023914d79fc0a6234c5421ad32272fce4379f57cc846f69be4576eb"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/0585-my33uHU.jpg",
+          "publicUrl": "/assets/motion/gymvisual/0585-my33uHU.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 8379,
+          "sha256": "8260e83245c6da09118b738fea5121c4c6f448017680fb77f038c34b7361943a"
+        }
+      }
+    },
+    {
+      "assetId": "0597-CHpahtl",
+      "datasetExerciseId": "0597",
+      "mediaId": "CHpahtl",
+      "sourceTitle": "lever seated hip abduction",
+      "sourceGifPath": "videos/0597-CHpahtl.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/0597-CHpahtl.gif",
+      "sourcePosterPath": "images/0597-CHpahtl.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0597-CHpahtl.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "standing-hip-abduction-external-rotation-fire-hydrant",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/0597-CHpahtl.webm",
+          "publicUrl": "/assets/motion/gymvisual/0597-CHpahtl.webm",
+          "mimeType": "video/webm",
+          "bytes": 17747,
+          "sha256": "ede3b80ad99a2161ce97d286a7441fb48e2d6afd7bb182256df76703dd68912b"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/0597-CHpahtl.mp4",
+          "publicUrl": "/assets/motion/gymvisual/0597-CHpahtl.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 11832,
+          "sha256": "5cba8f9e5ebe0c19a7dfa84619b4a3a0589846d85b45f1c07e9fcce9cf17f491"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/0597-CHpahtl.jpg",
+          "publicUrl": "/assets/motion/gymvisual/0597-CHpahtl.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 11118,
+          "sha256": "73327d309c74b5bacdf9d16200b0ed7a0007fe7430c2fe6e6bd3c95b634947fd"
+        }
+      }
+    },
+    {
+      "assetId": "0628-O95afRA",
+      "datasetExerciseId": "0628",
+      "mediaId": "O95afRA",
+      "sourceTitle": "monster walk",
+      "sourceGifPath": "videos/0628-O95afRA.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/0628-O95afRA.gif",
+      "sourcePosterPath": "images/0628-O95afRA.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0628-O95afRA.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "lateral-band-walk",
+          "visualScope": "exact_variation"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/0628-O95afRA.webm",
+          "publicUrl": "/assets/motion/gymvisual/0628-O95afRA.webm",
+          "mimeType": "video/webm",
+          "bytes": 13460,
+          "sha256": "8890392cc1af83dcfa1e3752cf2a409fc2e9a1e3a1eb56010c14539a717d0522"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/0628-O95afRA.mp4",
+          "publicUrl": "/assets/motion/gymvisual/0628-O95afRA.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 9505,
+          "sha256": "f694fbfd3f6ce27f8fdccda47060d9482abc6645a588702e18205da079d584a4"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/0628-O95afRA.jpg",
+          "publicUrl": "/assets/motion/gymvisual/0628-O95afRA.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 6037,
+          "sha256": "c8b91b5d619e06b86b07c9d4ace65b2085d3e3aa76d42b41d8f4a33062003d16"
+        }
+      }
+    },
+    {
+      "assetId": "0710-7WaDzyL",
+      "datasetExerciseId": "0710",
+      "mediaId": "7WaDzyL",
+      "sourceTitle": "side hip abduction",
+      "sourceGifPath": "videos/0710-7WaDzyL.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/0710-7WaDzyL.gif",
+      "sourcePosterPath": "images/0710-7WaDzyL.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0710-7WaDzyL.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "supported-standing-hip-abduction",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/0710-7WaDzyL.webm",
+          "publicUrl": "/assets/motion/gymvisual/0710-7WaDzyL.webm",
+          "mimeType": "video/webm",
+          "bytes": 8596,
+          "sha256": "5e44d45f28f3535e1d27c868b8333decebffdf0c75cf10c16a819958f2c9d3dd"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/0710-7WaDzyL.mp4",
+          "publicUrl": "/assets/motion/gymvisual/0710-7WaDzyL.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 7410,
+          "sha256": "44998864b84933bc51dabf8b1f49557b65d418f354fbc1e1344b0ea7c21f620f"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/0710-7WaDzyL.jpg",
+          "publicUrl": "/assets/motion/gymvisual/0710-7WaDzyL.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 5415,
+          "sha256": "dfc61351b24024144a003c2a5077c42eb71b7aa05952cf9b36f47dd3d39c17b5"
+        }
+      }
+    },
+    {
+      "assetId": "0730-LNE3wfo",
+      "datasetExerciseId": "0730",
+      "mediaId": "LNE3wfo",
+      "sourceTitle": "single leg platform slide",
+      "sourceGifPath": "videos/0730-LNE3wfo.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/0730-LNE3wfo.gif",
+      "sourcePosterPath": "images/0730-LNE3wfo.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0730-LNE3wfo.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "heel-slide",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/0730-LNE3wfo.webm",
+          "publicUrl": "/assets/motion/gymvisual/0730-LNE3wfo.webm",
+          "mimeType": "video/webm",
+          "bytes": 8139,
+          "sha256": "e7e04727dc6f404c51918e9d69c3fcafaa11f51c9e88dac12fcd3d5efdc5163a"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/0730-LNE3wfo.mp4",
+          "publicUrl": "/assets/motion/gymvisual/0730-LNE3wfo.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 7059,
+          "sha256": "27d62dc707095e2ac9c699b509cf640cafec5fbcdeb3d693c02880b9a450ba40"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/0730-LNE3wfo.jpg",
+          "publicUrl": "/assets/motion/gymvisual/0730-LNE3wfo.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 5191,
+          "sha256": "81e995601b0b4e40752d25e6cc9c6633f8c3aa534d2989cd157cef9dd57cb92b"
+        }
+      }
+    },
+    {
+      "assetId": "0795-C5jncD2",
+      "datasetExerciseId": "0795",
+      "mediaId": "C5jncD2",
+      "sourceTitle": "standing single leg curl",
+      "sourceGifPath": "videos/0795-C5jncD2.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/0795-C5jncD2.gif",
+      "sourcePosterPath": "images/0795-C5jncD2.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0795-C5jncD2.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "supported-standing-knee-curl",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/0795-C5jncD2.webm",
+          "publicUrl": "/assets/motion/gymvisual/0795-C5jncD2.webm",
+          "mimeType": "video/webm",
+          "bytes": 6731,
+          "sha256": "a5c8d4241802ee224c0558eb666e16bca864b14e093e6504f6b0c2402c4d8084"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/0795-C5jncD2.mp4",
+          "publicUrl": "/assets/motion/gymvisual/0795-C5jncD2.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 6156,
+          "sha256": "89fbfd3bdca9f751f92589939f66a2d6879e030ecac4f851ebf73bbade29bdae"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/0795-C5jncD2.jpg",
+          "publicUrl": "/assets/motion/gymvisual/0795-C5jncD2.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 4901,
+          "sha256": "70eae3d9e1fdcd5b9ff932f01f755e7704324e4b8024f9edd790fac2bb9eb984"
+        }
+      }
+    },
+    {
+      "assetId": "1002-bbLR7fB",
+      "datasetExerciseId": "1002",
+      "mediaId": "bbLR7fB",
+      "sourceTitle": "band lying straight leg raise",
+      "sourceGifPath": "videos/1002-bbLR7fB.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/1002-bbLR7fB.gif",
+      "sourcePosterPath": "images/1002-bbLR7fB.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1002-bbLR7fB.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "straight-leg-raise",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/1002-bbLR7fB.webm",
+          "publicUrl": "/assets/motion/gymvisual/1002-bbLR7fB.webm",
+          "mimeType": "video/webm",
+          "bytes": 9433,
+          "sha256": "e0dac6eda22ce6afd4d863d8d64a97e23839f0f190eb6e2ea09ec4555b9e8811"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/1002-bbLR7fB.mp4",
+          "publicUrl": "/assets/motion/gymvisual/1002-bbLR7fB.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 7253,
+          "sha256": "8f09e0241f63cf64710b72760b87209e866c491e17e9017eb9cb3ff6fc943e4c"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/1002-bbLR7fB.jpg",
+          "publicUrl": "/assets/motion/gymvisual/1002-bbLR7fB.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 4408,
+          "sha256": "44b930c2360182312075a98361bacf02c9a00ea534422b0c9f87f242f8892d61"
+        }
+      }
+    },
+    {
+      "assetId": "1008-d5bTEPV",
+      "datasetExerciseId": "1008",
+      "mediaId": "d5bTEPV",
+      "sourceTitle": "band step-up",
+      "sourceGifPath": "videos/1008-d5bTEPV.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/1008-d5bTEPV.gif",
+      "sourcePosterPath": "images/1008-d5bTEPV.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1008-d5bTEPV.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "step-up",
+          "visualScope": "generic_pattern"
+        },
+        {
+          "exerciseId": "supported-lateral-step-down",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/1008-d5bTEPV.webm",
+          "publicUrl": "/assets/motion/gymvisual/1008-d5bTEPV.webm",
+          "mimeType": "video/webm",
+          "bytes": 10931,
+          "sha256": "568759d03f2abf39cf39b5ddffaad3e7d4907200c9b2329d8ec65b840671d5a4"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/1008-d5bTEPV.mp4",
+          "publicUrl": "/assets/motion/gymvisual/1008-d5bTEPV.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 8486,
+          "sha256": "f60379588fcf831600f5c41ac54f2f3265d7115e042b9b2b45899619234d1123"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/1008-d5bTEPV.jpg",
+          "publicUrl": "/assets/motion/gymvisual/1008-d5bTEPV.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 5061,
+          "sha256": "9ceafd8291ca12c28324063090ddd02f748fb2db3c9c1cb01c415e66617a052f"
+        }
+      }
+    },
+    {
+      "assetId": "1368-uL9CsKm",
+      "datasetExerciseId": "1368",
+      "mediaId": "uL9CsKm",
+      "sourceTitle": "ankle circles",
+      "sourceGifPath": "videos/1368-uL9CsKm.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/1368-uL9CsKm.gif",
+      "sourcePosterPath": "images/1368-uL9CsKm.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1368-uL9CsKm.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "ankle-pump",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/1368-uL9CsKm.webm",
+          "publicUrl": "/assets/motion/gymvisual/1368-uL9CsKm.webm",
+          "mimeType": "video/webm",
+          "bytes": 5991,
+          "sha256": "a7118e6934fc16ecb84574696c557ded16ee45f132c5c3a3e1730646b399b17c"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/1368-uL9CsKm.mp4",
+          "publicUrl": "/assets/motion/gymvisual/1368-uL9CsKm.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 5492,
+          "sha256": "c4bc268abdaf9dcc1c5234821780a2cadde04196a2010dc550b6e8cabd935f4a"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/1368-uL9CsKm.jpg",
+          "publicUrl": "/assets/motion/gymvisual/1368-uL9CsKm.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 5306,
+          "sha256": "afc2513e99ab11c2e39a58e9c252a27fa6ea5cb5f93f2e8420aef3893f2fc641"
+        }
+      }
+    },
+    {
+      "assetId": "1373-bJYHBIN",
+      "datasetExerciseId": "1373",
+      "mediaId": "bJYHBIN",
+      "sourceTitle": "bodyweight standing calf raise",
+      "sourceGifPath": "videos/1373-bJYHBIN.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/1373-bJYHBIN.gif",
+      "sourcePosterPath": "images/1373-bJYHBIN.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1373-bJYHBIN.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "supported-double-leg-calf-raise",
+          "visualScope": "exact_variation"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/1373-bJYHBIN.webm",
+          "publicUrl": "/assets/motion/gymvisual/1373-bJYHBIN.webm",
+          "mimeType": "video/webm",
+          "bytes": 9739,
+          "sha256": "2ac746db274512948df132aac3fc39ed13b8d06047ca984b6b59045f7865371c"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/1373-bJYHBIN.mp4",
+          "publicUrl": "/assets/motion/gymvisual/1373-bJYHBIN.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 8054,
+          "sha256": "3940d84f0dec57300ba385aecc1d271ddcefe433f84374439ae28a5d6552a6c6"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/1373-bJYHBIN.jpg",
+          "publicUrl": "/assets/motion/gymvisual/1373-bJYHBIN.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 4734,
+          "sha256": "d8e3ad3b3ca701d8a9bddd73e352f5b0a394319691365457ddfbc593a4acdaa2"
+        }
       }
     },
     {
@@ -63,14 +581,36 @@
       "sourcePosterPath": "images/1377-m0tCHqc.jpg",
       "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1377-m0tCHqc.gif",
       "attributionText": "© Gym visual - https://gymvisual.com/",
-      "visualScope": "exact_variation",
       "mappingStatus": "mapped",
-      "mappedExerciseId": "standing-wall-calf-stretch",
-      "clinicalReviewStatus": "pending",
+      "mappings": [
+        {
+          "exerciseId": "standing-wall-calf-stretch",
+          "visualScope": "exact_variation"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
       "localFiles": {
-        "webm": { "repositoryPath": "public/assets/motion/gymvisual/1377-m0tCHqc.webm", "publicUrl": "/assets/motion/gymvisual/1377-m0tCHqc.webm", "mimeType": "video/webm", "bytes": 10247, "sha256": "f25507fdba30f71a40e03ad81cce63384f833d93a2d809e9c1e3ef179b09af50" },
-        "mp4": { "repositoryPath": "public/assets/motion/gymvisual/1377-m0tCHqc.mp4", "publicUrl": "/assets/motion/gymvisual/1377-m0tCHqc.mp4", "mimeType": "video/mp4", "bytes": 7801, "sha256": "c890ff45d7087e9d884dfd2c3988af494aeabdf77f4712e644f98c357bfdc66d" },
-        "poster": { "repositoryPath": "public/assets/motion/gymvisual/1377-m0tCHqc.jpg", "publicUrl": "/assets/motion/gymvisual/1377-m0tCHqc.jpg", "mimeType": "image/jpeg", "bytes": 5240, "sha256": "e3f5da70ee8b48277e7912292083b36c287b8900f6ffb21539c14984da3c33a4" }
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/1377-m0tCHqc.webm",
+          "publicUrl": "/assets/motion/gymvisual/1377-m0tCHqc.webm",
+          "mimeType": "video/webm",
+          "bytes": 10247,
+          "sha256": "f25507fdba30f71a40e03ad81cce63384f833d93a2d809e9c1e3ef179b09af50"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/1377-m0tCHqc.mp4",
+          "publicUrl": "/assets/motion/gymvisual/1377-m0tCHqc.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 7801,
+          "sha256": "c890ff45d7087e9d884dfd2c3988af494aeabdf77f4712e644f98c357bfdc66d"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/1377-m0tCHqc.jpg",
+          "publicUrl": "/assets/motion/gymvisual/1377-m0tCHqc.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 5240,
+          "sha256": "e3f5da70ee8b48277e7912292083b36c287b8900f6ffb21539c14984da3c33a4"
+        }
       }
     },
     {
@@ -83,14 +623,36 @@
       "sourcePosterPath": "images/1387-0jp9Rlz.jpg",
       "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1387-0jp9Rlz.gif",
       "attributionText": "© Gym visual - https://gymvisual.com/",
-      "visualScope": "exact_variation",
       "mappingStatus": "mapped",
-      "mappedExerciseId": "standing-single-leg-heel-raise",
-      "clinicalReviewStatus": "pending",
+      "mappings": [
+        {
+          "exerciseId": "standing-single-leg-heel-raise",
+          "visualScope": "exact_variation"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
       "localFiles": {
-        "webm": { "repositoryPath": "public/assets/motion/gymvisual/1387-0jp9Rlz.webm", "publicUrl": "/assets/motion/gymvisual/1387-0jp9Rlz.webm", "mimeType": "video/webm", "bytes": 12876, "sha256": "e34e191524a402110c02ab2e241aff8776ddd57854c2aae5e4165c936841a92b" },
-        "mp4": { "repositoryPath": "public/assets/motion/gymvisual/1387-0jp9Rlz.mp4", "publicUrl": "/assets/motion/gymvisual/1387-0jp9Rlz.mp4", "mimeType": "video/mp4", "bytes": 8899, "sha256": "4e41b4f8207aa4f2e5d5516b5f610899ba69121ab2d39725d983bbf43bbca3c9" },
-        "poster": { "repositoryPath": "public/assets/motion/gymvisual/1387-0jp9Rlz.jpg", "publicUrl": "/assets/motion/gymvisual/1387-0jp9Rlz.jpg", "mimeType": "image/jpeg", "bytes": 5093, "sha256": "faab1e949571e9e437ded89cf393a5e3784c4b3205912db01b66b40f6df99a0b" }
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/1387-0jp9Rlz.webm",
+          "publicUrl": "/assets/motion/gymvisual/1387-0jp9Rlz.webm",
+          "mimeType": "video/webm",
+          "bytes": 12876,
+          "sha256": "e34e191524a402110c02ab2e241aff8776ddd57854c2aae5e4165c936841a92b"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/1387-0jp9Rlz.mp4",
+          "publicUrl": "/assets/motion/gymvisual/1387-0jp9Rlz.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 8899,
+          "sha256": "4e41b4f8207aa4f2e5d5516b5f610899ba69121ab2d39725d983bbf43bbca3c9"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/1387-0jp9Rlz.jpg",
+          "publicUrl": "/assets/motion/gymvisual/1387-0jp9Rlz.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 5093,
+          "sha256": "faab1e949571e9e437ded89cf393a5e3784c4b3205912db01b66b40f6df99a0b"
+        }
       }
     },
     {
@@ -103,14 +665,78 @@
       "sourcePosterPath": "images/1425-WWD6FzI.jpg",
       "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1425-WWD6FzI.gif",
       "attributionText": "© Gym visual - https://gymvisual.com/",
-      "visualScope": "exact_variation",
       "mappingStatus": "mapped",
-      "mappedExerciseId": "single-leg-press",
-      "clinicalReviewStatus": "pending",
+      "mappings": [
+        {
+          "exerciseId": "single-leg-press",
+          "visualScope": "exact_variation"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
       "localFiles": {
-        "webm": { "repositoryPath": "public/assets/motion/gymvisual/1425-WWD6FzI.webm", "publicUrl": "/assets/motion/gymvisual/1425-WWD6FzI.webm", "mimeType": "video/webm", "bytes": 16356, "sha256": "d32e28ff3a12d2ea5819051df1b0a92b902320674dc189a50a50e66acdc1be30" },
-        "mp4": { "repositoryPath": "public/assets/motion/gymvisual/1425-WWD6FzI.mp4", "publicUrl": "/assets/motion/gymvisual/1425-WWD6FzI.mp4", "mimeType": "video/mp4", "bytes": 11781, "sha256": "c3654ce1d9c0c41c76827560145a13ff4df541c5534426f916b985b8b72befe4" },
-        "poster": { "repositoryPath": "public/assets/motion/gymvisual/1425-WWD6FzI.jpg", "publicUrl": "/assets/motion/gymvisual/1425-WWD6FzI.jpg", "mimeType": "image/jpeg", "bytes": 8712, "sha256": "55f263d3e326dc6633474f2bb46b51c1f4a129bd4af52cdbb3783994aba2dfad" }
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/1425-WWD6FzI.webm",
+          "publicUrl": "/assets/motion/gymvisual/1425-WWD6FzI.webm",
+          "mimeType": "video/webm",
+          "bytes": 16356,
+          "sha256": "d32e28ff3a12d2ea5819051df1b0a92b902320674dc189a50a50e66acdc1be30"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/1425-WWD6FzI.mp4",
+          "publicUrl": "/assets/motion/gymvisual/1425-WWD6FzI.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 11781,
+          "sha256": "c3654ce1d9c0c41c76827560145a13ff4df541c5534426f916b985b8b72befe4"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/1425-WWD6FzI.jpg",
+          "publicUrl": "/assets/motion/gymvisual/1425-WWD6FzI.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 8712,
+          "sha256": "55f263d3e326dc6633474f2bb46b51c1f4a129bd4af52cdbb3783994aba2dfad"
+        }
+      }
+    },
+    {
+      "assetId": "1459-rR0LJzx",
+      "datasetExerciseId": "1459",
+      "mediaId": "rR0LJzx",
+      "sourceTitle": "dumbbell romanian deadlift",
+      "sourceGifPath": "videos/1459-rR0LJzx.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/1459-rR0LJzx.gif",
+      "sourcePosterPath": "images/1459-rR0LJzx.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1459-rR0LJzx.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "bilateral-romanian-deadlift",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/1459-rR0LJzx.webm",
+          "publicUrl": "/assets/motion/gymvisual/1459-rR0LJzx.webm",
+          "mimeType": "video/webm",
+          "bytes": 12589,
+          "sha256": "61692d069b43cc77f5262f2db5ead26709be2762ad90f0be9dbf54fe9434ead7"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/1459-rR0LJzx.mp4",
+          "publicUrl": "/assets/motion/gymvisual/1459-rR0LJzx.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 9215,
+          "sha256": "6632bbcd54bc2070903d86caa607dcd186328aed4084e1175e6a9156b7d40940"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/1459-rR0LJzx.jpg",
+          "publicUrl": "/assets/motion/gymvisual/1459-rR0LJzx.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 5379,
+          "sha256": "3e553d83ba4e68f766ee476edfdedaa16be3f9a85825835aaaf1553222cdb1b4"
+        }
       }
     },
     {
@@ -123,14 +749,120 @@
       "sourcePosterPath": "images/2138-H1PESYI.jpg",
       "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/2138-H1PESYI.gif",
       "attributionText": "© Gym visual - https://gymvisual.com/",
-      "visualScope": "exact_variation",
       "mappingStatus": "mapped",
-      "mappedExerciseId": "stationary-bike",
-      "clinicalReviewStatus": "pending",
+      "mappings": [
+        {
+          "exerciseId": "stationary-bike",
+          "visualScope": "exact_variation"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
       "localFiles": {
-        "webm": { "repositoryPath": "public/assets/motion/gymvisual/2138-H1PESYI.webm", "publicUrl": "/assets/motion/gymvisual/2138-H1PESYI.webm", "mimeType": "video/webm", "bytes": 17629, "sha256": "1a50ebfad45a6719739575f4baf764b1ce87249fa2d225c50ca3f6e3a94b5a67" },
-        "mp4": { "repositoryPath": "public/assets/motion/gymvisual/2138-H1PESYI.mp4", "publicUrl": "/assets/motion/gymvisual/2138-H1PESYI.mp4", "mimeType": "video/mp4", "bytes": 14118, "sha256": "23a6ce1c8509c9949c18d3cf5bb2e610bb4d16748fab516ab019910a41e6134a" },
-        "poster": { "repositoryPath": "public/assets/motion/gymvisual/2138-H1PESYI.jpg", "publicUrl": "/assets/motion/gymvisual/2138-H1PESYI.jpg", "mimeType": "image/jpeg", "bytes": 9054, "sha256": "d19074b9ac809ce5ef10c5a88e1c526ffe4fc324e9c34648d5a79a9d3a26f70f" }
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/2138-H1PESYI.webm",
+          "publicUrl": "/assets/motion/gymvisual/2138-H1PESYI.webm",
+          "mimeType": "video/webm",
+          "bytes": 17629,
+          "sha256": "1a50ebfad45a6719739575f4baf764b1ce87249fa2d225c50ca3f6e3a94b5a67"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/2138-H1PESYI.mp4",
+          "publicUrl": "/assets/motion/gymvisual/2138-H1PESYI.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 14118,
+          "sha256": "23a6ce1c8509c9949c18d3cf5bb2e610bb4d16748fab516ab019910a41e6134a"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/2138-H1PESYI.jpg",
+          "publicUrl": "/assets/motion/gymvisual/2138-H1PESYI.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 9054,
+          "sha256": "d19074b9ac809ce5ef10c5a88e1c526ffe4fc324e9c34648d5a79a9d3a26f70f"
+        }
+      }
+    },
+    {
+      "assetId": "2805-daBmy1Y",
+      "datasetExerciseId": "2805",
+      "mediaId": "daBmy1Y",
+      "sourceTitle": "dumbbell single leg deadlift with stepbox support",
+      "sourceGifPath": "videos/2805-daBmy1Y.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/2805-daBmy1Y.gif",
+      "sourcePosterPath": "images/2805-daBmy1Y.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/2805-daBmy1Y.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "modified-single-leg-deadlift",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/2805-daBmy1Y.webm",
+          "publicUrl": "/assets/motion/gymvisual/2805-daBmy1Y.webm",
+          "mimeType": "video/webm",
+          "bytes": 13410,
+          "sha256": "8c8bea93a971f678cd84a45df6fb42f200f8598445dad78545be4c822ea93545"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/2805-daBmy1Y.mp4",
+          "publicUrl": "/assets/motion/gymvisual/2805-daBmy1Y.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 9277,
+          "sha256": "047bf8cc98e06b2a6febb86e6cedf809f1f8d93c1c9400ffe4d048aa5ff6efe7"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/2805-daBmy1Y.jpg",
+          "publicUrl": "/assets/motion/gymvisual/2805-daBmy1Y.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 6331,
+          "sha256": "5857d41d75aa061ad0d1858e023ac9f6a3d024489a6579429ce8bee7a43fd356"
+        }
+      }
+    },
+    {
+      "assetId": "3007-Y1MsI1l",
+      "datasetExerciseId": "3007",
+      "mediaId": "Y1MsI1l",
+      "sourceTitle": "resistance band leg extension",
+      "sourceGifPath": "videos/3007-Y1MsI1l.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/3007-Y1MsI1l.gif",
+      "sourcePosterPath": "images/3007-Y1MsI1l.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/3007-Y1MsI1l.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "band-terminal-knee-extension",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/3007-Y1MsI1l.webm",
+          "publicUrl": "/assets/motion/gymvisual/3007-Y1MsI1l.webm",
+          "mimeType": "video/webm",
+          "bytes": 10907,
+          "sha256": "c6a4658f571730375fc70321adb9ad5e64b2e6c9895d184231e80388bfae9090"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/3007-Y1MsI1l.mp4",
+          "publicUrl": "/assets/motion/gymvisual/3007-Y1MsI1l.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 9120,
+          "sha256": "bc64c12fb91f6461cc1d25c1f30334f5c3fe44eb0536ebe67b28a0051d8bc3b6"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/3007-Y1MsI1l.jpg",
+          "publicUrl": "/assets/motion/gymvisual/3007-Y1MsI1l.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 8210,
+          "sha256": "a2a228ffa3d3f8fd09879861d3fffa8d185b8c8c6609523a9ca91f32dd36eed6"
+        }
       }
     },
     {
@@ -143,14 +875,40 @@
       "sourcePosterPath": "images/3013-u0cNiij.jpg",
       "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/3013-u0cNiij.gif",
       "attributionText": "© Gym visual - https://gymvisual.com/",
-      "visualScope": "exact_variation",
       "mappingStatus": "mapped",
-      "mappedExerciseId": "bridge",
-      "clinicalReviewStatus": "pending",
+      "mappings": [
+        {
+          "exerciseId": "bridge",
+          "visualScope": "exact_variation"
+        },
+        {
+          "exerciseId": "heel-dig-bridge-isometric",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
       "localFiles": {
-        "webm": { "repositoryPath": "public/assets/motion/gymvisual/3013-u0cNiij.webm", "publicUrl": "/assets/motion/gymvisual/3013-u0cNiij.webm", "mimeType": "video/webm", "bytes": 12154, "sha256": "0abfad8b4720816ba55da406a9890a2ec52219a91dcff9ccba279885a5fbf44a" },
-        "mp4": { "repositoryPath": "public/assets/motion/gymvisual/3013-u0cNiij.mp4", "publicUrl": "/assets/motion/gymvisual/3013-u0cNiij.mp4", "mimeType": "video/mp4", "bytes": 9508, "sha256": "bcd84de0a1a947ac148fe4e73d8567d10cc84675032458a3716840ac08ac3c2f" },
-        "poster": { "repositoryPath": "public/assets/motion/gymvisual/3013-u0cNiij.jpg", "publicUrl": "/assets/motion/gymvisual/3013-u0cNiij.jpg", "mimeType": "image/jpeg", "bytes": 6183, "sha256": "e33b67702a791b83a42b7b436b019f48d1c862b00fb54866661c73c3c9ce58d0" }
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/3013-u0cNiij.webm",
+          "publicUrl": "/assets/motion/gymvisual/3013-u0cNiij.webm",
+          "mimeType": "video/webm",
+          "bytes": 12154,
+          "sha256": "0abfad8b4720816ba55da406a9890a2ec52219a91dcff9ccba279885a5fbf44a"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/3013-u0cNiij.mp4",
+          "publicUrl": "/assets/motion/gymvisual/3013-u0cNiij.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 9508,
+          "sha256": "bcd84de0a1a947ac148fe4e73d8567d10cc84675032458a3716840ac08ac3c2f"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/3013-u0cNiij.jpg",
+          "publicUrl": "/assets/motion/gymvisual/3013-u0cNiij.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 6183,
+          "sha256": "e33b67702a791b83a42b7b436b019f48d1c862b00fb54866661c73c3c9ce58d0"
+        }
       }
     },
     {
@@ -163,34 +921,36 @@
       "sourcePosterPath": "images/3119-75Bgtjy.jpg",
       "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/3119-75Bgtjy.gif",
       "attributionText": "© Gym visual - https://gymvisual.com/",
-      "visualScope": "exact_variation",
       "mappingStatus": "mapped",
-      "mappedExerciseId": "squat",
-      "clinicalReviewStatus": "pending",
+      "mappings": [
+        {
+          "exerciseId": "squat",
+          "visualScope": "exact_variation"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
       "localFiles": {
-        "webm": { "repositoryPath": "public/assets/motion/gymvisual/3119-75Bgtjy.webm", "publicUrl": "/assets/motion/gymvisual/3119-75Bgtjy.webm", "mimeType": "video/webm", "bytes": 13929, "sha256": "6c84a16834a5a65d57a7c8512509db2d9854deffd6ab4f515f88b0b55a499b75" },
-        "mp4": { "repositoryPath": "public/assets/motion/gymvisual/3119-75Bgtjy.mp4", "publicUrl": "/assets/motion/gymvisual/3119-75Bgtjy.mp4", "mimeType": "video/mp4", "bytes": 9552, "sha256": "b3a33957261d7fe29a9048ba6f0c693e9d2fba78b9d68e9f350697315dbcee36" },
-        "poster": { "repositoryPath": "public/assets/motion/gymvisual/3119-75Bgtjy.jpg", "publicUrl": "/assets/motion/gymvisual/3119-75Bgtjy.jpg", "mimeType": "image/jpeg", "bytes": 5325, "sha256": "5d0941b5fb0391234d48c9fbfc88e318008c2e39e3ae6e05b820508cf7c68751" }
-      }
-    },
-    {
-      "assetId": "3195-UXpKJoq",
-      "datasetExerciseId": "3195",
-      "mediaId": "UXpKJoq",
-      "sourceTitle": "lever lying two-one leg curl",
-      "sourceGifPath": "videos/3195-UXpKJoq.gif",
-      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/3195-UXpKJoq.gif",
-      "sourcePosterPath": "images/3195-UXpKJoq.jpg",
-      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/3195-UXpKJoq.gif",
-      "attributionText": "© Gym visual - https://gymvisual.com/",
-      "visualScope": "generic_pattern",
-      "mappingStatus": "mapped",
-      "mappedExerciseId": "single-leg-hamstring-curl-machine",
-      "clinicalReviewStatus": "pending",
-      "localFiles": {
-        "webm": { "repositoryPath": "public/assets/motion/gymvisual/3195-UXpKJoq.webm", "publicUrl": "/assets/motion/gymvisual/3195-UXpKJoq.webm", "mimeType": "video/webm", "bytes": 19816, "sha256": "82649c0818d9c85b1f9303d7dc23aff83d57176c3a89a4258f9ebee79a31bcc6" },
-        "mp4": { "repositoryPath": "public/assets/motion/gymvisual/3195-UXpKJoq.mp4", "publicUrl": "/assets/motion/gymvisual/3195-UXpKJoq.mp4", "mimeType": "video/mp4", "bytes": 13548, "sha256": "fdb25eacec38be84ef78f8216999617a3a82067eab2670b84d879b5d4f704270" },
-        "poster": { "repositoryPath": "public/assets/motion/gymvisual/3195-UXpKJoq.jpg", "publicUrl": "/assets/motion/gymvisual/3195-UXpKJoq.jpg", "mimeType": "image/jpeg", "bytes": 8392, "sha256": "43d800963961dc05f5dbe33cbf853761b07d07b3f1daf5f08dde36868fc18004" }
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/3119-75Bgtjy.webm",
+          "publicUrl": "/assets/motion/gymvisual/3119-75Bgtjy.webm",
+          "mimeType": "video/webm",
+          "bytes": 13929,
+          "sha256": "6c84a16834a5a65d57a7c8512509db2d9854deffd6ab4f515f88b0b55a499b75"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/3119-75Bgtjy.mp4",
+          "publicUrl": "/assets/motion/gymvisual/3119-75Bgtjy.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 9552,
+          "sha256": "b3a33957261d7fe29a9048ba6f0c693e9d2fba78b9d68e9f350697315dbcee36"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/3119-75Bgtjy.jpg",
+          "publicUrl": "/assets/motion/gymvisual/3119-75Bgtjy.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 5325,
+          "sha256": "5d0941b5fb0391234d48c9fbfc88e318008c2e39e3ae6e05b820508cf7c68751"
+        }
       }
     },
     {
@@ -203,14 +963,166 @@
       "sourcePosterPath": "images/3132-b63ZzGe.jpg",
       "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/3132-b63ZzGe.gif",
       "attributionText": "© Gym visual - https://gymvisual.com/",
-      "visualScope": "exact_variation",
       "mappingStatus": "mapped",
-      "mappedExerciseId": "supported-mini-squat",
-      "clinicalReviewStatus": "pending",
+      "mappings": [
+        {
+          "exerciseId": "supported-mini-squat",
+          "visualScope": "exact_variation"
+        },
+        {
+          "exerciseId": "chair-sit-to-stand",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
       "localFiles": {
-        "webm": { "repositoryPath": "public/assets/motion/gymvisual/3132-b63ZzGe.webm", "publicUrl": "/assets/motion/gymvisual/3132-b63ZzGe.webm", "mimeType": "video/webm", "bytes": 14988, "sha256": "e639200876f8ae816a7d33d8f1421d58c3b19278f70e7970222669b631791b81" },
-        "mp4": { "repositoryPath": "public/assets/motion/gymvisual/3132-b63ZzGe.mp4", "publicUrl": "/assets/motion/gymvisual/3132-b63ZzGe.mp4", "mimeType": "video/mp4", "bytes": 10166, "sha256": "045b935585632eb1166fcc4b4494af45add516e2921c868a54fb50137b278126" },
-        "poster": { "repositoryPath": "public/assets/motion/gymvisual/3132-b63ZzGe.jpg", "publicUrl": "/assets/motion/gymvisual/3132-b63ZzGe.jpg", "mimeType": "image/jpeg", "bytes": 7639, "sha256": "38a364b4b9309e5c250ed619a89982bc353659e9aa182ec9a072025a58e9c291" }
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/3132-b63ZzGe.webm",
+          "publicUrl": "/assets/motion/gymvisual/3132-b63ZzGe.webm",
+          "mimeType": "video/webm",
+          "bytes": 14988,
+          "sha256": "e639200876f8ae816a7d33d8f1421d58c3b19278f70e7970222669b631791b81"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/3132-b63ZzGe.mp4",
+          "publicUrl": "/assets/motion/gymvisual/3132-b63ZzGe.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 10166,
+          "sha256": "045b935585632eb1166fcc4b4494af45add516e2921c868a54fb50137b278126"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/3132-b63ZzGe.jpg",
+          "publicUrl": "/assets/motion/gymvisual/3132-b63ZzGe.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 7639,
+          "sha256": "38a364b4b9309e5c250ed619a89982bc353659e9aa182ec9a072025a58e9c291"
+        }
+      }
+    },
+    {
+      "assetId": "3195-UXpKJoq",
+      "datasetExerciseId": "3195",
+      "mediaId": "UXpKJoq",
+      "sourceTitle": "lever lying two-one leg curl",
+      "sourceGifPath": "videos/3195-UXpKJoq.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/3195-UXpKJoq.gif",
+      "sourcePosterPath": "images/3195-UXpKJoq.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/3195-UXpKJoq.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "single-leg-hamstring-curl-machine",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/3195-UXpKJoq.webm",
+          "publicUrl": "/assets/motion/gymvisual/3195-UXpKJoq.webm",
+          "mimeType": "video/webm",
+          "bytes": 19816,
+          "sha256": "82649c0818d9c85b1f9303d7dc23aff83d57176c3a89a4258f9ebee79a31bcc6"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/3195-UXpKJoq.mp4",
+          "publicUrl": "/assets/motion/gymvisual/3195-UXpKJoq.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 13548,
+          "sha256": "fdb25eacec38be84ef78f8216999617a3a82067eab2670b84d879b5d4f704270"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/3195-UXpKJoq.jpg",
+          "publicUrl": "/assets/motion/gymvisual/3195-UXpKJoq.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 8392,
+          "sha256": "43d800963961dc05f5dbe33cbf853761b07d07b3f1daf5f08dde36868fc18004"
+        }
+      }
+    },
+    {
+      "assetId": "3470-kMzUs9Y",
+      "datasetExerciseId": "3470",
+      "mediaId": "kMzUs9Y",
+      "sourceTitle": "forward lunge (male)",
+      "sourceGifPath": "videos/3470-kMzUs9Y.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/3470-kMzUs9Y.gif",
+      "sourcePosterPath": "images/3470-kMzUs9Y.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/3470-kMzUs9Y.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "supported-forward-lunge",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/3470-kMzUs9Y.webm",
+          "publicUrl": "/assets/motion/gymvisual/3470-kMzUs9Y.webm",
+          "mimeType": "video/webm",
+          "bytes": 24996,
+          "sha256": "4ce561413b689abb283006f1a3657a5aa61206658813459ba250e5f8d9800b7b"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/3470-kMzUs9Y.mp4",
+          "publicUrl": "/assets/motion/gymvisual/3470-kMzUs9Y.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 15143,
+          "sha256": "3a9b17a091a3c82d79d5667fe7690a7c97a24a77302d09f79ee2c1700add5a97"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/3470-kMzUs9Y.jpg",
+          "publicUrl": "/assets/motion/gymvisual/3470-kMzUs9Y.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 4837,
+          "sha256": "d3984eab89bc6f8ed6aa15502a128bac5943d7385d230eed40a7b53858be65bc"
+        }
+      }
+    },
+    {
+      "assetId": "3543-wfotm7S",
+      "datasetExerciseId": "3543",
+      "mediaId": "wfotm7S",
+      "sourceTitle": "bodyweight drop jump squat",
+      "sourceGifPath": "videos/3543-wfotm7S.gif",
+      "sourceGifArchivePath": "work/source-motion-gifs/gymvisual/3543-wfotm7S.gif",
+      "sourcePosterPath": "images/3543-wfotm7S.jpg",
+      "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/3543-wfotm7S.gif",
+      "attributionText": "© Gym visual - https://gymvisual.com/",
+      "mappingStatus": "mapped",
+      "mappings": [
+        {
+          "exerciseId": "clinician-cleared-double-leg-landing",
+          "visualScope": "generic_pattern"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
+      "localFiles": {
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/3543-wfotm7S.webm",
+          "publicUrl": "/assets/motion/gymvisual/3543-wfotm7S.webm",
+          "mimeType": "video/webm",
+          "bytes": 17901,
+          "sha256": "a08c0e7c5e650c494c16a1739e900927b7dd04c4a70390c3d51597224e7919d0"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/3543-wfotm7S.mp4",
+          "publicUrl": "/assets/motion/gymvisual/3543-wfotm7S.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 12632,
+          "sha256": "23a0ac82898727eb2a1a36220d69a9c5db17cd3fc825d224b98f9db78de62811"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/3543-wfotm7S.jpg",
+          "publicUrl": "/assets/motion/gymvisual/3543-wfotm7S.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 4532,
+          "sha256": "7150ee811347851462425c134b96c2f6e580f7e0be93be8960c5d3b03ded2a89"
+        }
       }
     },
     {
@@ -223,14 +1135,36 @@
       "sourcePosterPath": "images/3561-GibBPPg.jpg",
       "sourcePageUrl": "https://github.com/hasaneyldrm/exercises-dataset/blob/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/3561-GibBPPg.gif",
       "attributionText": "© Gym visual - https://gymvisual.com/",
-      "visualScope": "exact_variation",
       "mappingStatus": "mapped",
-      "mappedExerciseId": "bridge-march",
-      "clinicalReviewStatus": "pending",
+      "mappings": [
+        {
+          "exerciseId": "bridge-march",
+          "visualScope": "exact_variation"
+        }
+      ],
+      "clinicalReviewStatus": "reviewed",
       "localFiles": {
-        "webm": { "repositoryPath": "public/assets/motion/gymvisual/3561-GibBPPg.webm", "publicUrl": "/assets/motion/gymvisual/3561-GibBPPg.webm", "mimeType": "video/webm", "bytes": 19461, "sha256": "2160560f64604738d805549e2601fd920264be93adaf7beadf3c1bd989b46ce1" },
-        "mp4": { "repositoryPath": "public/assets/motion/gymvisual/3561-GibBPPg.mp4", "publicUrl": "/assets/motion/gymvisual/3561-GibBPPg.mp4", "mimeType": "video/mp4", "bytes": 15083, "sha256": "cd87caaad829c2d7de3f200538cab051794a38316c583f7b5c07c93268a7f37a" },
-        "poster": { "repositoryPath": "public/assets/motion/gymvisual/3561-GibBPPg.jpg", "publicUrl": "/assets/motion/gymvisual/3561-GibBPPg.jpg", "mimeType": "image/jpeg", "bytes": 6686, "sha256": "722d0bfafc115c3ccdf1b03bf3cb34cf3296aed410d99809049ed9ecca990fea" }
+        "webm": {
+          "repositoryPath": "public/assets/motion/gymvisual/3561-GibBPPg.webm",
+          "publicUrl": "/assets/motion/gymvisual/3561-GibBPPg.webm",
+          "mimeType": "video/webm",
+          "bytes": 19461,
+          "sha256": "2160560f64604738d805549e2601fd920264be93adaf7beadf3c1bd989b46ce1"
+        },
+        "mp4": {
+          "repositoryPath": "public/assets/motion/gymvisual/3561-GibBPPg.mp4",
+          "publicUrl": "/assets/motion/gymvisual/3561-GibBPPg.mp4",
+          "mimeType": "video/mp4",
+          "bytes": 15083,
+          "sha256": "cd87caaad829c2d7de3f200538cab051794a38316c583f7b5c07c93268a7f37a"
+        },
+        "poster": {
+          "repositoryPath": "public/assets/motion/gymvisual/3561-GibBPPg.jpg",
+          "publicUrl": "/assets/motion/gymvisual/3561-GibBPPg.jpg",
+          "mimeType": "image/jpeg",
+          "bytes": 6686,
+          "sha256": "722d0bfafc115c3ccdf1b03bf3cb34cf3296aed410d99809049ed9ecca990fea"
+        }
       }
     }
   ]

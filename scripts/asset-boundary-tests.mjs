@@ -59,19 +59,14 @@ assert.ok(
   "video requests must bypass service-worker caching so native range requests reach the network",
 );
 
-if (localBuild) {
-  for (const sourceFile of sourceFiles) {
-    const relativePath = relative(publicMotionDirectory, sourceFile);
-    const publicUrl = `/assets/motion/${relativePath.split(sep).join("/")}`;
-    assert.equal(
-      await pathExists(join(builtMotionDirectory, relativePath)),
-      true,
-      `local artifact is missing ${publicUrl}`,
-    );
-  }
-
-  console.log(`Local media boundary verified: ${sourceFiles.length} motion files are built and none are precached.`);
-} else {
-  assert.equal(await pathExists(builtMotionDirectory), false, "production artifact must not contain pending motion media");
-  console.log("Production media boundary verified: pending motion files and precache entries are absent.");
+for (const sourceFile of sourceFiles) {
+  const relativePath = relative(publicMotionDirectory, sourceFile);
+  const publicUrl = `/assets/motion/${relativePath.split(sep).join("/")}`;
+  assert.equal(
+    await pathExists(join(builtMotionDirectory, relativePath)),
+    true,
+    `${localBuild ? "local" : "production"} artifact is missing ${publicUrl}`,
+  );
 }
+
+console.log(`${localBuild ? "Local" : "Production"} media delivery verified: ${sourceFiles.length} approved motion files are built and none are precached.`);

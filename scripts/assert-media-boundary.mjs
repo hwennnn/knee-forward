@@ -28,19 +28,13 @@ async function collectFiles(directory) {
   return nested.flat();
 }
 
-if (!localBuild) {
-  assert.equal(await pathExists(builtMotionDirectory), false, "production artifact must not contain pending motion media");
-  assert.equal(serviceWorker.includes("/assets/motion/"), false, "production service worker must not reference pending motion media");
-  console.log("Production media boundary verified: pending motion files and cache entries are absent.");
-} else {
-  const sourceFiles = (await collectFiles(publicMotionDirectory)).sort();
-  assert.ok(sourceFiles.length > 0, "local motion collection must not be empty");
-  for (const sourceFile of sourceFiles) {
-    const relativePath = relative(publicMotionDirectory, sourceFile);
-    const builtFile = join(builtMotionDirectory, relativePath);
-    const publicUrl = `/assets/motion/${relativePath.split(sep).join("/")}`;
-    assert.equal(await pathExists(builtFile), true, `local artifact is missing ${publicUrl}`);
-    assert.equal(serviceWorker.includes(JSON.stringify(publicUrl)), true, `local service worker is missing ${publicUrl}`);
-  }
-  console.log(`Local media boundary verified for ${sourceFiles.length} motion files.`);
+const sourceFiles = (await collectFiles(publicMotionDirectory)).sort();
+assert.ok(sourceFiles.length > 0, "motion collection must not be empty");
+for (const sourceFile of sourceFiles) {
+  const relativePath = relative(publicMotionDirectory, sourceFile);
+  const builtFile = join(builtMotionDirectory, relativePath);
+  const publicUrl = `/assets/motion/${relativePath.split(sep).join("/")}`;
+  assert.equal(await pathExists(builtFile), true, `${localBuild ? "local" : "production"} artifact is missing ${publicUrl}`);
+  assert.equal(serviceWorker.includes(JSON.stringify(publicUrl)), false, `service worker must not precache ${publicUrl}`);
 }
+console.log(`${localBuild ? "Local" : "Production"} media delivery verified for ${sourceFiles.length} approved motion files.`);
