@@ -5,6 +5,7 @@ Knee Forward is a local-first ACL rehabilitation companion. It helps someone rec
 ## What is implemented
 
 - Guest-first use with no sign-in or server
+- Real static URLs for Today, Plan, Learn, and Progress, so refreshing or reopening a browser tab preserves the current section
 - Separate right-knee active prehab and left-knee historical episodes
 - The seven exercises from the first pre-surgery rehab visit
 - Editable sets, repetitions, holds, duration, load, and range notes supplied by a physiotherapist

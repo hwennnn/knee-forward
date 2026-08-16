@@ -31,7 +31,7 @@ import { exercises, rehabPhases, SAFETY_NOTICE, seedData, sourceMetadata } from 
 import type { ExerciseDose, ExerciseRecord, LocalAppState, RehabEpisode, SessionLog, SourceMetadata } from "./types";
 import { EmptyState, ExerciseDetailForContext, ExerciseVisual, Modal, RoutineRow, SafetyBanner } from "./components";
 import { mediaContextForAppSurface, motionMediaForExerciseContext } from "./exerciseMedia";
-import type { AppTab } from "./exerciseMedia";
+import { pathForTab, tabFromPathname } from "./navigation";
 import { ProgressPage } from "./ProgressPage";
 import { initialPostResponse, performedSetOutcome, previousSetsForExercise } from "./sessionTracking";
 import { exportRecoveryData, exportState, importState, loadState, saveState } from "./storage";
@@ -162,7 +162,7 @@ function App() {
   const [loadedState] = useState(loadState);
   const [state, setState] = useState<LocalAppState>(loadedState.state);
   const [storageRecovery, setStorageRecovery] = useState<StorageRecovery | null>(loadedState.recovery);
-  const [tab, setTab] = useState<AppTab>("today");
+  const tab = tabFromPathname(window.location.pathname);
   const [modal, setModal] = useState<"safety" | "settings" | "reminder" | "checkin" | "postcheck" | "dose" | "customize" | "pause-session" | "discard-session" | "stop-session" | null>(null);
   const [selectedExercise, setSelectedExercise] = useState<ExerciseRecord | null>(null);
   const [doseExercise, setDoseExercise] = useState<ExerciseRecord | null>(null);
@@ -415,15 +415,21 @@ function App() {
       exerciseLogs,
       note: sessionNote,
     };
-    setState((previous) => {
-      if (previous.sessions.some((session) => session.id === log.id)) return { ...previous, sessionDraft: null };
-      return { ...previous, sessions: [log, ...previous.sessions], sessionDraft: null };
-    });
+    const nextState = state.sessions.some((session) => session.id === log.id)
+      ? { ...state, sessionDraft: null }
+      : { ...state, sessions: [log, ...state.sessions], sessionDraft: null };
+    try {
+      saveState(nextState);
+    } catch {
+      setState(nextState);
+      setPersistenceWarning("Knee Forward could not save to this browser. Keep this tab open and export a backup now.");
+      return;
+    }
+    setState(nextState);
     setActiveSession(false);
     setModal(null);
     resetSessionInputs();
-    setTab("progress");
-    setToast("Session saved on this device");
+    window.location.assign(pathForTab("progress"));
   };
 
   const saveDose = (event: React.FormEvent<HTMLFormElement>) => {
@@ -564,20 +570,20 @@ function App() {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <button className="brand" onClick={() => setTab("today")} aria-label="Knee Forward home">
+        <a className="brand" href={pathForTab("today")} aria-label="Knee Forward home">
           <img src="/assets/icon-192.png" alt="" />
           <span>Knee Forward</span>
-        </button>
+        </a>
         <div className="episode-card">
           <span className="episode-card__knee">R</span>
           <div><strong>Right knee</strong><span>Pre-surgery · active</span></div>
           <CaretDown size={16} />
         </div>
         <nav className="desktop-nav" aria-label="Primary navigation">
-          <NavItem icon={<House />} label="Today" active={tab === "today"} onClick={() => setTab("today")} />
-          <NavItem icon={<CalendarCheck />} label="My plan" active={tab === "plan"} onClick={() => setTab("plan")} />
-          <NavItem icon={<BookOpen />} label="Learn" active={tab === "learn"} onClick={() => setTab("learn")} />
-          <NavItem icon={<ChartLineUp />} label="Progress" active={tab === "progress"} onClick={() => setTab("progress")} />
+          <NavItem icon={<House />} label="Today" active={tab === "today"} href={pathForTab("today")} />
+          <NavItem icon={<CalendarCheck />} label="My plan" active={tab === "plan"} href={pathForTab("plan")} />
+          <NavItem icon={<BookOpen />} label="Learn" active={tab === "learn"} href={pathForTab("learn")} />
+          <NavItem icon={<ChartLineUp />} label="Progress" active={tab === "progress"} href={pathForTab("progress")} />
         </nav>
         <div className="sidebar-spacer" />
         <SafetyBanner><strong>Education, not clearance.</strong><br />Your clinical team decides progression.</SafetyBanner>
@@ -586,7 +592,7 @@ function App() {
 
       <main className="page">
         <header className="mobile-header">
-          <button className="brand" onClick={() => setTab("today")}><img src="/assets/icon-192.png" alt="" /><span>Knee Forward</span></button>
+          <a className="brand" href={pathForTab("today")}><img src="/assets/icon-192.png" alt="" /><span>Knee Forward</span></a>
           <button className="icon-button" onClick={() => setModal("settings")} aria-label="Settings"><Gear size={23} /></button>
         </header>
         {tab === "today" && <TodayPage
@@ -611,7 +617,7 @@ function App() {
           planReady={planReady}
           missingDoseCount={missingDoseCount}
           reminderDue={reminderDue}
-          onPlan={() => setTab("plan")}
+          onPlan={() => window.location.assign(pathForTab("plan"))}
           onDismissReminder={() => setState((previous) => ({ ...previous, reminderDismissedOn: todayKey }))}
         />}
         {tab === "plan" && <PlanPage
@@ -629,10 +635,10 @@ function App() {
       </main>
 
       <nav className="mobile-nav" aria-label="Primary navigation">
-        <NavItem icon={<House />} label="Today" active={tab === "today"} onClick={() => { setTab("today"); setSelectedExercise(null); }} />
-        <NavItem icon={<CalendarCheck />} label="Plan" active={tab === "plan"} onClick={() => { setTab("plan"); setSelectedExercise(null); }} />
-        <NavItem icon={<BookOpen />} label="Learn" active={tab === "learn"} onClick={() => { setTab("learn"); setSelectedExercise(null); }} />
-        <NavItem icon={<ChartLineUp />} label="Progress" active={tab === "progress"} onClick={() => { setTab("progress"); setSelectedExercise(null); }} />
+        <NavItem icon={<House />} label="Today" active={tab === "today"} href={pathForTab("today")} />
+        <NavItem icon={<CalendarCheck />} label="Plan" active={tab === "plan"} href={pathForTab("plan")} />
+        <NavItem icon={<BookOpen />} label="Learn" active={tab === "learn"} href={pathForTab("learn")} />
+        <NavItem icon={<ChartLineUp />} label="Progress" active={tab === "progress"} href={pathForTab("progress")} />
       </nav>
 
       {modal === "safety" && <SafetyModal onClose={() => setModal(null)} />}
@@ -682,8 +688,8 @@ function App() {
   );
 }
 
-function NavItem({ icon, label, active, onClick }: { icon: React.ReactElement; label: string; active: boolean; onClick: () => void }) {
-  return <button className={`nav-item${active ? " nav-item--active" : ""}`} aria-current={active ? "page" : undefined} onClick={onClick}>{icon}<span>{label}</span></button>;
+function NavItem({ icon, label, active, href }: { icon: React.ReactElement; label: string; active: boolean; href: string }) {
+  return <a className={`nav-item${active ? " nav-item--active" : ""}`} aria-current={active ? "page" : undefined} href={href}>{icon}<span>{label}</span></a>;
 }
 
 function TodayPage({ state, surgeryDate, daysToSurgery, completedThisWeek, sessionsByDay, onStart, onDiscardDraft, onReminder, onSafety, onExercise, exercises: planExercises, planReady, missingDoseCount, reminderDue, onPlan, onDismissReminder }: {
