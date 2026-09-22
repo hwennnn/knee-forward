@@ -136,10 +136,19 @@ for (const [slug, expectedHash] of Object.entries(coachingStillHashes)) {
   assert.equal(createHash("sha256").update(bytes).digest("hex"), expectedHash, `${src} checksum changed`);
 }
 
+const homeGenericMotionIds = ["band-clam", "supine-band-hip-abduction", "mini-band-good-morning"] as const;
 const wholeBodyCoaching = exercises.filter((exercise) => !exercise.demoMedia);
-assert.equal(exercises.filter((exercise) => exercise.demoMedia).length, 32, "the 32 reviewed motion records stay");
-assert.equal(wholeBodyCoaching.length, Object.keys(coachingStillHashes).length, "each whole-body record has its own coaching still");
-assert.equal(exercises.length, 32 + wholeBodyCoaching.length);
+assert.equal(exercises.filter((exercise) => exercise.demoMedia).length, 35, "the original 32 motion records plus three home generic patterns stay");
+assert.equal(wholeBodyCoaching.length, Object.keys(coachingStillHashes).length - homeGenericMotionIds.length, "home moves with a Gym visual clip are no longer still-only");
+assert.equal(exercises.length, 35 + wholeBodyCoaching.length);
+for (const exerciseId of homeGenericMotionIds) {
+  const exercise = exercises.find((candidate) => candidate.id === exerciseId);
+  assert.ok(exercise?.demoMedia, `${exerciseId} reuses an approved Gym visual clip`);
+  assert.equal(exercise.demoMedia.visualScope, "generic_pattern");
+  assert.equal(exercise.coachingLoop, undefined);
+  assert.equal(exercise.media.src, `/assets/exercise-stills/${exerciseId}.webp`);
+  assert.ok(exerciseId in coachingStillHashes, `${exerciseId} keeps its own still`);
+}
 for (const exercise of wholeBodyCoaching) {
   assert.equal(exercise.demoMedia, undefined, `${exercise.id} must not reuse a knee demonstration as if it were this movement`);
   assert.equal(exercise.planEligible === false, false, `${exercise.id} is part of the whole-body plan`);

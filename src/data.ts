@@ -1,5 +1,4 @@
 import type {
-  ExerciseCoachingLoop,
   ExerciseDose,
   ExerciseMotionMedia,
   ExerciseMediaTileIndex,
@@ -178,22 +177,6 @@ const coachingStill = (slug: string, name: string): ExerciseStillImageMedia => (
   creator: "Knee Forward",
   permissionText: "Original instructional still generated for this project.",
   attributionText: "Original coaching still generated for Knee Forward. Orientation aid only. Not clinician-reviewed media and not a prescription.",
-  visualScope: "generic_pattern",
-  clinicalReviewStatus: "pending",
-});
-
-/** Original stick-figure loop. General coaching, not clinician-reviewed. */
-const coachingLoop = (slug: string, name: string): ExerciseCoachingLoop => ({
-  kind: "coaching-loop",
-  gifSrc: `/assets/coaching-loops/${slug}.gif`,
-  posterSrc: `/assets/coaching-loops/${slug}-poster.jpg`,
-  alt: `Looping stick-figure coaching demo of ${name}. General reference, not clinically reviewed.`,
-  width: 480,
-  height: 480,
-  sourcePageUrl: "https://github.com/hwennnn/knee-forward",
-  creator: "Knee Forward",
-  permissionText: "Original stick-figure coaching loop drawn for this project.",
-  attributionText: "Original stick-figure coaching GIF generated for Knee Forward. General coaching only. Not clinician-reviewed media and not a prescription.",
   visualScope: "generic_pattern",
   clinicalReviewStatus: "pending",
 });
@@ -429,7 +412,6 @@ export const exercises = [
     eligiblePhaseIds: ["prehab", "protect-and-settle"],
     sourceIds: ["source-care-team", "source-mgh-aclr"],
     demoMedia: gymVisualMotion("0730-LNE3wfo", "General sliding-leg reference; the standing platform setup differs from a supported supine heel slide"),
-    coachingLoop: coachingLoop("heel-slide", "a supine heel slide"),
     media: media("foundations", 0, "Heel slide range-of-motion exercise"),
   },
   {
@@ -444,7 +426,6 @@ export const exercises = [
     eligiblePhaseIds: ["prehab", "protect-and-settle"],
     sourceIds: ["source-care-team", "source-mgh-aclr"],
     demoMedia: gymVisualMotion("0585-my33uHU", "General quadriceps knee-extension reference; this moving machine demonstration differs from an isometric quad set"),
-    coachingLoop: coachingLoop("quad-set", "a quad set"),
     media: media("foundations", 1, "Quadriceps set exercise"),
   },
   {
@@ -473,7 +454,6 @@ export const exercises = [
     eligiblePhaseIds: ["prehab", "protect-and-settle", "rebuild-capacity"],
     sourceIds: ["source-care-team", "source-mgh-aclr"],
     demoMedia: gymVisualMotion("1002-bbLR7fB", "General straight-leg raise reference using band resistance rather than the unloaded rehabilitation variation"),
-    coachingLoop: coachingLoop("straight-leg-raise", "a straight-leg raise"),
     media: media("foundations", 3, "Straight-leg raise exercise"),
   },
   {
@@ -634,7 +614,6 @@ export const exercises = [
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team", "source-aspetar-aclr-cpg", "source-osu-aclr"],
     demoMedia: gymVisualMotion("3007-Y1MsI1l", "General resistance-band leg-extension reference; band position and movement range differ from terminal knee extension"),
-    coachingLoop: coachingLoop("band-terminal-knee-extension", "a no-anchor band terminal knee extension"),
     media: generatedStill("band-terminal-knee-extension", "Band terminal knee-extension exercise"),
   },
   {
@@ -831,7 +810,6 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop if the lower back arches hard or the knee is pulled past a comfortable bend."],
     eligiblePhaseIds: ["prehab", "protect-and-settle", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    coachingLoop: coachingLoop("dead-bug", "a dead bug"),
     media: coachingStill("dead-bug", "a dead bug"),
   },
   {
@@ -845,7 +823,6 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop if the knee is compressed uncomfortably against the floor."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    coachingLoop: coachingLoop("side-plank", "a knees-down side plank"),
     media: coachingStill("side-plank", "a side plank"),
   },
   {
@@ -937,7 +914,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop for a sharp medial pinch or if the right knee feels unstable."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    coachingLoop: coachingLoop("band-clam", "a side-lying band clam"),
+    demoMedia: gymVisualMotion("0710-7WaDzyL", "General side-lying hip-abduction reference; the top leg stays straighter and there is no short-loop mini band, unlike the named knees-bent band clam", "generic_pattern"),
     media: coachingStill("band-clam", "a band clam"),
   },
   {
@@ -1081,7 +1058,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop for a sharp medial pinch or if the right knee feels unstable."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    coachingLoop: coachingLoop("supine-band-hip-abduction", "a supine mini-band hip abduction"),
+    demoMedia: gymVisualMotion("0597-CHpahtl", "General seated-machine hip-abduction reference; it is not the named supine floor press with a short-loop mini band and no anchor", "generic_pattern"),
     media: coachingStill("supine-band-hip-abduction", "a supine mini-band hip abduction"),
   },
   {
@@ -1095,7 +1072,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop if the knee bends deeply, twists, or feels unstable."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    coachingLoop: coachingLoop("mini-band-good-morning", "a mini-band good morning with soft knees"),
+    demoMedia: gymVisualMotion("1459-rR0LJzx", "General bilateral hip-hinge reference using dumbbells; it is not the named short-loop mini-band good morning, and the knees stay soft rather than a deep bend", "generic_pattern"),
     media: coachingStill("mini-band-good-morning", "a mini-band good morning"),
   },
 ] as const satisfies readonly ExerciseRecord[];

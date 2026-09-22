@@ -107,7 +107,11 @@ export interface ExerciseMp4Source {
   mimeType: "video/mp4";
 }
 
-/** Original stick-figure loop. General coaching, not a clinician-reviewed demonstration. */
+/**
+ * Deprecated for Today. Original stick-figure loop kept only as a fallback type.
+ * Do not attach one when a reviewed Gym visual clip exists. When no close approved
+ * clip exists, use the exercise still instead of a stick-figure GIF.
+ */
 export interface ExerciseCoachingLoop extends ExerciseMediaProvenance {
   kind: "coaching-loop";
   gifSrc: string;
@@ -150,8 +154,8 @@ export interface ExerciseRecord {
   /** Optional motion-only learning demonstration. Pending media is local-preview-only. */
   demoMedia?: ExerciseMotionMedia;
   /**
-   * Original looping coaching GIF for a setup the still (and any mismatched Gym visual clip) does not show.
-   * Pending visual review. It is general coaching, not a prescription.
+   * Deprecated for Today. Do not attach a stick-figure loop to an exercise that has
+   * reviewed Gym visual motion, or to a home move whose closest honest card is its still.
    */
   coachingLoop?: ExerciseCoachingLoop;
   /** Still-only card and primary reference asset used throughout the product. */

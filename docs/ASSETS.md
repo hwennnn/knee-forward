@@ -54,10 +54,10 @@ The old shared geometric mark remains at `public/assets/exercise-stills/whole-bo
 
 ## Mixed-media runtime policy
 
-- Primary media: a crisp WebP still on Learn cards and Learn detail. Today cards and the active workout view play motion when a reviewed Gym visual clip or an original coaching loop exists.
+- Primary media: a crisp WebP still on Learn cards and Learn detail. Today cards and the active workout view play a reviewed Gym visual loop when one is mapped. Otherwise they show the still.
 - Optional motion: Learn detail, after the still. Today and workout cards autoplay a muted loop.
 - Gym visual and CDC runtime motion: WebM first, MP4 fallback, and a static poster. Those collections do not serve GIF.
-- Original coaching loops: short stick-figure GIFs under `public/assets/coaching-loops/`, with a JPG poster. They are the runtime file for home setups that do not match an existing clip. Reduced motion shows the poster. Checksums live in `public/assets/coaching-loops/media-manifest.json`.
-- Clinical status: the 32 Gym visual mappings are approved. Generated knee stills, whole-body coaching stills, and stick-figure coaching GIFs remain pending visual review. None is medical clearance. A coaching GIF is general coaching, not clinician-reviewed media. Catalog records without `demoMedia` must not be treated as covered by the Gym visual manifest.
+- Stick-figure coaching loops are deprecated for Today. The generator `scripts/generate-coaching-loops.py` and the files under `public/assets/coaching-loops/` remain an archive. Do not attach them to a catalog exercise. Reduced motion shows the Gym visual poster, or the still when no clip is mapped.
+- Clinical status: 35 Gym visual mappings are approved, including three extra home general-pattern mappings of clips that were already in the approved set. Generated knee stills and whole-body coaching stills remain pending visual review. None is medical clearance. Catalog records without `demoMedia` must not be treated as covered by the Gym visual manifest.
 
 Motion provenance, rights, transformations, mapping decisions, and checksums are documented in [`MEDIA_LICENSES.md`](MEDIA_LICENSES.md) and the two media manifests.

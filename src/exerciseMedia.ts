@@ -25,7 +25,7 @@ export function motionMediaForExerciseContext(
   context: ExerciseMediaContext,
   allowPendingLearningMedia = false,
 ): ExerciseMotionMedia | null {
-  if (!exercise.demoMedia || exercise.coachingLoop) return null;
+  if (!exercise.demoMedia) return null;
   if (context === "learn") {
     if (exercise.demoMedia.clinicalReviewStatus === "reviewed") return exercise.demoMedia;
     if (exercise.demoMedia.clinicalReviewStatus === "pending" && allowPendingLearningMedia) return exercise.demoMedia;
@@ -37,14 +37,19 @@ export function motionMediaForExerciseContext(
   return null;
 }
 
-/** Looping demo for a Today or workout card: coaching GIF first, otherwise a reviewed Gym visual clip. */
+/**
+ * Looping demo for a Today or workout card.
+ * A reviewed Gym visual clip wins. A stick-figure coaching loop is only a fallback
+ * when no acceptable Gym visual mapping exists, and those loops are deprecated for Today.
+ */
 export function cardMotionForExercise(exercise: ExerciseRecord): ExerciseCoachingLoop | ExerciseMotionMedia | null {
-  if (exercise.coachingLoop) return exercise.coachingLoop;
   if (exercise.demoMedia?.clinicalReviewStatus === "reviewed") return exercise.demoMedia;
+  if (exercise.coachingLoop) return exercise.coachingLoop;
   return null;
 }
 
 export function coachingLoopForContext(exercise: ExerciseRecord, context: ExerciseMediaContext): ExerciseCoachingLoop | null {
   if (!exercise.coachingLoop || context === "plan") return null;
+  if (exercise.demoMedia?.clinicalReviewStatus === "reviewed") return null;
   return exercise.coachingLoop;
 }

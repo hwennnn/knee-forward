@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "generatedOn": "2026-09-22",
-  "runtimePolicy": "Original stick-figure coaching GIFs loop on Today cards with a JPG poster. They are general coaching, not clinician-reviewed. Gym visual and CDC motion stay WebM/MP4 and do not serve GIF.",
+  "runtimePolicy": "Stick-figure coaching GIFs are deprecated for Today and are not attached to catalog exercises. Home cards use a reviewed Gym visual WebM/MP4 loop when a close approved clip exists, otherwise the exercise still. These GIF files remain an archive only. Gym visual and CDC motion stay WebM/MP4 and do not serve GIF.",
   "rightsBasis": "original_project_asset",
   "assets": [
     {

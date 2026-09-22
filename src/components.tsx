@@ -312,7 +312,7 @@ export function ExerciseDetail({ exercise, onBack, demoMedia, coachingLoop }: {
   coachingLoop?: ExerciseCoachingLoop | null;
 }) {
   const reducedMotion = usePrefersReducedMotion();
-  const disclosedMedia = coachingLoop ?? demoMedia ?? exercise.media;
+  const disclosedMedia = demoMedia ?? coachingLoop ?? exercise.media;
   const motionAvailable = Boolean(demoMedia || coachingLoop);
 
   return (
@@ -326,9 +326,9 @@ export function ExerciseDetail({ exercise, onBack, demoMedia, coachingLoop }: {
           {(demoMedia || coachingLoop) && (
             <div className="detail-motion-block">
               <p className="detail-motion-label">Demo</p>
-              {coachingLoop
-                ? <CoachingLoopVisual media={coachingLoop} autoplay={!reducedMotion} />
-                : demoMedia && <MotionExerciseVisual media={demoMedia} autoplay={!reducedMotion} loop={!reducedMotion} />}
+              {demoMedia
+                ? <MotionExerciseVisual media={demoMedia} autoplay={!reducedMotion} loop={!reducedMotion} />
+                : coachingLoop && <CoachingLoopVisual media={coachingLoop} autoplay={!reducedMotion} />}
               {reducedMotion && <p className="reduced-motion-note">A static poster is shown because reduced motion is enabled.</p>}
             </div>
           )}
@@ -364,8 +364,8 @@ export function ExerciseDetailForContext({
   allowPendingLearningMedia?: boolean;
   onBack: () => void;
 }) {
-  const coachingLoop = coachingLoopForContext(exercise, context);
-  const demoMedia = coachingLoop ? null : motionMediaForExerciseContext(exercise, context, allowPendingLearningMedia);
+  const demoMedia = motionMediaForExerciseContext(exercise, context, allowPendingLearningMedia);
+  const coachingLoop = demoMedia ? null : coachingLoopForContext(exercise, context);
   return <ExerciseDetail exercise={exercise} demoMedia={demoMedia} coachingLoop={coachingLoop} onBack={onBack} />;
 }
 

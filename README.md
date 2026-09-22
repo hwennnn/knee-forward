@@ -20,7 +20,7 @@ Knee Forward is a local-first ACL rehabilitation companion and a general whole-b
 - Read-only previous-set hints, partial/skip/stop outcomes, and an automatically saved resumable workout draft
 - Post-session pain, swelling, and note logging
 - Exercise-level history with completed-set counts, highest recorded load, repetitions, and recorded load-volume
-- A phase-aware learning library. The original 32 exercises keep crisp WebP stills and approved Gym visual motion on Learn detail (WebM with MP4 fallback). Home moves without a matching clip use original stick-figure coaching GIFs on Today cards. Those GIFs are general coaching and are not clinically reviewed. Whole-body additions use their own original coaching stills, also not clinically reviewed.
+- A phase-aware learning library. Approved Gym visual motion (WebM with MP4 fallback) plays on Learn detail and on Today and workout cards. Home cards use that clip when a close approved mapping exists, and the exercise still when it does not. Stick-figure coaching GIFs are deprecated for Today and are not attached. Whole-body additions keep their own original coaching stills, which are not clinically reviewed.
 - Optional magic-link backup for `whman63@gmail.com` only, when `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are present at build time. Other addresses are rejected before a link is sent. See [docs/SUPABASE.md](docs/SUPABASE.md).
 - Local reminders plus an `.ics` calendar download
 - Progress history, weekly adherence, and symptom-response summaries
@@ -56,7 +56,7 @@ npm run preview
 
 Motion appears below the primary still on every Learn detail page in local and production builds. Runtime video uses WebM first with MP4 fallback; GIF is never served. Reduced-motion preferences receive a static poster. Motion files are delivered on demand and excluded from the offline precache. The original Gym visual GIFs are preserved under `work/source-motion-gifs/gymvisual/` for provenance, and public derivatives remain credited and tracked in a checksum manifest under `public/assets/motion/gymvisual/`.
 
-Twenty-seven Gym visual assets provide 32 exercise mappings in the Learn detail view. General movement references are labeled wherever the dataset setup differs from the named rehabilitation exercise. No visual represents medical clearance.
+Twenty-seven Gym visual assets provide 35 exercise mappings. General movement references are labeled wherever the dataset setup differs from the named exercise. No visual represents medical clearance. Today does not play stick-figure GIFs.
 
 ## Data and privacy
 

@@ -46,7 +46,7 @@ for (const asset of manifest.assets) {
 }
 
 assert.equal(mappedAssetIds.size, 27);
-assert.equal(manifest.assets.flatMap((asset) => asset.mappings).length, 32);
+assert.equal(manifest.assets.flatMap((asset) => asset.mappings).length, 35);
 
 const runtimeMotionUrl = new URL("../public/assets/motion/", import.meta.url);
 const runtimeEntries = await readdir(runtimeMotionUrl, { recursive: true });

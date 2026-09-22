@@ -204,6 +204,10 @@
         {
           "exerciseId": "standing-hip-abduction-external-rotation-fire-hydrant",
           "visualScope": "generic_pattern"
+        },
+        {
+          "exerciseId": "supine-band-hip-abduction",
+          "visualScope": "generic_pattern"
         }
       ],
       "clinicalReviewStatus": "reviewed",
@@ -287,6 +291,10 @@
       "mappings": [
         {
           "exerciseId": "supported-standing-hip-abduction",
+          "visualScope": "generic_pattern"
+        },
+        {
+          "exerciseId": "band-clam",
           "visualScope": "generic_pattern"
         }
       ],
@@ -711,6 +719,10 @@
       "mappings": [
         {
           "exerciseId": "bilateral-romanian-deadlift",
+          "visualScope": "generic_pattern"
+        },
+        {
+          "exerciseId": "mini-band-good-morning",
           "visualScope": "generic_pattern"
         }
       ],

@@ -107,13 +107,21 @@ Any changed hash requires reviewing the replacement asset, its transformation re
 
 ## Gym visual motion references
 
-Knee Forward uses twenty-seven imported 180 x 180 Gym visual motion sources selected from [`hasaneyldrm/exercises-dataset`](https://github.com/hasaneyldrm/exercises-dataset) at commit [`7455efae`](https://github.com/hasaneyldrm/exercises-dataset/commit/7455efae41b330c265e7cd4b78dfa848e7ce5ebd). Together they provide all 32 exercise-detail mappings. The repository identifies Gym visual as the media owner. Its MIT license does not cover these media files.
+Knee Forward uses twenty-seven imported 180 x 180 Gym visual motion sources selected from [`hasaneyldrm/exercises-dataset`](https://github.com/hasaneyldrm/exercises-dataset) at commit [`7455efae`](https://github.com/hasaneyldrm/exercises-dataset/commit/7455efae41b330c265e7cd4b78dfa848e7ce5ebd). Together they provide 35 exercise mappings. The repository identifies Gym visual as the media owner. Its MIT license does not cover these media files. No additional Gym visual file was imported for the home-day mappings; those three extra mappings reuse clips already in this approved set.
 
 The project owner confirmed approval for public use and all exercise mappings on 2026-08-16. That approval is recorded in the local manifest; it is not inferred from cloning the upstream repository. Preserve the underlying written approval in the project's legal records. Every in-app use keeps the credit `© Gym visual - https://gymvisual.com/` and links to [Gym visual's terms](https://gymvisual.com/content/3-terms-and-conditions-of-use).
 
-All 32 mappings have `clinicalReviewStatus: reviewed`. Exact variations and general movement references are recorded separately per mapping, and every general reference receives an in-app mismatch label and specific alternative text. No imported fitness-dataset visual determines exercise clearance, setup, range, support, resistance, or timing.
+All 35 mappings have `clinicalReviewStatus: reviewed`. Exact variations and general movement references are recorded separately per mapping, and every general reference receives an in-app mismatch label and specific alternative text. No imported fitness-dataset visual determines exercise clearance, setup, range, support, resistance, or timing.
 
-Mapped Gym visual motion plays on Learn detail and, when the clip matches the exercise, on Today and workout cards. Crisp WebP stills remain the primary Learn reference. Exact exercise setup, range, support, resistance, and timing still come from the treating clinician.
+Mapped Gym visual motion plays on Learn detail and on Today and workout cards. A reviewed clip is preferred over any stick-figure loop. Crisp WebP stills remain the primary Learn reference, and they are the Today card when no close approved clip exists. Exact exercise setup, range, support, resistance, and timing still come from the treating clinician.
+
+Home Today mappings that reuse an existing clip:
+
+- Band clam uses side hip abduction `0710-7WaDzyL` as `generic_pattern`. The clip is a straighter side-lying leg lift and has no short-loop mini band.
+- Supine mini-band hip abduction uses seated hip abduction `0597-CHpahtl` as `generic_pattern`. The clip is a machine, not a floor press with a short loop and no anchor.
+- Mini-band good morning uses the dumbbell Romanian deadlift `1459-rR0LJzx` as `generic_pattern`. The clip is a loaded hip hinge, not a short-loop band, and the named exercise keeps the knees soft.
+
+Dead bug and the knees-down side plank have no close match among the approved clips. They stay on their own stills. Upstream titles such as “dead bug” and “side bridge” were not copied in, because those files are not in the approved local set and `work/source-motion-gifs/gymvisual/` did not already contain them.
 
 The original source GIFs are preserved under `work/source-motion-gifs/gymvisual/` for provenance and are not runtime assets. Public motion derivatives use WebM first and MP4 fallback with a JPG poster. No GIF may be served at runtime.
 
@@ -123,20 +131,20 @@ No exercise instructions, phase recommendations, or clinical claims were importe
 
 ## Original short-loop coaching GIFs
 
-Home moves that do not match an existing Gym visual clip use original stick-figure loops drawn for Knee Forward on 2026-09-22. The generator is `scripts/generate-coaching-loops.py`. Runtime files are:
+Stick-figure coaching GIFs are deprecated for Today. Do not attach `coachingLoop` to an exercise that has Gym visual motion, and do not attach one when the honest card is a still. The generator `scripts/generate-coaching-loops.py` remains so the archive can be reproduced. It must not be used to put stick figures back on Today cards.
+
+Archive files, no longer referenced by the catalog:
 
 - GIF: `public/assets/coaching-loops/<exercise-id>.gif`
 - Poster: `public/assets/coaching-loops/<exercise-id>-poster.jpg`
 
-Mapped exercises: heel slide, quad set, band terminal knee extension, straight-leg raise, dead bug, knees-down side plank, band clam, supine mini-band hip abduction, and mini-band good morning. Bridge and lateral band walk keep their matching Gym visual WebM clips instead of a new GIF.
+The archive covers heel slide, quad set, band terminal knee extension, straight-leg raise, dead bug, knees-down side plank, band clam, supine mini-band hip abduction, and mini-band good morning. SHA-256 checksums stay in [`public/assets/coaching-loops/media-manifest.json`](../public/assets/coaching-loops/media-manifest.json). `clinicalReviewStatus` stays `pending`. Do not mark a loop reviewed.
 
-These loops are project-owned general coaching. `visualScope` is `generic_pattern`. `clinicalReviewStatus` is `pending`. They are not clinician-reviewed, not a prescription, and not Gym visual or CDC media. SHA-256 checksums and byte sizes are in [`public/assets/coaching-loops/media-manifest.json`](../public/assets/coaching-loops/media-manifest.json). Do not mark a loop reviewed unless a clinician reviews that specific animation.
-
-Gym visual and CDC derivatives still never serve GIF. Coaching GIFs are the only runtime GIFs, and only inside `public/assets/coaching-loops/`.
+Gym visual and CDC derivatives still never serve GIF.
 
 ## Whole-body coaching stills
 
-The whole-body exercises that are not in the 32 Gym visual mappings use original stills generated for Knee Forward on 2026-09-22. They are project-owned coaching images. They are not Gym visual media, not CDC media, and not clinician-reviewed photographs. Reuse inside this project is allowed. They are not a license to present the pictures as medical instruction.
+The whole-body exercises that are not in the Gym visual mappings use original stills generated for Knee Forward on 2026-09-22. They are project-owned coaching images. They are not Gym visual media, not CDC media, and not clinician-reviewed photographs. Reuse inside this project is allowed. They are not a license to present the pictures as medical instruction.
 
 Each still is stored as a 1024 px lossy WebP under `public/assets/exercise-stills/<exercise-id>.webp`. The catalog test locks the SHA-256 checksum, dimensions, and VP8 encoding. `visualScope` is `generic_pattern` and `clinicalReviewStatus` is `pending`. A still must show the named movement. Do not attach a rehab panel or an approved Gym visual poster to a different exercise to fill an empty card.
 

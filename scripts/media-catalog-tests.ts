@@ -13,7 +13,7 @@ const usedAssetIds = new Set<string>();
 const demos = exercises.flatMap((exercise) => exercise.demoMedia ? [{ exercise, demo: exercise.demoMedia }] : []);
 const coachingStillExercises = exercises.filter((exercise) => !exercise.demoMedia);
 
-assert.equal(demos.length, 32, "the reviewed Gym visual set stays mapped");
+assert.equal(demos.length, 35, "the reviewed Gym visual set stays mapped, including three home generic patterns");
 assert.equal(manifestMappings.length, demos.length, "manifest must contain one mapping per motion exercise");
 assert.equal(manifestMappingByExercise.size, demos.length, "manifest exercise mappings must be unique");
 assert.ok(coachingStillExercises.length > 0, "whole-body records stay without borrowed Gym visual motion");
@@ -53,25 +53,13 @@ for (const { exercise, demo } of demos) {
 assert.deepEqual(usedAssetIds, approvedAssetIds, "all approved Gym visual assets must be used");
 assert.deepEqual(new Set(demos.map(({ exercise }) => exercise.id)), new Set(exercises.filter((exercise) => exercise.demoMedia).map((exercise) => exercise.id)), "motion coverage must include every exercise that declares a demonstration");
 assert.equal(coachingManifest.schemaVersion, 1);
-assert.match(coachingManifest.runtimePolicy, /coaching GIFs/i);
+assert.match(coachingManifest.runtimePolicy, /deprecated for Today/i);
 assert.equal(coachingManifest.rightsBasis, "original_project_asset");
-const coachingAssets = new Map(coachingManifest.assets.map((asset) => [asset.exerciseId, asset]));
 const coachingExercises = exercises.filter((exercise) => exercise.coachingLoop);
-assert.equal(coachingExercises.length, coachingAssets.size, "each coaching loop is mapped once");
-for (const exercise of coachingExercises) {
-  const loop = exercise.coachingLoop;
-  assert.ok(loop, exercise.id);
-  assert.equal(loop.kind, "coaching-loop");
-  assert.equal(loop.clinicalReviewStatus, "pending", `${exercise.id} coaching loop stays unreviewed`);
-  assert.equal(loop.visualScope, "generic_pattern");
-  assert.match(loop.alt, /not clinically reviewed/i);
-  assert.match(loop.attributionText, /Not clinician-reviewed/i);
-  assert.equal(loop.creator, "Knee Forward");
-  const asset = coachingAssets.get(exercise.id);
-  assert.ok(asset, `${exercise.id} is missing from the coaching-loop manifest`);
+assert.equal(coachingExercises.length, 0, "stick-figure coaching loops are not attached to catalog exercises");
+for (const asset of coachingManifest.assets) {
   assert.equal(asset.clinicalReviewStatus, "pending");
-  assert.equal(loop.gifSrc, asset.gif.publicUrl);
-  assert.equal(loop.posterSrc, asset.poster.publicUrl);
+  assert.equal(exercises.find((exercise) => exercise.id === asset.exerciseId)?.coachingLoop, undefined, `${asset.exerciseId} must not attach its archived stick loop`);
   for (const file of [asset.gif, asset.poster]) {
     const bytes = await readFile(join(process.cwd(), file.repositoryPath));
     assert.equal(createHash("sha256").update(bytes).digest("hex"), file.sha256, `${file.repositoryPath} hash`);
@@ -79,4 +67,31 @@ for (const exercise of coachingExercises) {
   }
 }
 
-console.log(`Motion catalog verified for ${demos.length} demos, ${usedAssetIds.size} Gym visual assets, and ${coachingExercises.length} coaching loops.`);
+const homeGymVisual = new Map([
+  ["bridge", "3013-u0cNiij"],
+  ["lateral-band-walk", "0628-O95afRA"],
+  ["band-terminal-knee-extension", "3007-Y1MsI1l"],
+  ["heel-slide", "0730-LNE3wfo"],
+  ["quad-set", "0585-my33uHU"],
+  ["straight-leg-raise", "1002-bbLR7fB"],
+  ["band-clam", "0710-7WaDzyL"],
+  ["supine-band-hip-abduction", "0597-CHpahtl"],
+  ["mini-band-good-morning", "1459-rR0LJzx"],
+]);
+for (const [exerciseId, assetId] of homeGymVisual) {
+  const exercise = exercises.find((candidate) => candidate.id === exerciseId);
+  assert.ok(exercise?.demoMedia, `${exerciseId} needs a Gym visual clip`);
+  assert.equal(exercise.coachingLoop, undefined, `${exerciseId} must not keep a stick-figure loop`);
+  assert.equal(exercise.demoMedia.clinicalReviewStatus, "reviewed");
+  assert.ok(exercise.demoMedia.sources[0].src.endsWith(`${assetId}.webm`), `${exerciseId} asset`);
+  assert.equal(exercise.demoMedia.sources.some((source) => source.src.endsWith(".gif")), false);
+}
+for (const exerciseId of ["dead-bug", "side-plank"]) {
+  const exercise = exercises.find((candidate) => candidate.id === exerciseId);
+  assert.ok(exercise);
+  assert.equal(exercise.demoMedia, undefined, `${exerciseId} has no close approved Gym visual clip`);
+  assert.equal(exercise.coachingLoop, undefined, `${exerciseId} uses its still instead of a stick-figure loop`);
+  assert.equal(exercise.media.kind, "image");
+}
+
+console.log(`Motion catalog verified for ${demos.length} demos, ${usedAssetIds.size} Gym visual assets, and no attached coaching loops.`);

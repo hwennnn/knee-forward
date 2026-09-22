@@ -73,7 +73,7 @@ The bundled images are original AI-generated orientation illustrations. Before g
 - Track source, creator, license, checksum, modifications, visual scope, and clinical review status for every asset.
 - Never reuse the supplied reference-app screenshots.
 
-Twenty-seven approved Gym visual sources provide motion coverage for all 32 exercise detail pages. The manifest records exact versus general-pattern scope, approval status, provenance, and hashes. Production and local builds both include these files, but the service worker never precaches motion; videos remain on-demand network resources with native range handling.
+Twenty-seven approved Gym visual sources provide 35 exercise mappings, including general-pattern home mappings of clips already in that set. The manifest records exact versus general-pattern scope, approval status, provenance, and hashes. Production and local builds both include these files, but the service worker never precaches motion; videos remain on-demand network resources with native range handling. Stick-figure coaching GIFs are not attached to Today.
 
 ## Health-data posture
 

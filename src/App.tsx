@@ -61,7 +61,9 @@ function isLocalPreviewHost() {
   return import.meta.env.VITE_ENABLE_PENDING_MEDIA === "true" && isLoopback;
 }
 
-const learningMotionFor = (exercise: ExerciseRecord) => exercise.coachingLoop ?? motionMediaForExerciseContext(exercise, "learn", isLocalPreviewHost());
+const learningMotionFor = (exercise: ExerciseRecord) =>
+  motionMediaForExerciseContext(exercise, "learn", isLocalPreviewHost())
+  ?? (exercise.demoMedia ? null : exercise.coachingLoop ?? null);
 
 function stageLabel(stage: EpisodeStage) {
   if (stage === "pre_surgery") return "Pre-surgery";

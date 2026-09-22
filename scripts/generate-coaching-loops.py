@@ -1,7 +1,9 @@
-"""Original stick-figure coaching loops for short-loop home exercises.
+"""Deprecated stick-figure coaching loops.
 
-These are general coaching diagrams, not clinician-reviewed media.
-Runtime files land in public/assets/coaching-loops/.
+Today no longer attaches these GIFs. A reviewed Gym visual WebM/MP4 clip is
+preferred. When no close approved clip exists, the exercise still is the card.
+This script only refreshes the archive under public/assets/coaching-loops/.
+Do not wire the output back onto catalog exercises or Today cards.
 """
 
 from __future__ import annotations
@@ -388,7 +390,7 @@ def main():
     manifest = {
         "schemaVersion": 1,
         "generatedOn": "2026-09-22",
-        "runtimePolicy": "Original stick-figure coaching GIFs loop on Today cards with a JPG poster. They are general coaching, not clinician-reviewed. Gym visual and CDC motion stay WebM/MP4 and do not serve GIF.",
+        "runtimePolicy": "Stick-figure coaching GIFs are deprecated for Today and are not attached to catalog exercises. Home cards use a reviewed Gym visual WebM/MP4 loop when a close approved clip exists, otherwise the exercise still. These GIF files remain an archive only. Gym visual and CDC motion stay WebM/MP4 and do not serve GIF.",
         "rightsBasis": "original_project_asset",
         "assets": assets,
     }
