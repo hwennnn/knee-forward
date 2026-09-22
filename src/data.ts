@@ -163,17 +163,20 @@ const media = (
   clinicalReviewStatus: "pending" as const,
 });
 
-/** Geometric stand-in. It is not a drawing of the named exercise and is not clinically reviewed. */
-const wholeBodyPlaceholder = (name: string): ExerciseStillImageMedia => ({
+/**
+ * Original coaching still for a whole-body exercise. Pending visual review.
+ * It is an orientation aid, not clinician-reviewed media and not a prescription.
+ */
+const coachingStill = (slug: string, name: string): ExerciseStillImageMedia => ({
   kind: "image",
-  src: "/assets/exercise-stills/whole-body-placeholder.svg",
-  alt: `Neutral placeholder for ${name}. This image is not a movement demonstration.`,
-  width: 512,
-  height: 512,
+  src: `/assets/exercise-stills/${slug}.webp`,
+  alt: `Instructional still of ${name}. General reference, not clinically reviewed.`,
+  width: 1024,
+  height: 1024,
   sourcePageUrl: "https://github.com/hwennnn/knee-forward",
   creator: "Knee Forward",
-  permissionText: "Original placeholder created for this project.",
-  attributionText: "Original geometric placeholder. Not a depiction of the exercise and not clinically reviewed.",
+  permissionText: "Original instructional still generated for this project.",
+  attributionText: "Original coaching still generated for Knee Forward. Orientation aid only. Not clinician-reviewed media and not a prescription.",
   visualScope: "generic_pattern",
   clinicalReviewStatus: "pending",
 });
@@ -729,7 +732,7 @@ export const exercises = [
     stopSignals: standardStopSignals,
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("machine or dumbbell chest press"),
+    media: coachingStill("machine-chest-press", "a machine or dumbbell chest press"),
   },
   {
     id: "lat-pulldown",
@@ -742,7 +745,7 @@ export const exercises = [
     stopSignals: standardStopSignals,
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("lat pulldown"),
+    media: coachingStill("lat-pulldown", "a lat pulldown"),
   },
   {
     id: "seated-row",
@@ -755,7 +758,7 @@ export const exercises = [
     stopSignals: standardStopSignals,
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("seated row"),
+    media: coachingStill("seated-row", "a seated row"),
   },
   {
     id: "shoulder-press",
@@ -768,7 +771,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Skip this exercise for shoulder pain. Do not turn it into a deep squat or lunge."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("shoulder press"),
+    media: coachingStill("shoulder-press", "a seated shoulder press"),
   },
   {
     id: "biceps-curl",
@@ -781,7 +784,7 @@ export const exercises = [
     stopSignals: standardStopSignals,
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("biceps curl"),
+    media: coachingStill("biceps-curl", "a biceps curl"),
   },
   {
     id: "triceps-pressdown",
@@ -794,7 +797,7 @@ export const exercises = [
     stopSignals: standardStopSignals,
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("triceps pressdown"),
+    media: coachingStill("triceps-pressdown", "a triceps pressdown"),
   },
   {
     id: "dead-bug",
@@ -807,7 +810,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop if the lower back arches hard or the knee is pulled past a comfortable bend."],
     eligiblePhaseIds: ["prehab", "protect-and-settle", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("dead bug"),
+    media: coachingStill("dead-bug", "a dead bug"),
   },
   {
     id: "side-plank",
@@ -820,7 +823,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop if the knee is compressed uncomfortably against the floor."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("side plank"),
+    media: coachingStill("side-plank", "a side plank"),
   },
   {
     id: "pallof-press",
@@ -833,7 +836,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop if the foot pivots or the knee twists."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("Pallof press"),
+    media: coachingStill("pallof-press", "a Pallof press"),
   },
   {
     id: "band-row",
@@ -846,7 +849,7 @@ export const exercises = [
     stopSignals: standardStopSignals,
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("band row"),
+    media: coachingStill("band-row", "a band row"),
   },
   {
     id: "band-chest-press",
@@ -859,7 +862,7 @@ export const exercises = [
     stopSignals: standardStopSignals,
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("band chest press"),
+    media: coachingStill("band-chest-press", "a band chest press"),
   },
   {
     id: "band-overhead-press",
@@ -872,7 +875,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Skip rather than improvising a deep squat to pin the band."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("band overhead press"),
+    media: coachingStill("band-overhead-press", "a band overhead press"),
   },
   {
     id: "band-biceps-curl",
@@ -885,7 +888,7 @@ export const exercises = [
     stopSignals: standardStopSignals,
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("band biceps curl"),
+    media: coachingStill("band-biceps-curl", "a band biceps curl"),
   },
   {
     id: "band-triceps-extension",
@@ -898,7 +901,7 @@ export const exercises = [
     stopSignals: standardStopSignals,
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("band triceps extension"),
+    media: coachingStill("band-triceps-extension", "a band triceps extension"),
   },
   {
     id: "band-clam",
@@ -911,7 +914,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop for a sharp medial pinch or if the right knee feels unstable."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("band clam"),
+    media: coachingStill("band-clam", "a band clam"),
   },
   {
     id: "cable-face-pull",
@@ -924,7 +927,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop for pain at the front of the shoulder."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("cable face pull"),
+    media: coachingStill("cable-face-pull", "a cable face pull"),
   },
   {
     id: "reverse-fly",
@@ -937,7 +940,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop for pain at the front of the shoulder."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("rear delt fly"),
+    media: coachingStill("reverse-fly", "a rear delt fly"),
   },
   {
     id: "chest-supported-row",
@@ -950,7 +953,7 @@ export const exercises = [
     stopSignals: standardStopSignals,
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("chest-supported row"),
+    media: coachingStill("chest-supported-row", "a chest-supported row"),
   },
   {
     id: "cable-chest-fly",
@@ -963,7 +966,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop for pain at the front of the shoulder."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("cable chest fly or pec deck"),
+    media: coachingStill("cable-chest-fly", "a cable chest fly"),
   },
   {
     id: "straight-arm-pulldown",
@@ -976,7 +979,7 @@ export const exercises = [
     stopSignals: standardStopSignals,
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("straight-arm pulldown"),
+    media: coachingStill("straight-arm-pulldown", "a straight-arm pulldown"),
   },
   {
     id: "hip-abduction-machine",
@@ -989,7 +992,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop for a sharp medial pinch."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("seated hip abduction machine"),
+    media: coachingStill("hip-abduction-machine", "a seated hip abduction machine"),
   },
   {
     id: "seated-calf-raise",
@@ -1002,7 +1005,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop if the pad setup pinches the knee."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("seated calf raise"),
+    media: coachingStill("seated-calf-raise", "a seated calf raise"),
   },
   {
     id: "back-extension",
@@ -1015,7 +1018,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop if the knees have to bend deeply to stay on the pad."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("back extension"),
+    media: coachingStill("back-extension", "a back extension"),
   },
   {
     id: "assisted-pull-up",
@@ -1028,7 +1031,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop for shoulder pain. Do not kip or bounce."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("assisted pull-up"),
+    media: coachingStill("assisted-pull-up", "an assisted pull-up"),
   },
   {
     id: "assisted-dip",
@@ -1041,7 +1044,7 @@ export const exercises = [
     stopSignals: [...standardStopSignals, "Stop for shoulder pain. Do not bounce or drop into a deep position."],
     eligiblePhaseIds: ["prehab", "rebuild-capacity", "advance-performance", "return-and-maintain"],
     sourceIds: ["source-care-team"],
-    media: wholeBodyPlaceholder("assisted dip"),
+    media: coachingStill("assisted-dip", "an assisted dip"),
   },
 ] as const satisfies readonly ExerciseRecord[];
 

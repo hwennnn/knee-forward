@@ -9,16 +9,19 @@ const manifestMappings = manifest.assets.flatMap((asset) => asset.mappings.map((
 const manifestMappingByExercise = new Map(manifestMappings.map((mapping) => [mapping.exerciseId, mapping]));
 const usedAssetIds = new Set<string>();
 const demos = exercises.flatMap((exercise) => exercise.demoMedia ? [{ exercise, demo: exercise.demoMedia }] : []);
-const placeholderExercises = exercises.filter((exercise) => !exercise.demoMedia);
+const coachingStillExercises = exercises.filter((exercise) => !exercise.demoMedia);
 
 assert.equal(demos.length, 32, "the reviewed Gym visual set stays mapped");
 assert.equal(manifestMappings.length, demos.length, "manifest must contain one mapping per motion exercise");
 assert.equal(manifestMappingByExercise.size, demos.length, "manifest exercise mappings must be unique");
-assert.ok(placeholderExercises.length > 0, "whole-body placeholders are intentionally without borrowed motion");
-for (const exercise of placeholderExercises) {
+assert.ok(coachingStillExercises.length > 0, "whole-body records stay without borrowed Gym visual motion");
+for (const exercise of coachingStillExercises) {
   assert.equal(exercise.media.kind, "image");
   assert.equal(exercise.media.clinicalReviewStatus, "pending");
-  assert.match(exercise.media.alt, /not a movement demonstration/i);
+  assert.equal(exercise.media.src.endsWith("whole-body-placeholder.svg"), false, `${exercise.id} must not use the shared placeholder`);
+  assert.match(exercise.media.alt, /not clinically reviewed/i);
+  assert.doesNotMatch(exercise.media.src, /\/assets\/motion\//, `${exercise.id} must not point its still at another exercise's motion file`);
+  await access(join(process.cwd(), "public", exercise.media.src));
 }
 
 for (const { exercise, demo } of demos) {

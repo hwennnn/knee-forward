@@ -42,11 +42,15 @@ The 16 original 512 px panel PNGs were moved to `work/source-panel-pngs/`. Their
 
 The panels were cropped from the source sheets, centered on individual square canvases, and converted to WebP so the app does not stretch a sheet or expose neighboring panels. They also require physiotherapist review before public distribution.
 
-## Whole-body placeholder
+## Whole-body coaching stills
 
-`public/assets/exercise-stills/whole-body-placeholder.svg` is an original geometric mark drawn for this project (a circle and two strokes on the app colors, plus the words “Placeholder, not a demonstration”). It is shared by the whole-body catalog records that do not have a reviewed still or a Gym visual mapping: machine chest press, lat pulldown, seated row, shoulder press, biceps curl, triceps pressdown, dead bug, side plank, Pallof press, band row, band chest press, band overhead press, band biceps curl, band triceps extension, band clam, cable face pull, rear delt fly, chest-supported row, cable chest fly, straight-arm pulldown, hip abduction machine, seated calf raise, back extension, assisted pull-up, and assisted dip.
+Each whole-body catalog record has its own 1024 px WebP still under `public/assets/exercise-stills/`, named with the exercise id (`machine-chest-press.webp`, `lat-pulldown.webp`, `seated-row.webp`, `shoulder-press.webp`, `biceps-curl.webp`, `triceps-pressdown.webp`, `dead-bug.webp`, `side-plank.webp`, `pallof-press.webp`, `band-row.webp`, `band-chest-press.webp`, `band-overhead-press.webp`, `band-biceps-curl.webp`, `band-triceps-extension.webp`, `band-clam.webp`, `cable-face-pull.webp`, `reverse-fly.webp`, `chest-supported-row.webp`, `cable-chest-fly.webp`, `straight-arm-pulldown.webp`, `hip-abduction-machine.webp`, `seated-calf-raise.webp`, `back-extension.webp`, `assisted-pull-up.webp`, and `assisted-dip.webp`).
 
-It is not a drawing of those movements, not a crop of a rehab panel, and not a Gym visual GIF. `clinicalReviewStatus` is `pending` and `visualScope` is `generic_pattern`. The alt text says it is not a movement demonstration. Do not point these records at an existing knee still or motion file.
+These are original instructional stills generated for Knee Forward on 2026-09-22. Source PNGs are retained under `work/generated-still-sources/whole-body/`. Runtime files are lossy VP8 WebP. SHA-256 checksums are locked in `scripts/exercise-catalog-tests.ts`.
+
+They are coaching diagrams for orientation. They are not crops of the rehab panels, not Gym visual GIFs, and not CDC clips. `clinicalReviewStatus` is `pending` and `visualScope` is `generic_pattern`, so the card labels them “General reference”. Alt text says they are not clinically reviewed. Do not point these records at a knee-rehab still or at another exercise’s motion file. Do not mark them reviewed unless a clinician reviews the specific image.
+
+The old shared geometric mark remains at `public/assets/exercise-stills/whole-body-placeholder.svg` so older builds can be compared. No current catalog record uses it.
 
 ## Mixed-media runtime policy
 
@@ -54,6 +58,6 @@ It is not a drawing of those movements, not a crop of a rehab panel, and not a G
 - Optional motion: Learn detail only, after the still and explanatory content.
 - Runtime motion: WebM first, MP4 fallback, and a static poster.
 - Runtime GIF: prohibited. Original Gym visual GIFs are preserved only under `work/source-motion-gifs/gymvisual/` for provenance.
-- Clinical status: the 32 motion mappings are approved; generated stills and the whole-body placeholder remain pending visual review. None is medical clearance. Catalog records without `demoMedia` must not be treated as covered by the Gym visual manifest.
+- Clinical status: the 32 motion mappings are approved; generated knee stills and the whole-body coaching stills remain pending visual review. None is medical clearance. Catalog records without `demoMedia` must not be treated as covered by the Gym visual manifest.
 
 Motion provenance, rights, transformations, mapping decisions, and checksums are documented in [`MEDIA_LICENSES.md`](MEDIA_LICENSES.md) and the two media manifests.

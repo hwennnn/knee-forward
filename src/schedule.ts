@@ -13,12 +13,19 @@ const WEEKDAY_INDEX: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, 
 const DEFAULT_GYM = new Set([0, 2, 4]);
 const DEFAULT_KIND: readonly SessionKind[] = ["gym", "home", "gym", "home", "gym", "cardio", "rest"];
 
-export const KNEE_BLOCK_IDS = [
+/** TKE, heel slide, and quad set. Straight-leg raise rotates in on some days and is not stacked on top. */
+export const KNEE_BLOCK_CORE_IDS = [
   "band-terminal-knee-extension",
   "heel-slide",
   "quad-set",
+] as const;
+
+export const KNEE_BLOCK_IDS = [
+  ...KNEE_BLOCK_CORE_IDS,
   "straight-leg-raise",
 ] as const;
+
+type KneeThirdId = "quad-set" | "straight-leg-raise";
 
 export const LOADED_KNEE_IDS = [
   "single-leg-press",
@@ -61,56 +68,55 @@ const LIGHT_BAND_IDS = ["lateral-band-walk"] as const;
 
 type StrengthGroup = "Lower" | "Upper push" | "Upper pull" | "Arms" | "Core" | "Hip and balance";
 
+/** Six hard moves: two safe lowers, one push, one pull, one arm or rear-delt, one core. Cardio is a separate block. */
 const GYM_TEMPLATES: Record<GymTemplate, readonly { exerciseId: string; group: StrengthGroup }[]> = {
   A: [
     { exerciseId: "single-leg-press", group: "Lower" },
     { exerciseId: "single-leg-hamstring-curl-machine", group: "Lower" },
-    { exerciseId: "hip-abduction-machine", group: "Hip and balance" },
-    { exerciseId: "seated-calf-raise", group: "Lower" },
     { exerciseId: "machine-chest-press", group: "Upper push" },
-    { exerciseId: "cable-chest-fly", group: "Upper push" },
     { exerciseId: "lat-pulldown", group: "Upper pull" },
-    { exerciseId: "cable-face-pull", group: "Upper pull" },
-    { exerciseId: "biceps-curl", group: "Arms" },
+    { exerciseId: "cable-face-pull", group: "Arms" },
     { exerciseId: "dead-bug", group: "Core" },
   ],
   B: [
     { exerciseId: "squat", group: "Lower" },
     { exerciseId: "single-leg-knee-extension-machine", group: "Lower" },
-    { exerciseId: "standing-hip-abduction-external-rotation-fire-hydrant", group: "Hip and balance" },
-    { exerciseId: "standing-single-leg-heel-raise", group: "Lower" },
     { exerciseId: "shoulder-press", group: "Upper push" },
-    { exerciseId: "assisted-dip", group: "Upper push" },
     { exerciseId: "chest-supported-row", group: "Upper pull" },
-    { exerciseId: "reverse-fly", group: "Upper pull" },
     { exerciseId: "triceps-pressdown", group: "Arms" },
     { exerciseId: "side-plank", group: "Core" },
   ],
   C: [
     { exerciseId: "modified-single-leg-deadlift", group: "Lower" },
-    { exerciseId: "single-leg-hamstring-curl-machine", group: "Lower" },
-    { exerciseId: "back-extension", group: "Hip and balance" },
+    { exerciseId: "hip-abduction-machine", group: "Lower" },
     { exerciseId: "machine-chest-press", group: "Upper push" },
     { exerciseId: "seated-row", group: "Upper pull" },
-    { exerciseId: "straight-arm-pulldown", group: "Upper pull" },
-    { exerciseId: "assisted-pull-up", group: "Upper pull" },
     { exerciseId: "biceps-curl", group: "Arms" },
     { exerciseId: "pallof-press", group: "Core" },
   ],
 };
 
-const HOME_STRENGTH: readonly { exerciseId: string; group: StrengthGroup }[] = [
-  { exerciseId: "band-row", group: "Upper pull" },
-  { exerciseId: "band-chest-press", group: "Upper push" },
-  { exerciseId: "band-overhead-press", group: "Upper push" },
-  { exerciseId: "band-biceps-curl", group: "Arms" },
-  { exerciseId: "band-triceps-extension", group: "Arms" },
-  { exerciseId: "bridge", group: "Hip and balance" },
-  { exerciseId: "lateral-band-walk", group: "Hip and balance" },
-  { exerciseId: "band-clam", group: "Hip and balance" },
-  { exerciseId: "single-leg-balance", group: "Hip and balance" },
-  { exerciseId: "dead-bug", group: "Core" },
-  { exerciseId: "side-plank", group: "Core" },
+/**
+ * Six denser band moves. Even home days use the first list; odd home days use the second
+ * so band walk/curl/dead bug and clam/triceps/side plank both show up in a normal week.
+ */
+const HOME_STRENGTH_ROTATION: readonly (readonly { exerciseId: string; group: StrengthGroup }[])[] = [
+  [
+    { exerciseId: "band-row", group: "Upper pull" },
+    { exerciseId: "band-chest-press", group: "Upper push" },
+    { exerciseId: "bridge", group: "Hip and balance" },
+    { exerciseId: "lateral-band-walk", group: "Hip and balance" },
+    { exerciseId: "band-biceps-curl", group: "Arms" },
+    { exerciseId: "dead-bug", group: "Core" },
+  ],
+  [
+    { exerciseId: "band-row", group: "Upper pull" },
+    { exerciseId: "band-chest-press", group: "Upper push" },
+    { exerciseId: "bridge", group: "Hip and balance" },
+    { exerciseId: "band-clam", group: "Hip and balance" },
+    { exerciseId: "band-triceps-extension", group: "Arms" },
+    { exerciseId: "side-plank", group: "Core" },
+  ],
 ];
 
 export interface ScheduledExercise {
@@ -289,16 +295,33 @@ function pushExercises(
   }
 }
 
-function blocksFor(kind: SessionKind, template: GymTemplate | null, romOnly: boolean, lightBand: boolean, doses: Record<string, ExerciseDose>): ScheduleBlock[] {
+function kneeBlockItems(thirdId: KneeThirdId) {
+  return [
+    { exerciseId: "band-terminal-knee-extension", group: "Knee" },
+    { exerciseId: "heel-slide", group: "Knee" },
+    { exerciseId: thirdId, group: "Knee" },
+  ];
+}
+
+function blocksFor(
+  kind: SessionKind,
+  template: GymTemplate | null,
+  romOnly: boolean,
+  lightBand: boolean,
+  doses: Record<string, ExerciseDose>,
+  kneeThird: KneeThirdId,
+  homeOrdinal: number,
+): ScheduleBlock[] {
   const knee: ScheduledExercise[] = [];
-  pushExercises(knee, KNEE_BLOCK_IDS.map((exerciseId) => ({ exerciseId, group: "Knee" })), doses);
+  pushExercises(knee, kneeBlockItems(kneeThird), doses);
   const strength: ScheduledExercise[] = [];
   const cardio: ScheduledExercise[] = [];
   if (kind === "gym" && template) {
     pushExercises(strength, GYM_TEMPLATES[template], doses);
     pushExercises(cardio, [{ exerciseId: "stationary-bike", group: "Cardio" }], doses, "gym-cardio");
   } else if (kind === "home") {
-    pushExercises(strength, HOME_STRENGTH, doses);
+    const homeList = HOME_STRENGTH_ROTATION[homeOrdinal % HOME_STRENGTH_ROTATION.length] ?? HOME_STRENGTH_ROTATION[0]!;
+    pushExercises(strength, homeList, doses);
   } else if (kind === "cardio") {
     pushExercises(cardio, [{ exerciseId: "stationary-bike", group: "Cardio" }], doses, "long-cardio");
   } else if (lightBand && !romOnly) {
@@ -344,7 +367,7 @@ function blocksFor(kind: SessionKind, template: GymTemplate | null, romOnly: boo
     blocks.push({
       id: "strength",
       title: "Strength",
-      note: "Full home session: denser band work with a controlled tempo, hips, and core. No leg press, mini squat, or machine knee work. Last sets can be hard, with about 1–2 reps left.",
+      note: "Short home session: six denser band moves with a controlled tempo. No leg press, mini squat, or machine knee work. Last sets can be hard, with about 1–2 reps left. The other band exercises stay on the plan.",
       exercises: strength,
     });
     blocks.push({
@@ -359,7 +382,7 @@ function blocksFor(kind: SessionKind, template: GymTemplate | null, romOnly: boo
     id: "strength",
     title: "Strength",
     note: kind === "gym"
-      ? `Gym ${template ?? ""}. Last 1–2 reps can be hard, with about 1–2 left. Mini squat stays about 45°. Leg press stays about 45–60°. No deep squat, lunge, run, cut, pivot, or jump. If the session runs long, drop an accessory before you add depth.`
+      ? `Gym ${template ?? ""}. Six hard moves. Last 1–2 reps can be hard, with about 1–2 left. Mini squat stays about 45°. Leg press stays about 45–60°. No deep squat, lunge, run, cut, pivot, or jump. Other machines stay on the plan.`
       : "No strength loading on this cardio day.",
     exercises: strength,
   });
@@ -379,14 +402,14 @@ function copyFor(kind: SessionKind, template: GymTemplate | null, lightBand: boo
     return {
       badge: "Gym",
       headline: "You're at the gym.",
-      summary: `Harder gym strength ${template ?? ""}, a short knee block, and moderate cardio.`.replace("  ", " "),
+      summary: `Short gym strength ${template ?? ""}, a three-move knee block, and moderate cardio.`.replace("  ", " "),
     };
   }
   if (kind === "home") {
     return {
       badge: "Home",
       headline: "You're at home.",
-      summary: "Denser band circuits for the whole body, plus the daily knee block.",
+      summary: "Six denser band moves, plus a three-move knee block.",
     };
   }
   if (kind === "cardio") {
@@ -421,6 +444,7 @@ export function resolveWeek(anchor: Date, timeZone: string, overrides: readonly 
   const letters: GymTemplate[] = ["A", "B", "C"];
   const templateAt = new Map<number, GymTemplate>();
   gymOrder.forEach((index, order) => templateAt.set(index, letters[Math.min(order, 2)]!));
+  let homeOrdinal = 0;
   return dates.map((date, index) => {
     const weekday = index === 6 ? 0 : index + 1;
     const defaultKind = DEFAULT_KIND[index] ?? "rest";
@@ -434,7 +458,11 @@ export function resolveWeek(anchor: Date, timeZone: string, overrides: readonly 
     const template = kind === "gym" ? templateAt.get(index) ?? "A" : null;
     const lightBand = kind === "rest" && pin !== "rest";
     const romOnly = pin === "rest";
-    const blocks = blocksFor(kind, template, romOnly, lightBand, plan.doses);
+    const thisHomeOrdinal = kind === "home" ? homeOrdinal++ : 0;
+    const kneeThird: KneeThirdId = !romOnly && ((kind === "rest" && lightBand) || (kind === "home" && thisHomeOrdinal % 2 === 1))
+      ? "straight-leg-raise"
+      : "quad-set";
+    const blocks = blocksFor(kind, template, romOnly, lightBand, plan.doses, kneeThird, thisHomeOrdinal);
     const text = copyFor(kind, template, lightBand);
     const exerciseIds = blocks.flatMap((block) => block.exercises.map((exercise) => exercise.exerciseId));
     return {

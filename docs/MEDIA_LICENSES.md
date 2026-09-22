@@ -120,3 +120,11 @@ The original source GIFs are preserved under `work/source-motion-gifs/gymvisual/
 The complete asset-by-asset record, including mapping status, source GIF archive path, dataset exercise ID, media ID, upstream path, local WebM/MP4/poster paths, byte sizes, SHA-256 hashes, visual scope, rights basis, and review status, is stored in [`public/assets/motion/gymvisual/media-manifest.json`](../public/assets/motion/gymvisual/media-manifest.json).
 
 No exercise instructions, phase recommendations, or clinical claims were imported from the general fitness dataset.
+
+## Whole-body coaching stills
+
+The whole-body exercises that are not in the 32 Gym visual mappings use original stills generated for Knee Forward on 2026-09-22. They are project-owned coaching images. They are not Gym visual media, not CDC media, and not clinician-reviewed photographs. Reuse inside this project is allowed. They are not a license to present the pictures as medical instruction.
+
+Each still is stored as a 1024 px lossy WebP under `public/assets/exercise-stills/<exercise-id>.webp`. The catalog test locks the SHA-256 checksum, dimensions, and VP8 encoding. `visualScope` is `generic_pattern` and `clinicalReviewStatus` is `pending`. A still must show the named movement. Do not attach a rehab panel or an approved Gym visual poster to a different exercise to fill an empty card.
+
+The shared file `public/assets/exercise-stills/whole-body-placeholder.svg` is an original geometric mark kept for comparison. It is not a demonstration and is not mapped to a current exercise.

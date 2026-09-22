@@ -99,15 +99,56 @@ const educationOnlyExpansion = new Set([
   "bridge-march",
 ]);
 
-const wholeBodyPlaceholders = exercises.filter((exercise) => exercise.media.kind === "image" && exercise.media.src.endsWith("whole-body-placeholder.svg"));
-assert.equal(exercises.length, 32 + wholeBodyPlaceholders.length, "catalog should keep the 32 reviewed records and the whole-body placeholders");
-assert.ok(wholeBodyPlaceholders.length >= 10, "whole-body movements need their own records");
-for (const exercise of wholeBodyPlaceholders) {
+const coachingStillHashes = {
+  "machine-chest-press": "4acc094a12dfbaadb90606706416aa11d60813ee1060771130d1e268768b29ab",
+  "lat-pulldown": "834bc0cf9baf65d2812d7123e5cae5df3f39266cfc99444983cb37c44416c188",
+  "seated-row": "db942c6923e7c0a39ff99c9282c0beb75d78b9d967f25e0c01090ec639386f56",
+  "shoulder-press": "7bdd0f77ff444439ab92b83db348b8621b8e9af87ec5d96818a20bde82daafdd",
+  "biceps-curl": "1cdd3352765cba236e744ff7c1eba007c13f6ba4b0a89afe3241448cd6807e33",
+  "triceps-pressdown": "c073004443e90703acb978063c45c1cbfd0205ddda57655cfab9a2032a398668",
+  "dead-bug": "bc9f048c83d14e3f2b5f7327bb916bb429860dc53f00315de62c9c429771208f",
+  "side-plank": "a4c21790a756a93d144297caf166f80f5dcc53a4124675eede38982bcbefee43",
+  "pallof-press": "6b78f58cd2872ea114d7f340e9c89cfff845031bf6da6ac8e3baf01d4a44975d",
+  "band-row": "ba3ce0389feb50b49d5f044031c83d97e53578bf1a88ea554c8358797603787a",
+  "band-chest-press": "4b553bf10e69abfb5f22c2628c79e7fe5a44c7cd6b431dae521fabf6f886d115",
+  "band-overhead-press": "886694d46b375fad3cb7544dd86201f952180313fd959e9e4c703e2cbb486992",
+  "band-biceps-curl": "089e0a8d70a0ddf9b7272d150ca95884ccbfaad2968dc5d45f60f4d608e76ca8",
+  "band-triceps-extension": "c747f13b1afab71d65e8ce04e34f8b1b1e4ba934e1ce003dca54bf205e1b5dea",
+  "band-clam": "9305305701c57a3767fdf8bd9de70375d2109fbecb7e4f9608e53743e2617c02",
+  "cable-face-pull": "3663ec08210cad979c4ccd1694e825fa633bad6130c5f0c13537dc84af151733",
+  "reverse-fly": "f78752a8d163403290d1334cea825898cccc7f940a7481c3618145db73887afa",
+  "chest-supported-row": "8580a47072ee7a4e73e2cdf76cf740079551f505b7864145673ebb56d08cd8f7",
+  "cable-chest-fly": "aa70c2727935a42d98a6d123317ceb6c42007cd59ec8fe6001ff7290b9e1d4b5",
+  "straight-arm-pulldown": "0e076dbeb5192841711902ecc2be67d9d6bfc4381c5954323fd3e81e051cb51d",
+  "hip-abduction-machine": "a1eb383d3bb1348c29f22681c26fb1e3b7ed032188d01a88fd1318823035c012",
+  "seated-calf-raise": "ea50cf68431e9e4cc338627740a5bf7c1dfb44e84f69bd0e3e10471dc90b349f",
+  "back-extension": "753f7dab85e11434d6f07c8de7e1a1b4cba87cd040b6872d5682f3db3053ffba",
+  "assisted-pull-up": "8ce439122d2ad3684ccffb95f5a0a435efcde4e171a8cf9a50918b482f3c2522",
+  "assisted-dip": "0e7685381344f63a5c06fc4f6f3c38d1c4715b60c90eb7f9a0fe1fb9dd87c3eb",
+} as const;
+
+for (const [slug, expectedHash] of Object.entries(coachingStillHashes)) {
+  const src = `/assets/exercise-stills/${slug}.webp`;
+  const bytes = readFileSync(resolve("public", src.slice(1)));
+  assert.deepEqual(webpDimensions(bytes), { width: 1024, height: 1024 }, `${src} must be 1024 × 1024`);
+  assert.equal(createHash("sha256").update(bytes).digest("hex"), expectedHash, `${src} checksum changed`);
+}
+
+const wholeBodyCoaching = exercises.filter((exercise) => !exercise.demoMedia);
+assert.equal(exercises.filter((exercise) => exercise.demoMedia).length, 32, "the 32 reviewed motion records stay");
+assert.equal(wholeBodyCoaching.length, Object.keys(coachingStillHashes).length, "each whole-body record has its own coaching still");
+assert.equal(exercises.length, 32 + wholeBodyCoaching.length);
+for (const exercise of wholeBodyCoaching) {
   assert.equal(exercise.demoMedia, undefined, `${exercise.id} must not reuse a knee demonstration as if it were this movement`);
   assert.equal(exercise.planEligible === false, false, `${exercise.id} is part of the whole-body plan`);
+  assert.equal(exercise.media.kind, "image");
   assert.equal(exercise.media.clinicalReviewStatus, "pending");
   assert.equal(exercise.media.visualScope, "generic_pattern");
-  assert.match(exercise.media.alt, /not a movement demonstration/i);
+  assert.equal(exercise.media.src.endsWith("whole-body-placeholder.svg"), false, `${exercise.id} must not use the shared placeholder`);
+  assert.equal(exercise.media.src, `/assets/exercise-stills/${exercise.id}.webp`, `${exercise.id} still must match its own slug`);
+  assert.match(exercise.media.alt, /instructional still/i);
+  assert.match(exercise.media.alt, /not clinically reviewed/i);
+  assert.ok(exercise.id in coachingStillHashes, `${exercise.id} is missing a coaching still checksum`);
 }
 for (const exerciseId of educationOnlyExpansion) {
   const exercise = exercises.find((candidate) => candidate.id === exerciseId);
@@ -173,4 +214,4 @@ for (const exerciseId of corePrehabExerciseIds) {
   assert.equal(/lunge|jump|sprint|sled|bulgarian/.test(exerciseId), false, `${exerciseId} is outside the knee-safe plan`);
 }
 
-console.log(`Exercise catalog verified for ${exercises.length} records, including ${Object.keys(generatedStillHashes).length} generated stills.`);
+console.log(`Exercise catalog verified for ${exercises.length} records, including ${Object.keys(generatedStillHashes).length} knee stills and ${Object.keys(coachingStillHashes).length} coaching stills.`);
