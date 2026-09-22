@@ -1,14 +1,18 @@
-import { corePrehabExerciseIds, defaultPrehabDoses, exercises, seedData } from "./data";
+import { corePrehabExerciseIds, DEFAULT_GOAL_LABEL, defaultPrehabDoses, exercises, previousSeededPrehabDoses, previousSeededPrehabExerciseIds, SEEDED_PLAN_UPDATED_AT, seedData } from "./data";
 import type {
+  CheckIn,
+  DayChoice,
   ExerciseDose,
   ExerciseRecord,
   LocalAppState,
+  ScheduleOverride,
   SessionDraft,
   SessionExerciseDraft,
   SessionExerciseLog,
   SessionExerciseStatus,
   SessionLog,
   SessionSetLog,
+  WeightEntry,
 } from "./types";
 
 const STORAGE_KEY = "knee-forward:state:v1";
@@ -31,6 +35,8 @@ export const initialState: LocalAppState = {
     rehabStage: "pre_surgery",
     currentPhaseId: "prehab",
     plannedSurgeryDate: null,
+    timeZone: null,
+    goalLabel: DEFAULT_GOAL_LABEL,
   },
   activeEpisodeId: "episode-right-acl-2026",
   planClinicianConfirmed: false,
@@ -39,6 +45,12 @@ export const initialState: LocalAppState = {
   reminderDismissedOn: null,
   planExerciseIds: corePrehabExerciseIds.slice(),
   doses: Object.fromEntries(corePrehabExerciseIds.map((id) => [id, { ...defaultPrehabDoses[id] }])),
+  planUpdatedAt: SEEDED_PLAN_UPDATED_AT,
+  scheduleOverrides: [],
+  weightGoalKg: null,
+  weightEntries: [],
+  checkIns: [],
+  syncConsentAt: null,
   sessions: [],
   sessionDraft: null,
 };
@@ -74,6 +86,15 @@ function doseIsBlank(dose: ExerciseDose) {
     && dose.rangeNote === "";
 }
 
+function sameDose(left: ExerciseDose, right: ExerciseDose) {
+  return left.sets === right.sets
+    && left.reps === right.reps
+    && left.loadKg === right.loadKg
+    && left.holdSeconds === right.holdSeconds
+    && left.durationMinutes === right.durationMinutes
+    && left.rangeNote === right.rangeNote;
+}
+
 function isLegacyUnspecifiedPrehabPlan(planExerciseIds: readonly string[], doses: Record<string, ExerciseDose>) {
   if (planExerciseIds.length !== legacyUnspecifiedPrehabExerciseIds.length) return false;
   const expected = new Set<string>(legacyUnspecifiedPrehabExerciseIds);
@@ -89,6 +110,90 @@ const lateralityValues = new Set(["left", "right"]);
 const rehabStageValues = new Set(["pre_surgery", "post_surgery", "non_surgical"]);
 const swellingValues = new Set(["none", "mild", "moderate", "marked"]);
 const sessionExerciseStatuses = new Set<SessionExerciseStatus>(["completed", "partial", "skipped", "stopped"]);
+
+function validTimeZone(value: string) {
+  try {
+    Intl.DateTimeFormat("en-US", { timeZone: value }).format(new Date());
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function validDateTime(value: unknown): value is string {
+  return typeof value === "string" && value.length <= 40 && Number.isFinite(Date.parse(value));
+}
+
+function parseScheduleOverrides(value: unknown): ScheduleOverride[] {
+  if (value === undefined) return [];
+  if (!Array.isArray(value) || value.length > 400) throw new Error("The saved training-location overrides are invalid.");
+  const choices = new Set<DayChoice>(["home", "gym", "rest"]);
+  const byDate = new Map<string, ScheduleOverride>();
+  for (const item of value) {
+    if (!isRecord(item) || !validISODate(item.date) || typeof item.choice !== "string" || !choices.has(item.choice as DayChoice)) {
+      throw new Error("A saved training-location override is invalid.");
+    }
+    byDate.set(item.date, { date: item.date, choice: item.choice as DayChoice });
+  }
+  return [...byDate.values()].sort((left, right) => left.date < right.date ? -1 : 1);
+}
+
+function parseWeightEntries(value: unknown): WeightEntry[] {
+  if (value === undefined) return [];
+  if (!Array.isArray(value) || value.length > 5_000) throw new Error("The saved weight log is invalid.");
+  const byDate = new Map<string, WeightEntry>();
+  for (const item of value) {
+    if (!isRecord(item) || !validString(item.id, 80) || item.id.length === 0 || !validISODate(item.recordedOn) || !validDateTime(item.updatedAt)) {
+      throw new Error("A saved weight entry is invalid.");
+    }
+    if (typeof item.weightKg !== "number" || !Number.isFinite(item.weightKg) || item.weightKg < 20 || item.weightKg > 400) {
+      throw new Error("A saved weight entry has an invalid weight.");
+    }
+    const entry = { id: item.id, recordedOn: item.recordedOn, weightKg: item.weightKg, updatedAt: item.updatedAt };
+    const current = byDate.get(entry.recordedOn);
+    if (!current || entry.updatedAt >= current.updatedAt) byDate.set(entry.recordedOn, entry);
+  }
+  return [...byDate.values()].sort((left, right) => right.recordedOn < left.recordedOn ? -1 : right.recordedOn > left.recordedOn ? 1 : right.updatedAt < left.updatedAt ? -1 : 1);
+}
+
+function parseCheckIns(value: unknown): CheckIn[] {
+  if (value === undefined) return [];
+  if (!Array.isArray(value) || value.length > 10_000) throw new Error("The saved check-in history is invalid.");
+  const seen = new Set<string>();
+  return value.map((item) => {
+    if (!isRecord(item) || !validString(item.id, 80) || item.id.length === 0 || !validString(item.episodeId, 200) || !validDateTime(item.recordedAt) || !validDateTime(item.updatedAt)) {
+      throw new Error("A saved check-in is invalid.");
+    }
+    if (seen.has(item.id)) throw new Error("The saved check-in history has a duplicate id.");
+    seen.add(item.id);
+    if (item.sessionId !== null && !validString(item.sessionId, 80)) throw new Error("A saved check-in session link is invalid.");
+    const painBefore = item.painBefore;
+    const painAfter = item.painAfter;
+    if (typeof painBefore !== "number" || !Number.isInteger(painBefore) || painBefore < 0 || painBefore > 10) {
+      throw new Error("A saved check-in has an invalid pain value.");
+    }
+    if (painAfter !== null && (typeof painAfter !== "number" || !Number.isInteger(painAfter) || painAfter < 0 || painAfter > 10)) {
+      throw new Error("A saved check-in has an invalid pain value.");
+    }
+    if (typeof item.swellingBefore !== "string" || !swellingValues.has(item.swellingBefore)) {
+      throw new Error("A saved check-in has an invalid swelling value.");
+    }
+    if (item.swellingAfter !== null && (typeof item.swellingAfter !== "string" || !swellingValues.has(item.swellingAfter))) {
+      throw new Error("A saved check-in has an invalid swelling value.");
+    }
+    return {
+      id: item.id,
+      episodeId: item.episodeId,
+      sessionId: (item.sessionId as string | null),
+      recordedAt: item.recordedAt,
+      painBefore,
+      painAfter: painAfter as number | null,
+      swellingBefore: item.swellingBefore as CheckIn["swellingBefore"],
+      swellingAfter: item.swellingAfter as CheckIn["swellingAfter"],
+      updatedAt: item.updatedAt,
+    };
+  });
+}
 
 function isRecord(value: unknown): value is UnknownRecord {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -400,6 +505,37 @@ export function parseState(value: unknown): LocalAppState {
     }
     planClinicianConfirmed = false;
   }
+  const unmodifiedPreviousSeed = affectedKnee === "right"
+    && rehabStage === "pre_surgery"
+    && currentPhaseId === "prehab"
+    && (value.sessionDraft === undefined || value.sessionDraft === null)
+    && resolvedPlanExerciseIds.length === previousSeededPrehabExerciseIds.length
+    && previousSeededPrehabExerciseIds.every((exerciseId, index) => resolvedPlanExerciseIds[index] === exerciseId)
+    && previousSeededPrehabExerciseIds.every((exerciseId) => sameDose(doses[exerciseId] ?? emptyDose(), previousSeededPrehabDoses[exerciseId]));
+  if (unmodifiedPreviousSeed) {
+    resolvedPlanExerciseIds = [...corePrehabExerciseIds];
+    for (const exerciseId of corePrehabExerciseIds) doses[exerciseId] = { ...defaultPrehabDoses[exerciseId] };
+    planClinicianConfirmed = false;
+  }
+  const goalLabel = profile.goalLabel;
+  if (goalLabel !== undefined && !validString(goalLabel, 80)) throw new Error("The saved profile goal is invalid.");
+  const timeZone = profile.timeZone;
+  if (timeZone !== undefined && timeZone !== null && (!validString(timeZone, 80) || !validTimeZone(timeZone))) {
+    throw new Error("The saved time zone is invalid.");
+  }
+  let planUpdatedAt = SEEDED_PLAN_UPDATED_AT;
+  if (value.planUpdatedAt !== undefined) {
+    if (!validDateTime(value.planUpdatedAt)) throw new Error("The saved plan timestamp is invalid.");
+    planUpdatedAt = value.planUpdatedAt;
+  }
+  const weightGoalKg = value.weightGoalKg;
+  if (weightGoalKg !== undefined && weightGoalKg !== null && (typeof weightGoalKg !== "number" || !Number.isFinite(weightGoalKg) || weightGoalKg < 20 || weightGoalKg > 400)) {
+    throw new Error("The saved weight goal is invalid.");
+  }
+  const syncConsentAt = value.syncConsentAt;
+  if (syncConsentAt !== undefined && syncConsentAt !== null && !validDateTime(syncConsentAt)) {
+    throw new Error("The saved sync consent is invalid.");
+  }
   const planMatchesCurrentPhase = resolvedPlanExerciseIds.every((exerciseId) => exerciseCatalog
     .find((exercise) => exercise.id === exerciseId)
     ?.eligiblePhaseIds.includes(currentPhaseId));
@@ -413,6 +549,8 @@ export function parseState(value: unknown): LocalAppState {
       rehabStage: rehabStage as LocalAppState["profile"]["rehabStage"],
       currentPhaseId,
       plannedSurgeryDate: (plannedSurgeryDate as LocalAppState["profile"]["plannedSurgeryDate"] | undefined) ?? null,
+      timeZone: (timeZone as string | null | undefined) ?? null,
+      goalLabel: (goalLabel as string | undefined)?.trim() || DEFAULT_GOAL_LABEL,
     },
     activeEpisodeId,
     planClinicianConfirmed: planClinicianConfirmed && planMatchesCurrentPhase,
@@ -421,6 +559,12 @@ export function parseState(value: unknown): LocalAppState {
     reminderDismissedOn: (dismissed as LocalAppState["reminderDismissedOn"] | undefined) ?? null,
     planExerciseIds: resolvedPlanExerciseIds,
     doses,
+    planUpdatedAt,
+    scheduleOverrides: parseScheduleOverrides(value.scheduleOverrides),
+    weightGoalKg: (weightGoalKg as number | null | undefined) ?? null,
+    weightEntries: parseWeightEntries(value.weightEntries),
+    checkIns: parseCheckIns(value.checkIns),
+    syncConsentAt: (syncConsentAt as string | null | undefined) ?? null,
     sessions: value.sessions.map((session) => parseSession(session, activeEpisodeId)),
     sessionDraft: value.sessionDraft === undefined || value.sessionDraft === null ? null : parseSessionDraft(value.sessionDraft, activeEpisodeId),
   };

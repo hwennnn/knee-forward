@@ -49,6 +49,9 @@ export type ExerciseEquipment =
   | "knee_extension_machine"
   | "hamstring_curl_machine"
   | "leg_press_machine"
+  | "chest_press_machine"
+  | "cable_machine"
+  | "dumbbell"
   | "ankle_weight"
   | "step"
   | "resistance_band"
@@ -195,6 +198,32 @@ export interface SessionLog {
   note: string;
 }
 
+export type DayChoice = "home" | "gym" | "rest";
+
+export interface ScheduleOverride {
+  date: ISODate;
+  choice: DayChoice;
+}
+
+export interface CheckIn {
+  id: string;
+  episodeId: string;
+  sessionId: string | null;
+  recordedAt: ISODateTime;
+  painBefore: number;
+  painAfter: number | null;
+  swellingBefore: SessionLog["swellingBefore"];
+  swellingAfter: SessionLog["swellingAfter"] | null;
+  updatedAt: ISODateTime;
+}
+
+export interface WeightEntry {
+  id: string;
+  recordedOn: ISODate;
+  weightKg: number;
+  updatedAt: ISODateTime;
+}
+
 export interface LocalAppState {
   schemaVersion: 1;
   profile: {
@@ -204,6 +233,9 @@ export interface LocalAppState {
     rehabStage: EpisodeStage;
     currentPhaseId: string;
     plannedSurgeryDate: ISODate | null;
+    /** IANA zone. Null uses America/Los_Angeles for the weekly template. */
+    timeZone: string | null;
+    goalLabel: string;
   };
   activeEpisodeId: string;
   planClinicianConfirmed: boolean;
@@ -212,6 +244,15 @@ export interface LocalAppState {
   reminderDismissedOn: ISODate | null;
   planExerciseIds: readonly string[];
   doses: Record<string, ExerciseDose>;
+  /** Last-write timestamp for the plan, profile, reminders, and schedule overrides. */
+  planUpdatedAt: ISODateTime;
+  scheduleOverrides: readonly ScheduleOverride[];
+  /** Null until the person enters one. Never invented. */
+  weightGoalKg: number | null;
+  weightEntries: readonly WeightEntry[];
+  checkIns: readonly CheckIn[];
+  /** Set only after the person agrees to upload this browser's data. */
+  syncConsentAt: ISODateTime | null;
   sessions: readonly SessionLog[];
   sessionDraft: SessionDraft | null;
 }

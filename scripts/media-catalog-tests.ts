@@ -9,10 +9,17 @@ const manifestMappings = manifest.assets.flatMap((asset) => asset.mappings.map((
 const manifestMappingByExercise = new Map(manifestMappings.map((mapping) => [mapping.exerciseId, mapping]));
 const usedAssetIds = new Set<string>();
 const demos = exercises.flatMap((exercise) => exercise.demoMedia ? [{ exercise, demo: exercise.demoMedia }] : []);
+const placeholderExercises = exercises.filter((exercise) => !exercise.demoMedia);
 
-assert.equal(demos.length, exercises.length, "every exercise must have a motion demonstration");
-assert.equal(manifestMappings.length, exercises.length, "manifest must contain one mapping per exercise");
-assert.equal(manifestMappingByExercise.size, exercises.length, "manifest exercise mappings must be unique");
+assert.equal(demos.length, 32, "the reviewed Gym visual set stays mapped");
+assert.equal(manifestMappings.length, demos.length, "manifest must contain one mapping per motion exercise");
+assert.equal(manifestMappingByExercise.size, demos.length, "manifest exercise mappings must be unique");
+assert.ok(placeholderExercises.length > 0, "whole-body placeholders are intentionally without borrowed motion");
+for (const exercise of placeholderExercises) {
+  assert.equal(exercise.media.kind, "image");
+  assert.equal(exercise.media.clinicalReviewStatus, "pending");
+  assert.match(exercise.media.alt, /not a movement demonstration/i);
+}
 
 for (const { exercise, demo } of demos) {
   assert.equal(demo.kind, "motion");
@@ -39,5 +46,5 @@ for (const { exercise, demo } of demos) {
 }
 
 assert.deepEqual(usedAssetIds, approvedAssetIds, "all approved Gym visual assets must be used");
-assert.deepEqual(new Set(demos.map(({ exercise }) => exercise.id)), new Set(exercises.map((exercise) => exercise.id)), "motion coverage must include every exercise");
+assert.deepEqual(new Set(demos.map(({ exercise }) => exercise.id)), new Set(exercises.filter((exercise) => exercise.demoMedia).map((exercise) => exercise.id)), "motion coverage must include every exercise that declares a demonstration");
 console.log(`Motion catalog verified for ${demos.length} demos and ${usedAssetIds.size} Gym visual assets.`);
