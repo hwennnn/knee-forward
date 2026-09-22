@@ -97,24 +97,26 @@ const GYM_TEMPLATES: Record<GymTemplate, readonly { exerciseId: string; group: S
 };
 
 /**
- * Six denser band moves. Even home days use the first list; odd home days use the second
- * so band walk/curl/dead bug and clam/triceps/side plank both show up in a normal week.
+ * Six floor moves with a short closed-loop mini band and/or bodyweight.
+ * No door anchor, long tube, furniture brace, or rail.
+ * Even home days use supine band abduction; odd home days swap in a short-loop good morning.
+ * Bridge march stays off: it is a single-leg progression and is not cleared for this prehab home day.
  */
 const HOME_STRENGTH_ROTATION: readonly (readonly { exerciseId: string; group: StrengthGroup }[])[] = [
   [
-    { exerciseId: "band-row", group: "Upper pull" },
-    { exerciseId: "band-chest-press", group: "Upper push" },
-    { exerciseId: "bridge", group: "Hip and balance" },
-    { exerciseId: "lateral-band-walk", group: "Hip and balance" },
-    { exerciseId: "band-biceps-curl", group: "Arms" },
-    { exerciseId: "dead-bug", group: "Core" },
-  ],
-  [
-    { exerciseId: "band-row", group: "Upper pull" },
-    { exerciseId: "band-chest-press", group: "Upper push" },
     { exerciseId: "bridge", group: "Hip and balance" },
     { exerciseId: "band-clam", group: "Hip and balance" },
-    { exerciseId: "band-triceps-extension", group: "Arms" },
+    { exerciseId: "lateral-band-walk", group: "Hip and balance" },
+    { exerciseId: "supine-band-hip-abduction", group: "Hip and balance" },
+    { exerciseId: "dead-bug", group: "Core" },
+    { exerciseId: "side-plank", group: "Core" },
+  ],
+  [
+    { exerciseId: "bridge", group: "Hip and balance" },
+    { exerciseId: "band-clam", group: "Hip and balance" },
+    { exerciseId: "lateral-band-walk", group: "Hip and balance" },
+    { exerciseId: "mini-band-good-morning", group: "Hip and balance" },
+    { exerciseId: "dead-bug", group: "Core" },
     { exerciseId: "side-plank", group: "Core" },
   ],
 ];
@@ -352,7 +354,7 @@ function blocksFor(
     blocks.push({
       id: "strength",
       title: "Strength",
-      note: "Light band only. No squat, leg press, or other loaded knee work.",
+      note: "Light short-loop band only. No squat, leg press, door anchor, or other loaded knee work.",
       exercises: strength,
     });
     blocks.push({
@@ -367,7 +369,7 @@ function blocksFor(
     blocks.push({
       id: "strength",
       title: "Strength",
-      note: "Short home session: six denser band moves with a controlled tempo. No leg press, mini squat, or machine knee work. Last sets can be hard, with about 1–2 reps left. The other band exercises stay on the plan.",
+      note: "Short loop band + floor — no anchor needed. Six moves with a short closed-loop mini band or bodyweight on the floor. No door anchor, long tube, furniture brace, or rail. No lunge or deep squat.",
       exercises: strength,
     });
     blocks.push({
@@ -409,7 +411,7 @@ function copyFor(kind: SessionKind, template: GymTemplate | null, lightBand: boo
     return {
       badge: "Home",
       headline: "You're at home.",
-      summary: "Six denser band moves, plus a three-move knee block.",
+      summary: "Short loop band + floor — no anchor needed. Six floor moves, plus a three-move knee block.",
     };
   }
   if (kind === "cardio") {

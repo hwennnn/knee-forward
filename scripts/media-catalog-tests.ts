@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
-import { access } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { access, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { exercises } from "../src/data";
 import manifest from "../public/assets/motion/gymvisual/media-manifest.json";
+import coachingManifest from "../public/assets/coaching-loops/media-manifest.json";
 
 const approvedAssetIds = new Set(manifest.assets.map((asset) => asset.assetId));
 const manifestMappings = manifest.assets.flatMap((asset) => asset.mappings.map((mapping) => ({ ...mapping, assetId: asset.assetId })));
@@ -50,4 +52,31 @@ for (const { exercise, demo } of demos) {
 
 assert.deepEqual(usedAssetIds, approvedAssetIds, "all approved Gym visual assets must be used");
 assert.deepEqual(new Set(demos.map(({ exercise }) => exercise.id)), new Set(exercises.filter((exercise) => exercise.demoMedia).map((exercise) => exercise.id)), "motion coverage must include every exercise that declares a demonstration");
-console.log(`Motion catalog verified for ${demos.length} demos and ${usedAssetIds.size} Gym visual assets.`);
+assert.equal(coachingManifest.schemaVersion, 1);
+assert.match(coachingManifest.runtimePolicy, /coaching GIFs/i);
+assert.equal(coachingManifest.rightsBasis, "original_project_asset");
+const coachingAssets = new Map(coachingManifest.assets.map((asset) => [asset.exerciseId, asset]));
+const coachingExercises = exercises.filter((exercise) => exercise.coachingLoop);
+assert.equal(coachingExercises.length, coachingAssets.size, "each coaching loop is mapped once");
+for (const exercise of coachingExercises) {
+  const loop = exercise.coachingLoop;
+  assert.ok(loop, exercise.id);
+  assert.equal(loop.kind, "coaching-loop");
+  assert.equal(loop.clinicalReviewStatus, "pending", `${exercise.id} coaching loop stays unreviewed`);
+  assert.equal(loop.visualScope, "generic_pattern");
+  assert.match(loop.alt, /not clinically reviewed/i);
+  assert.match(loop.attributionText, /Not clinician-reviewed/i);
+  assert.equal(loop.creator, "Knee Forward");
+  const asset = coachingAssets.get(exercise.id);
+  assert.ok(asset, `${exercise.id} is missing from the coaching-loop manifest`);
+  assert.equal(asset.clinicalReviewStatus, "pending");
+  assert.equal(loop.gifSrc, asset.gif.publicUrl);
+  assert.equal(loop.posterSrc, asset.poster.publicUrl);
+  for (const file of [asset.gif, asset.poster]) {
+    const bytes = await readFile(join(process.cwd(), file.repositoryPath));
+    assert.equal(createHash("sha256").update(bytes).digest("hex"), file.sha256, `${file.repositoryPath} hash`);
+    assert.equal(bytes.byteLength, file.bytes, `${file.repositoryPath} byte size`);
+  }
+}
+
+console.log(`Motion catalog verified for ${demos.length} demos, ${usedAssetIds.size} Gym visual assets, and ${coachingExercises.length} coaching loops.`);

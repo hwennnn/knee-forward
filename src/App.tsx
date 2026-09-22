@@ -26,7 +26,7 @@ import {
 } from "@phosphor-icons/react";
 import { exercises, rehabPhases, SAFETY_NOTICE, seedData, sourceMetadata } from "./data";
 import type { EpisodeStage, ExerciseDose, ExerciseRecord, LocalAppState, RehabEpisode, SessionLog, SourceMetadata } from "./types";
-import { EmptyState, ExerciseDetailForContext, ExerciseVisual, Modal, RoutineRow, SafetyBanner } from "./components";
+import { EmptyState, ExerciseCardVisual, ExerciseDetailForContext, ExerciseVisual, Modal, RoutineRow, SafetyBanner } from "./components";
 import { mediaContextForAppSurface, motionMediaForExerciseContext } from "./exerciseMedia";
 import { pathForTab, tabFromPathname } from "./navigation";
 import { ProgressPage } from "./ProgressPage";
@@ -61,7 +61,7 @@ function isLocalPreviewHost() {
   return import.meta.env.VITE_ENABLE_PENDING_MEDIA === "true" && isLoopback;
 }
 
-const learningMotionFor = (exercise: ExerciseRecord) => motionMediaForExerciseContext(exercise, "learn", isLocalPreviewHost());
+const learningMotionFor = (exercise: ExerciseRecord) => exercise.coachingLoop ?? motionMediaForExerciseContext(exercise, "learn", isLocalPreviewHost());
 
 function stageLabel(stage: EpisodeStage) {
   if (stage === "pre_surgery") return "Pre-surgery";
@@ -657,7 +657,7 @@ function App() {
         </header>
         <div className="workout-progress"><span style={{ width: `${((draft.currentExerciseIndex + 1) / draft.exercises.length) * 100}%` }} /></div>
         <main className="workout-main">
-          <div className="workout-media"><ExerciseVisual media={exercise.media} /></div>
+          <div className="workout-media"><ExerciseCardVisual exercise={exercise} /></div>
           <section className="workout-copy">
             <p className="kicker">{state.profile.affectedKnee === "right" ? "Right" : "Left"} knee · recorded plan</p>
             <h1>{exercise.name}</h1>

@@ -1,5 +1,5 @@
 import { Alarm, ArrowRight, Info, Play, SlidersHorizontal } from "@phosphor-icons/react";
-import { ExerciseVisual, SafetyBanner } from "./components";
+import { ExerciseCardVisual, SafetyBanner } from "./components";
 import { choiceFamily, weekMovedGymDays, type ResolvedDay } from "./schedule";
 import type { DayChoice, ExerciseDose, ExerciseRecord, LocalAppState } from "./types";
 import { formatWeightGoal, formatWeightTrend, type WeightTrend } from "./weightLog";
@@ -127,7 +127,7 @@ export function TodayView({
               if (!exercise) return null;
               return (
                 <button className="exercise-card" key={item.exerciseId} onClick={() => onExercise(exercise)}>
-                  <ExerciseVisual media={exercise.media} />
+                  <ExerciseCardVisual exercise={exercise} />
                   <span>
                     <strong>{exercise.shortName}</strong>
                     <small>{item.group} · {formatDose(item.dose)}</small>

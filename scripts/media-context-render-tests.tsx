@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { renderToStaticMarkup } from "react-dom/server";
-import { ExerciseDetailForContext, ExerciseVisual } from "../src/components";
+import { ExerciseCardVisual, ExerciseDetailForContext, ExerciseVisual } from "../src/components";
+import { exercises } from "../src/data";
 import { mediaContextForAppSurface, motionMediaForExerciseContext } from "../src/exerciseMedia";
 import type { ExerciseMediaContext } from "../src/exerciseMedia";
 import type { ExerciseRecord } from "../src/types";
@@ -73,5 +74,21 @@ for (const context of ["today", "plan", "workout"] as const) {
   assert.doesNotMatch(detail, /motion\.(?:webm|mp4)/);
   assert.doesNotMatch(detail, /motion-poster\.png/);
 }
+
+const deadBug = exercises.find((exercise) => exercise.id === "dead-bug");
+const bridge = exercises.find((exercise) => exercise.id === "bridge");
+const chestPress = exercises.find((exercise) => exercise.id === "machine-chest-press");
+assert.ok(deadBug && bridge && chestPress);
+const deadBugCard = renderToStaticMarkup(<ExerciseCardVisual exercise={deadBug} />);
+assert.match(deadBugCard, /data-media-kind="coaching-gif"/);
+assert.match(deadBugCard, /\/assets\/coaching-loops\/dead-bug\.gif/);
+assert.match(deadBugCard, /General reference/);
+const bridgeCard = renderToStaticMarkup(<ExerciseCardVisual exercise={bridge} />);
+assert.match(bridgeCard, /<video/);
+assert.match(bridgeCard, /3013-u0cNiij\.webm/);
+assert.match(bridgeCard, /muted=""/);
+const chestCard = renderToStaticMarkup(<ExerciseCardVisual exercise={chestPress} />);
+assert.match(chestCard, /machine-chest-press\.webp/);
+assert.doesNotMatch(chestCard, /<video|\.gif/);
 
 console.log("Still-first cards and inline Learn motion boundary verified.");

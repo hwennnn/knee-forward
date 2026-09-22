@@ -1,0 +1,199 @@
+{
+  "schemaVersion": 1,
+  "generatedOn": "2026-09-22",
+  "runtimePolicy": "Original stick-figure coaching GIFs loop on Today cards with a JPG poster. They are general coaching, not clinician-reviewed. Gym visual and CDC motion stay WebM/MP4 and do not serve GIF.",
+  "rightsBasis": "original_project_asset",
+  "assets": [
+    {
+      "exerciseId": "heel-slide",
+      "kind": "stick-figure-coaching-loop",
+      "clinicalReviewStatus": "pending",
+      "visualScope": "generic_pattern",
+      "creator": "Knee Forward",
+      "gif": {
+        "publicUrl": "/assets/coaching-loops/heel-slide.gif",
+        "repositoryPath": "public/assets/coaching-loops/heel-slide.gif",
+        "bytes": 20786,
+        "sha256": "dbfdbea9800c13423587cffc721d9d984f5c503ed83ffa96a75464d52dacc1e7",
+        "mimeType": "image/gif"
+      },
+      "poster": {
+        "publicUrl": "/assets/coaching-loops/heel-slide-poster.jpg",
+        "repositoryPath": "public/assets/coaching-loops/heel-slide-poster.jpg",
+        "bytes": 7397,
+        "sha256": "fa33e02c4126d98aa40872f538b0119b9f465137a460b94868014990202d1c62",
+        "mimeType": "image/jpeg"
+      }
+    },
+    {
+      "exerciseId": "quad-set",
+      "kind": "stick-figure-coaching-loop",
+      "clinicalReviewStatus": "pending",
+      "visualScope": "generic_pattern",
+      "creator": "Knee Forward",
+      "gif": {
+        "publicUrl": "/assets/coaching-loops/quad-set.gif",
+        "repositoryPath": "public/assets/coaching-loops/quad-set.gif",
+        "bytes": 17950,
+        "sha256": "139cd06eee1a24ddb07c3444293e578123b2a081119bb5f6eaa36e16c472bdbd",
+        "mimeType": "image/gif"
+      },
+      "poster": {
+        "publicUrl": "/assets/coaching-loops/quad-set-poster.jpg",
+        "repositoryPath": "public/assets/coaching-loops/quad-set-poster.jpg",
+        "bytes": 5769,
+        "sha256": "1d550850fc90943a0b2d759991ed2f771bf8a4207e5bebc5e32863dc70bca348",
+        "mimeType": "image/jpeg"
+      }
+    },
+    {
+      "exerciseId": "band-terminal-knee-extension",
+      "kind": "stick-figure-coaching-loop",
+      "clinicalReviewStatus": "pending",
+      "visualScope": "generic_pattern",
+      "creator": "Knee Forward",
+      "gif": {
+        "publicUrl": "/assets/coaching-loops/band-terminal-knee-extension.gif",
+        "repositoryPath": "public/assets/coaching-loops/band-terminal-knee-extension.gif",
+        "bytes": 29671,
+        "sha256": "61bf052cf02ce4a8fdefec69a9d9c7db94c0f6004388e29065bcddf002fdd091",
+        "mimeType": "image/gif"
+      },
+      "poster": {
+        "publicUrl": "/assets/coaching-loops/band-terminal-knee-extension-poster.jpg",
+        "repositoryPath": "public/assets/coaching-loops/band-terminal-knee-extension-poster.jpg",
+        "bytes": 10790,
+        "sha256": "808d63294a9fe7b3da68185ce8de588ab1780e3ccba65fdf14e94abcb8b92b5a",
+        "mimeType": "image/jpeg"
+      }
+    },
+    {
+      "exerciseId": "straight-leg-raise",
+      "kind": "stick-figure-coaching-loop",
+      "clinicalReviewStatus": "pending",
+      "visualScope": "generic_pattern",
+      "creator": "Knee Forward",
+      "gif": {
+        "publicUrl": "/assets/coaching-loops/straight-leg-raise.gif",
+        "repositoryPath": "public/assets/coaching-loops/straight-leg-raise.gif",
+        "bytes": 21669,
+        "sha256": "a381df78b8602f92cf2aa136316f5a95b5a18ddd66c2a56e0de09b282dcc8f6a",
+        "mimeType": "image/gif"
+      },
+      "poster": {
+        "publicUrl": "/assets/coaching-loops/straight-leg-raise-poster.jpg",
+        "repositoryPath": "public/assets/coaching-loops/straight-leg-raise-poster.jpg",
+        "bytes": 6572,
+        "sha256": "355de99aaa659d67e89b547549ce46fb7eb6138f4f894be080b84dcf5672af3b",
+        "mimeType": "image/jpeg"
+      }
+    },
+    {
+      "exerciseId": "dead-bug",
+      "kind": "stick-figure-coaching-loop",
+      "clinicalReviewStatus": "pending",
+      "visualScope": "generic_pattern",
+      "creator": "Knee Forward",
+      "gif": {
+        "publicUrl": "/assets/coaching-loops/dead-bug.gif",
+        "repositoryPath": "public/assets/coaching-loops/dead-bug.gif",
+        "bytes": 24265,
+        "sha256": "461b26546197fe9deeffdc1f6d69e5338edf792d8f26275012fd0ebd1fe2dbff",
+        "mimeType": "image/gif"
+      },
+      "poster": {
+        "publicUrl": "/assets/coaching-loops/dead-bug-poster.jpg",
+        "repositoryPath": "public/assets/coaching-loops/dead-bug-poster.jpg",
+        "bytes": 9125,
+        "sha256": "289b7b23a7a9a871e5797218f5f03136e336cc3cca3787f0920876c3089ca002",
+        "mimeType": "image/jpeg"
+      }
+    },
+    {
+      "exerciseId": "side-plank",
+      "kind": "stick-figure-coaching-loop",
+      "clinicalReviewStatus": "pending",
+      "visualScope": "generic_pattern",
+      "creator": "Knee Forward",
+      "gif": {
+        "publicUrl": "/assets/coaching-loops/side-plank.gif",
+        "repositoryPath": "public/assets/coaching-loops/side-plank.gif",
+        "bytes": 22308,
+        "sha256": "fa843088d023c6c3a2bba50f53caf4148dfc08d49a0a6a9a2ec7ba275d184a57",
+        "mimeType": "image/gif"
+      },
+      "poster": {
+        "publicUrl": "/assets/coaching-loops/side-plank-poster.jpg",
+        "repositoryPath": "public/assets/coaching-loops/side-plank-poster.jpg",
+        "bytes": 7500,
+        "sha256": "446d77877c7ca210926633998b9f47868df26164ea7d508fadbf152f79f2c0d6",
+        "mimeType": "image/jpeg"
+      }
+    },
+    {
+      "exerciseId": "band-clam",
+      "kind": "stick-figure-coaching-loop",
+      "clinicalReviewStatus": "pending",
+      "visualScope": "generic_pattern",
+      "creator": "Knee Forward",
+      "gif": {
+        "publicUrl": "/assets/coaching-loops/band-clam.gif",
+        "repositoryPath": "public/assets/coaching-loops/band-clam.gif",
+        "bytes": 26581,
+        "sha256": "9ae107c24537769fd495e6ac078204f45761176933d44ed6d67ebdfb4baad9a3",
+        "mimeType": "image/gif"
+      },
+      "poster": {
+        "publicUrl": "/assets/coaching-loops/band-clam-poster.jpg",
+        "repositoryPath": "public/assets/coaching-loops/band-clam-poster.jpg",
+        "bytes": 10068,
+        "sha256": "54564acfd878465dfcd7728d65d9a3c8a278701ed1950248eb604c45776660dd",
+        "mimeType": "image/jpeg"
+      }
+    },
+    {
+      "exerciseId": "supine-band-hip-abduction",
+      "kind": "stick-figure-coaching-loop",
+      "clinicalReviewStatus": "pending",
+      "visualScope": "generic_pattern",
+      "creator": "Knee Forward",
+      "gif": {
+        "publicUrl": "/assets/coaching-loops/supine-band-hip-abduction.gif",
+        "repositoryPath": "public/assets/coaching-loops/supine-band-hip-abduction.gif",
+        "bytes": 30514,
+        "sha256": "e1bc0ef2453f93721347663773b43757818024535651ed075d64f9e11e88976d",
+        "mimeType": "image/gif"
+      },
+      "poster": {
+        "publicUrl": "/assets/coaching-loops/supine-band-hip-abduction-poster.jpg",
+        "repositoryPath": "public/assets/coaching-loops/supine-band-hip-abduction-poster.jpg",
+        "bytes": 11821,
+        "sha256": "66f4351e7bedf03c03a3b1baad99e0ebb4335621f9ca632631f4dcd1c6f922d9",
+        "mimeType": "image/jpeg"
+      },
+      "stillSource": "work/generated-still-sources/coaching-loops/supine-band-hip-abduction.png"
+    },
+    {
+      "exerciseId": "mini-band-good-morning",
+      "kind": "stick-figure-coaching-loop",
+      "clinicalReviewStatus": "pending",
+      "visualScope": "generic_pattern",
+      "creator": "Knee Forward",
+      "gif": {
+        "publicUrl": "/assets/coaching-loops/mini-band-good-morning.gif",
+        "repositoryPath": "public/assets/coaching-loops/mini-band-good-morning.gif",
+        "bytes": 28949,
+        "sha256": "e5af72ad7e3858f722d41d4d084301b58b5194feb755b57b46c8b35f6c9ed3fe",
+        "mimeType": "image/gif"
+      },
+      "poster": {
+        "publicUrl": "/assets/coaching-loops/mini-band-good-morning-poster.jpg",
+        "repositoryPath": "public/assets/coaching-loops/mini-band-good-morning-poster.jpg",
+        "bytes": 9661,
+        "sha256": "f830bb3225c46c4e86644617fb742bde65811f3b3bf53c760aaf6ffa7159b5eb",
+        "mimeType": "image/jpeg"
+      },
+      "stillSource": "work/generated-still-sources/coaching-loops/mini-band-good-morning.png"
+    }
+  ]
+}

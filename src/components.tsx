@@ -13,8 +13,8 @@ import {
   Warning,
   X,
 } from "@phosphor-icons/react";
-import type { ExerciseMediaProvenance, ExerciseMotionMedia, ExerciseRecord, ExerciseStillMedia } from "./types";
-import { motionMediaForExerciseContext } from "./exerciseMedia";
+import type { ExerciseCoachingLoop, ExerciseMediaProvenance, ExerciseMotionMedia, ExerciseRecord, ExerciseStillMedia } from "./types";
+import { cardMotionForExercise, coachingLoopForContext, motionMediaForExerciseContext } from "./exerciseMedia";
 import type { ExerciseMediaContext } from "./exerciseMedia";
 
 function usePrefersReducedMotion() {
@@ -111,6 +111,55 @@ function MotionExerciseVisual({ media, autoplay, loop }: {
       {motionFailed && <div className="exercise-visual__error" role="status">Motion could not be loaded. Use the still image and written cues.</div>}
     </div>
   );
+}
+
+function CoachingLoopVisual({ media, autoplay, compact = false }: {
+  media: ExerciseCoachingLoop;
+  autoplay: boolean;
+  compact?: boolean;
+}) {
+  const mediaStyle = {
+    "--media-native-width": `${media.width}px`,
+    "--media-native-height": `${media.height}px`,
+  } as CSSProperties;
+  return (
+    <div
+      className={`exercise-visual exercise-visual--motion${compact ? " exercise-visual--compact" : ""}`}
+      role="img"
+      aria-label={media.alt}
+      data-media-kind="coaching-gif"
+      data-media-provider="coaching-loop"
+      data-media-label="General reference"
+      data-motion-state={autoplay ? "playing" : "paused"}
+      data-native-width={media.width}
+      data-native-height={media.height}
+      style={mediaStyle}
+    >
+      <img
+        className="exercise-visual__media"
+        src={autoplay ? media.gifSrc : media.posterSrc}
+        width={media.width}
+        height={media.height}
+        alt=""
+        aria-hidden="true"
+      />
+    </div>
+  );
+}
+
+export function ExerciseCardVisual({ exercise, compact = false }: {
+  exercise: ExerciseRecord;
+  compact?: boolean;
+}) {
+  const reducedMotion = usePrefersReducedMotion();
+  const motion = cardMotionForExercise(exercise);
+  if (motion?.kind === "coaching-loop") {
+    return <CoachingLoopVisual media={motion} autoplay={!reducedMotion} compact={compact} />;
+  }
+  if (motion?.kind === "motion") {
+    return <MotionExerciseVisual media={motion} autoplay={!reducedMotion} loop={!reducedMotion} />;
+  }
+  return <ExerciseVisual media={exercise.media} compact={compact} />;
 }
 
 export function ExerciseVisual({
@@ -221,7 +270,7 @@ export function Modal({ title, children, onClose, wide = false, dismissible = tr
 }
 
 function MediaDisclosure({ media, label }: {
-  media: ExerciseStillMedia | ExerciseMotionMedia;
+  media: ExerciseStillMedia | ExerciseMotionMedia | ExerciseCoachingLoop;
   label: "Still image" | "Motion demonstration";
 }) {
   const provenance = media as Partial<ExerciseMediaProvenance>;
@@ -256,26 +305,30 @@ function MediaDisclosure({ media, label }: {
   );
 }
 
-export function ExerciseDetail({ exercise, onBack, demoMedia }: {
+export function ExerciseDetail({ exercise, onBack, demoMedia, coachingLoop }: {
   exercise: ExerciseRecord;
   onBack: () => void;
   demoMedia?: ExerciseMotionMedia | null;
+  coachingLoop?: ExerciseCoachingLoop | null;
 }) {
   const reducedMotion = usePrefersReducedMotion();
-  const disclosedMedia = demoMedia ?? exercise.media;
+  const disclosedMedia = coachingLoop ?? demoMedia ?? exercise.media;
+  const motionAvailable = Boolean(demoMedia || coachingLoop);
 
   return (
-    <section className="detail-view" data-media-source={exercise.media.src} data-motion-available={demoMedia ? "true" : "false"}>
+    <section className="detail-view" data-media-source={exercise.media.src} data-motion-available={motionAvailable ? "true" : "false"}>
       <button className="text-button" onClick={onBack}><ArrowLeft size={18} /> Back to library</button>
       <div className="detail-grid">
         <div className="detail-media-stage">
           <div className="detail-media-stage__still">
             <ExerciseVisual media={exercise.media} />
           </div>
-          {demoMedia && (
+          {(demoMedia || coachingLoop) && (
             <div className="detail-motion-block">
               <p className="detail-motion-label">Demo</p>
-              <MotionExerciseVisual media={demoMedia} autoplay={!reducedMotion} loop={!reducedMotion} />
+              {coachingLoop
+                ? <CoachingLoopVisual media={coachingLoop} autoplay={!reducedMotion} />
+                : demoMedia && <MotionExerciseVisual media={demoMedia} autoplay={!reducedMotion} loop={!reducedMotion} />}
               {reducedMotion && <p className="reduced-motion-note">A static poster is shown because reduced motion is enabled.</p>}
             </div>
           )}
@@ -311,8 +364,9 @@ export function ExerciseDetailForContext({
   allowPendingLearningMedia?: boolean;
   onBack: () => void;
 }) {
-  const demoMedia = motionMediaForExerciseContext(exercise, context, allowPendingLearningMedia);
-  return <ExerciseDetail exercise={exercise} demoMedia={demoMedia} onBack={onBack} />;
+  const coachingLoop = coachingLoopForContext(exercise, context);
+  const demoMedia = coachingLoop ? null : motionMediaForExerciseContext(exercise, context, allowPendingLearningMedia);
+  return <ExerciseDetail exercise={exercise} demoMedia={demoMedia} coachingLoop={coachingLoop} onBack={onBack} />;
 }
 
 export function RoutineRow({ exercise, dose, onOpen }: {

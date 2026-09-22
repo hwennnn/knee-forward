@@ -18,7 +18,7 @@ const buildFiles = (await collectFiles(absoluteOutputPath))
   .sort();
 const publicPaths = buildFiles
   .map((file) => `/${relative(absoluteOutputPath, file).split(sep).join("/")}`)
-  .filter((publicPath) => !publicPath.startsWith("/assets/motion/"));
+  .filter((publicPath) => !publicPath.startsWith("/assets/motion/") && !publicPath.startsWith("/assets/coaching-loops/"));
 const buildHash = createHash("sha256");
 
 for (const publicPath of publicPaths) {

@@ -5,9 +5,9 @@ Knee Forward is a local-first ACL rehabilitation companion and a general whole-b
 ## What is implemented
 
 - Guest-first use. The app works with no Supabase project.
-- Today answers location and exact doses: Knee block, Strength, Cardio, and Check-in. The default week is gym on Monday, Wednesday, and Friday; denser home band work on Tuesday and Thursday; moderate cardio on Saturday; rest on Sunday. Time zone defaults to `America/Los_Angeles` and can be changed in Settings.
-- “Training at home today”, “At the gym today”, and “Rest / knee flared” remap the rest of the week. A home override replaces that gym day with the full band session and moves the missed gym day to a later non-adjacent weekday. A flare day is range of motion only and does not refill a gym day. Sunday is never turned into a hard knee day.
-- Whole-body gym templates A, B, and C rotate a short day: two safe lowers, one push, one pull, one arm or rear-delt move, and one core exercise, plus moderate bike or a flat walk. Home days use six denser band moves. The knee block is three moves. Starting doses stay inside the protective ranges (mini squat about 45°, leg press about 45–60°, no deep squat, lunge, run, cut, pivot, or jump). Specific kilograms are not seeded. The rest of the catalog stays on the plan.
+- Today answers location and exact doses: Knee block, Strength, Cardio, and Check-in. The default week is gym on Monday, Wednesday, and Friday; short-loop home work on Tuesday and Thursday; moderate cardio on Saturday; rest on Sunday. Time zone defaults to `America/Los_Angeles` and can be changed in Settings.
+- “Training at home today”, “At the gym today”, and “Rest / knee flared” remap the rest of the week. A home override replaces that gym day with the short-loop floor session and moves the missed gym day to a later non-adjacent weekday. A flare day is range of motion only and does not refill a gym day. Sunday is never turned into a hard knee day.
+- Whole-body gym templates A, B, and C rotate a short day: two safe lowers, one push, one pull, one arm or rear-delt move, and one core exercise, plus moderate bike or a flat walk. Home days use six floor moves with a short closed-loop mini band or bodyweight. No door anchor, long tube, furniture brace, or rail. The knee block is three moves. Starting doses stay inside the protective ranges (mini squat about 45°, leg press about 45–60°, no deep squat, lunge, run, cut, pivot, or jump). Specific kilograms are not seeded. The rest of the catalog stays on the plan.
 - Optional morning weight in kilograms, a 7-day trend, and counts of strength sessions and cardio minutes. There is no calorie target and no numeric weight goal until one is entered.
 - Real static URLs for Today, Plan, Learn, and Progress, so refreshing or reopening a browser tab preserves the current section
 - Private first-run onboarding stored in the browser
@@ -20,7 +20,7 @@ Knee Forward is a local-first ACL rehabilitation companion and a general whole-b
 - Read-only previous-set hints, partial/skip/stop outcomes, and an automatically saved resumable workout draft
 - Post-session pain, swelling, and note logging
 - Exercise-level history with completed-set counts, highest recorded load, repetitions, and recorded load-volume
-- A phase-aware learning library. The original 32 exercises keep crisp WebP stills and approved Gym visual motion on Learn detail (WebM with MP4 fallback, never runtime GIF). Whole-body additions use their own original coaching stills. Those stills are general references and are not clinically reviewed.
+- A phase-aware learning library. The original 32 exercises keep crisp WebP stills and approved Gym visual motion on Learn detail (WebM with MP4 fallback). Home moves without a matching clip use original stick-figure coaching GIFs on Today cards. Those GIFs are general coaching and are not clinically reviewed. Whole-body additions use their own original coaching stills, also not clinically reviewed.
 - Optional magic-link backup for `whman63@gmail.com` only, when `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are present at build time. Other addresses are rejected before a link is sent. See [docs/SUPABASE.md](docs/SUPABASE.md).
 - Local reminders plus an `.ics` calendar download
 - Progress history, weekly adherence, and symptom-response summaries

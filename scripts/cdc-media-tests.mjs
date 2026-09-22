@@ -65,7 +65,10 @@ assert.deepEqual(unmappedAssetIds, new Set([
 
 const publicUrl = new URL("../public/", import.meta.url);
 const publicEntries = await readdir(publicUrl, { recursive: true });
-const runtimeGifs = publicEntries.filter((entry) => entry.toLowerCase().endsWith(".gif"));
-assert.deepEqual(runtimeGifs, [], `runtime GIF files found: ${runtimeGifs.join(", ")}`);
+const runtimeGifs = publicEntries.filter((entry) => String(entry).toLowerCase().endsWith(".gif"));
+for (const entry of runtimeGifs) {
+  const normalized = String(entry).split(/[\\/]/).join("/");
+  assert.match(normalized, /^assets\/coaching-loops\/[^/]+\.gif$/, `unexpected runtime GIF: ${normalized}`);
+}
 
-console.log(`CDC media manifest verified for ${manifest.assets.length} assets with zero runtime GIFs.`);
+console.log(`CDC media manifest verified for ${manifest.assets.length} assets. Runtime GIFs are limited to original coaching loops.`);

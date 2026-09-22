@@ -107,6 +107,16 @@ export interface ExerciseMp4Source {
   mimeType: "video/mp4";
 }
 
+/** Original stick-figure loop. General coaching, not a clinician-reviewed demonstration. */
+export interface ExerciseCoachingLoop extends ExerciseMediaProvenance {
+  kind: "coaching-loop";
+  gifSrc: string;
+  posterSrc: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
 export interface ExerciseMotionMedia extends ExerciseMediaProvenance {
   kind: "motion";
   /** WebM is preferred; MP4 is the required browser fallback. */
@@ -139,6 +149,11 @@ export interface ExerciseRecord {
   planEligible?: boolean;
   /** Optional motion-only learning demonstration. Pending media is local-preview-only. */
   demoMedia?: ExerciseMotionMedia;
+  /**
+   * Original looping coaching GIF for a setup the still (and any mismatched Gym visual clip) does not show.
+   * Pending visual review. It is general coaching, not a prescription.
+   */
+  coachingLoop?: ExerciseCoachingLoop;
   /** Still-only card and primary reference asset used throughout the product. */
   media: ExerciseStillMedia;
 }

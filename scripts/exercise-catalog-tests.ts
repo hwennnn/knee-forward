@@ -125,6 +125,8 @@ const coachingStillHashes = {
   "back-extension": "753f7dab85e11434d6f07c8de7e1a1b4cba87cd040b6872d5682f3db3053ffba",
   "assisted-pull-up": "8ce439122d2ad3684ccffb95f5a0a435efcde4e171a8cf9a50918b482f3c2522",
   "assisted-dip": "0e7685381344f63a5c06fc4f6f3c38d1c4715b60c90eb7f9a0fe1fb9dd87c3eb",
+  "supine-band-hip-abduction": "51982ff33eb3bd0964022c91fc091da522fe0dd3f5eb472b4362ee6609fc8c9c",
+  "mini-band-good-morning": "114907e68a38c1b308e39899fab596d385b0ad42f3c0d9a7d2ad49b71ca1c832",
 } as const;
 
 for (const [slug, expectedHash] of Object.entries(coachingStillHashes)) {
@@ -206,7 +208,7 @@ assert.equal(defaultPrehabDoses["band-row"].sets, 4);
 assert.equal(defaultPrehabDoses["stationary-bike"].durationMinutes, 30);
 assert.equal(defaultPrehabDoses["cable-face-pull"].loadKg, null);
 assert.equal(defaultPrehabDoses["assisted-dip"].sets, 3);
-for (const exerciseId of ["cable-face-pull", "reverse-fly", "chest-supported-row", "cable-chest-fly", "straight-arm-pulldown", "hip-abduction-machine", "seated-calf-raise", "back-extension", "assisted-pull-up", "assisted-dip"] as const) {
+for (const exerciseId of ["cable-face-pull", "reverse-fly", "chest-supported-row", "cable-chest-fly", "straight-arm-pulldown", "hip-abduction-machine", "seated-calf-raise", "back-extension", "assisted-pull-up", "assisted-dip", "supine-band-hip-abduction", "mini-band-good-morning"] as const) {
   assert.ok(corePrehabExerciseIds.includes(exerciseId), `${exerciseId} belongs on the default plan`);
   assert.equal(previousWholeBodyExerciseIds.includes(exerciseId), false, `${exerciseId} is new and must not be treated as the previous whole-body seed`);
 }

@@ -44,9 +44,9 @@ The panels were cropped from the source sheets, centered on individual square ca
 
 ## Whole-body coaching stills
 
-Each whole-body catalog record has its own 1024 px WebP still under `public/assets/exercise-stills/`, named with the exercise id (`machine-chest-press.webp`, `lat-pulldown.webp`, `seated-row.webp`, `shoulder-press.webp`, `biceps-curl.webp`, `triceps-pressdown.webp`, `dead-bug.webp`, `side-plank.webp`, `pallof-press.webp`, `band-row.webp`, `band-chest-press.webp`, `band-overhead-press.webp`, `band-biceps-curl.webp`, `band-triceps-extension.webp`, `band-clam.webp`, `cable-face-pull.webp`, `reverse-fly.webp`, `chest-supported-row.webp`, `cable-chest-fly.webp`, `straight-arm-pulldown.webp`, `hip-abduction-machine.webp`, `seated-calf-raise.webp`, `back-extension.webp`, `assisted-pull-up.webp`, and `assisted-dip.webp`).
+Each whole-body catalog record has its own 1024 px WebP still under `public/assets/exercise-stills/`, named with the exercise id (`machine-chest-press.webp`, `lat-pulldown.webp`, `seated-row.webp`, `shoulder-press.webp`, `biceps-curl.webp`, `triceps-pressdown.webp`, `dead-bug.webp`, `side-plank.webp`, `pallof-press.webp`, `band-row.webp`, `band-chest-press.webp`, `band-overhead-press.webp`, `band-biceps-curl.webp`, `band-triceps-extension.webp`, `band-clam.webp`, `cable-face-pull.webp`, `reverse-fly.webp`, `chest-supported-row.webp`, `cable-chest-fly.webp`, `straight-arm-pulldown.webp`, `hip-abduction-machine.webp`, `seated-calf-raise.webp`, `back-extension.webp`, `assisted-pull-up.webp`, `assisted-dip.webp`, `supine-band-hip-abduction.webp`, and `mini-band-good-morning.webp`).
 
-These are original instructional stills generated for Knee Forward on 2026-09-22. Source PNGs are retained under `work/generated-still-sources/whole-body/`. Runtime files are lossy VP8 WebP. SHA-256 checksums are locked in `scripts/exercise-catalog-tests.ts`.
+These are original instructional stills generated for Knee Forward on 2026-09-22. Source PNGs for the earlier whole-body set are retained under `work/generated-still-sources/whole-body/`. The two short-loop home stills (`supine-band-hip-abduction`, `mini-band-good-morning`) are stick-figure frames; their source PNGs are under `work/generated-still-sources/coaching-loops/`. Runtime files are lossy VP8 WebP. SHA-256 checksums are locked in `scripts/exercise-catalog-tests.ts`.
 
 They are coaching diagrams for orientation. They are not crops of the rehab panels, not Gym visual GIFs, and not CDC clips. `clinicalReviewStatus` is `pending` and `visualScope` is `generic_pattern`, so the card labels them “General reference”. Alt text says they are not clinically reviewed. Do not point these records at a knee-rehab still or at another exercise’s motion file. Do not mark them reviewed unless a clinician reviews the specific image.
 
@@ -54,10 +54,10 @@ The old shared geometric mark remains at `public/assets/exercise-stills/whole-bo
 
 ## Mixed-media runtime policy
 
-- Primary media: a crisp WebP still on Learn cards, Learn detail, and workout screens.
-- Optional motion: Learn detail only, after the still and explanatory content.
-- Runtime motion: WebM first, MP4 fallback, and a static poster.
-- Runtime GIF: prohibited. Original Gym visual GIFs are preserved only under `work/source-motion-gifs/gymvisual/` for provenance.
-- Clinical status: the 32 motion mappings are approved; generated knee stills and the whole-body coaching stills remain pending visual review. None is medical clearance. Catalog records without `demoMedia` must not be treated as covered by the Gym visual manifest.
+- Primary media: a crisp WebP still on Learn cards and Learn detail. Today cards and the active workout view play motion when a reviewed Gym visual clip or an original coaching loop exists.
+- Optional motion: Learn detail, after the still. Today and workout cards autoplay a muted loop.
+- Gym visual and CDC runtime motion: WebM first, MP4 fallback, and a static poster. Those collections do not serve GIF.
+- Original coaching loops: short stick-figure GIFs under `public/assets/coaching-loops/`, with a JPG poster. They are the runtime file for home setups that do not match an existing clip. Reduced motion shows the poster. Checksums live in `public/assets/coaching-loops/media-manifest.json`.
+- Clinical status: the 32 Gym visual mappings are approved. Generated knee stills, whole-body coaching stills, and stick-figure coaching GIFs remain pending visual review. None is medical clearance. A coaching GIF is general coaching, not clinician-reviewed media. Catalog records without `demoMedia` must not be treated as covered by the Gym visual manifest.
 
 Motion provenance, rights, transformations, mapping decisions, and checksums are documented in [`MEDIA_LICENSES.md`](MEDIA_LICENSES.md) and the two media manifests.

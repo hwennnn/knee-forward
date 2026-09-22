@@ -113,13 +113,26 @@ The project owner confirmed approval for public use and all exercise mappings on
 
 All 32 mappings have `clinicalReviewStatus: reviewed`. Exact variations and general movement references are recorded separately per mapping, and every general reference receives an in-app mismatch label and specific alternative text. No imported fitness-dataset visual determines exercise clearance, setup, range, support, resistance, or timing.
 
-Mapped motion is optional on Learn detail only. Crisp WebP stills remain primary on cards, detail, and workout screens. Exact exercise setup, range, support, resistance, and timing still come from the treating clinician.
+Mapped Gym visual motion plays on Learn detail and, when the clip matches the exercise, on Today and workout cards. Crisp WebP stills remain the primary Learn reference. Exact exercise setup, range, support, resistance, and timing still come from the treating clinician.
 
 The original source GIFs are preserved under `work/source-motion-gifs/gymvisual/` for provenance and are not runtime assets. Public motion derivatives use WebM first and MP4 fallback with a JPG poster. No GIF may be served at runtime.
 
 The complete asset-by-asset record, including mapping status, source GIF archive path, dataset exercise ID, media ID, upstream path, local WebM/MP4/poster paths, byte sizes, SHA-256 hashes, visual scope, rights basis, and review status, is stored in [`public/assets/motion/gymvisual/media-manifest.json`](../public/assets/motion/gymvisual/media-manifest.json).
 
 No exercise instructions, phase recommendations, or clinical claims were imported from the general fitness dataset.
+
+## Original short-loop coaching GIFs
+
+Home moves that do not match an existing Gym visual clip use original stick-figure loops drawn for Knee Forward on 2026-09-22. The generator is `scripts/generate-coaching-loops.py`. Runtime files are:
+
+- GIF: `public/assets/coaching-loops/<exercise-id>.gif`
+- Poster: `public/assets/coaching-loops/<exercise-id>-poster.jpg`
+
+Mapped exercises: heel slide, quad set, band terminal knee extension, straight-leg raise, dead bug, knees-down side plank, band clam, supine mini-band hip abduction, and mini-band good morning. Bridge and lateral band walk keep their matching Gym visual WebM clips instead of a new GIF.
+
+These loops are project-owned general coaching. `visualScope` is `generic_pattern`. `clinicalReviewStatus` is `pending`. They are not clinician-reviewed, not a prescription, and not Gym visual or CDC media. SHA-256 checksums and byte sizes are in [`public/assets/coaching-loops/media-manifest.json`](../public/assets/coaching-loops/media-manifest.json). Do not mark a loop reviewed unless a clinician reviews that specific animation.
+
+Gym visual and CDC derivatives still never serve GIF. Coaching GIFs are the only runtime GIFs, and only inside `public/assets/coaching-loops/`.
 
 ## Whole-body coaching stills
 

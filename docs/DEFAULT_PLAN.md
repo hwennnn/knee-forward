@@ -39,13 +39,13 @@ Daily knee-block doses (heel slide, quad set, terminal knee extension, straight-
 | Day | Default | What Today shows |
 | --- | --- | --- |
 | Monday, Wednesday, Friday | Gym | Three-move knee block, rotated template A, B, or C (6 strength moves), then bike 25–30 minutes moderate if the stored bike dose is still the seed |
-| Tuesday, Thursday | Home | Three-move knee block plus six denser band moves. Tuesday is row, chest press, bridge, band walk, curl, and dead bug. Thursday swaps in clam, triceps, and side plank, and rotates the straight-leg raise into the knee block |
+| Tuesday, Thursday | Home | Three-move knee block plus six floor moves. Short loop band + floor — no anchor needed. Tuesday is bridge, clam, band walk, supine band abduction, dead bug, and knees-down side plank. Thursday swaps the abduction for a mini-band good morning and rotates the straight-leg raise into the knee block |
 | Saturday | Moderate cardio | Three-move knee block and bike 35–45 minutes when the stored dose is still the seed, or a flat walk |
 | Sunday | Rest | Terminal knee extension, heel slide, straight-leg raise, and a light band walk. No loaded knee work |
 
 Gym A is leg press, hamstring curl, chest press, lat pulldown, face pull, and dead bug. Gym B is mini squat, knee extension, shoulder press, chest-supported row, triceps pressdown, and side plank. Gym C is hip hinge, hip abduction machine, chest press, seated row, biceps curl, and Pallof press. Each gym day is two safe lowers, one push, one pull, one arm or rear-delt move, and one core move. Cardio stays in its own block. Load stays unset (`loadKg` null). Notes tell the person to push load when the form is clean. The compounds that remain stay at the harder seeded doses.
 
-Calf raise, chest fly, fire hydrant, heel raise, back extension, straight-arm pulldown, assisted pull-up, assisted dip, rear-delt fly, band overhead press, and single-leg balance stay in the plan catalog. They are not forced into every Today session.
+Calf raise, chest fly, fire hydrant, heel raise, back extension, straight-arm pulldown, assisted pull-up, assisted dip, rear-delt fly, and single-leg balance stay in the plan catalog. They are not forced into every Today session. Band row, band chest press, band overhead press, band curl, and band triceps stay in the catalog too, but they need an anchor or a long band, so they are not on home Today. Bridge march stays off home days because it is a single-leg progression and is not part of this prehab home set. Home is a short closed-loop mini band and the floor only. Gym A, B, and C stay the slim 24 Hour Fitness sessions.
 
 Knee limits stay on the doses and on the gym strength note: mini squat about 45° (goblet, dumbbell, or Smith is allowed), leg press about 45–60°, soft knees on hinges, no deep squat, lunge, run, cut, pivot, or jump. Hanging knee raises and kneeling cable crunches are not in the plan. Open-chain knee extension stays a shorter protected set, not a 4×8 compound.
 
@@ -53,4 +53,4 @@ Home on a gym day stores a date override, shows that same home session immediate
 
 Loaded knee exercises (`LOADED_KNEE_IDS`, including the hip-abduction machine, seated calf raise, and back extension) stay off home, flare, Saturday, and Sunday. Clinician-edited doses are kept; the Saturday and gym bike overlays apply only while the stored stationary-bike dose still equals the seed.
 
-Stick-figure coaching GIFs are not part of this plan. Do not mark them clinically reviewed unless they are added under the existing media license and provenance rules in [MEDIA_LICENSES.md](MEDIA_LICENSES.md) and [ASSETS.md](ASSETS.md). Whole-body exercises use original coaching stills described in [ASSETS.md](ASSETS.md). Those stills are pending visual review and are not clinician media.
+Home Today cards play a looping demo: an existing Gym visual WebM when that clip matches the move (bridge, lateral band walk), otherwise an original stick-figure coaching GIF. Those GIFs are general coaching under [MEDIA_LICENSES.md](MEDIA_LICENSES.md) and [ASSETS.md](ASSETS.md). `clinicalReviewStatus` stays `pending`. Do not mark them clinician-reviewed. Whole-body exercises still use their own coaching stills. Those stills are pending visual review and are not clinician media.

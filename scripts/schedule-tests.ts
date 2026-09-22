@@ -71,23 +71,29 @@ assert.equal(homeTuesday.headline, "You're at home.");
 assert.equal(homeTuesday.badge, "Home");
 for (const kneeId of KNEE_BLOCK_CORE_IDS) assert.ok(ids(homeTuesday).includes(kneeId));
 assert.equal(ids(homeTuesday).includes("straight-leg-raise"), false);
-for (const upperId of ["band-row", "band-chest-press", "bridge", "lateral-band-walk", "band-biceps-curl", "dead-bug"]) {
-  assert.ok(ids(homeTuesday).includes(upperId), `home day missing ${upperId}`);
+for (const homeId of ["bridge", "band-clam", "lateral-band-walk", "supine-band-hip-abduction", "dead-bug", "side-plank"]) {
+  assert.ok(ids(homeTuesday).includes(homeId), `home day missing ${homeId}`);
 }
-assert.equal(ids(homeTuesday).includes("band-overhead-press"), false);
-assert.equal(ids(homeTuesday).includes("band-triceps-extension"), false);
-assert.equal(ids(homeTuesday).includes("band-clam"), false);
-assert.equal(ids(homeTuesday).includes("side-plank"), false);
-assert.equal(ids(homeTuesday).includes("single-leg-balance"), false);
+const homeAnchorIds = ["band-row", "band-chest-press", "band-overhead-press", "band-biceps-curl", "band-triceps-extension", "single-leg-balance", "pallof-press", "bridge-march", "squat"];
+for (const anchorId of homeAnchorIds) {
+  assert.equal(ids(homeTuesday).includes(anchorId), false, `home day must not include ${anchorId}`);
+}
+assert.equal(ids(homeTuesday).includes("mini-band-good-morning"), false);
 assert.equal(homeTuesday.blocks.find((block) => block.id === "strength")?.exercises.length, 6);
-assert.equal(homeTuesday.blocks.find((block) => block.id === "strength")?.exercises.find((item) => item.exerciseId === "band-row")?.dose.sets, 4);
-assert.match(homeTuesday.summary, /Six denser band/);
+assert.equal(homeTuesday.blocks.find((block) => block.id === "strength")?.exercises.find((item) => item.exerciseId === "bridge")?.dose.sets, 4);
+assert.match(homeTuesday.summary, /short loop band \+ floor — no anchor needed/i);
+assert.match(homeTuesday.blocks.find((block) => block.id === "strength")?.note ?? "", /no anchor needed/i);
+assert.match(homeTuesday.blocks.find((block) => block.id === "strength")?.note ?? "", /No lunge or deep squat/);
 
 const homeThursday = defaults[3]!;
 assert.equal(homeThursday.kind, "home");
-for (const upperId of ["band-row", "band-chest-press", "bridge", "band-clam", "band-triceps-extension", "side-plank"]) {
-  assert.ok(ids(homeThursday).includes(upperId), `second home day missing ${upperId}`);
+for (const homeId of ["bridge", "band-clam", "lateral-band-walk", "mini-band-good-morning", "dead-bug", "side-plank"]) {
+  assert.ok(ids(homeThursday).includes(homeId), `second home day missing ${homeId}`);
 }
+for (const anchorId of homeAnchorIds) {
+  assert.equal(ids(homeThursday).includes(anchorId), false, `second home day must not include ${anchorId}`);
+}
+assert.equal(ids(homeThursday).includes("supine-band-hip-abduction"), false);
 assert.ok(ids(homeThursday).includes("straight-leg-raise"), "straight-leg raise rotates onto the second home day");
 assert.equal(ids(homeThursday).includes("quad-set"), false);
 assert.equal(homeThursday.blocks.find((block) => block.id === "knee")?.exercises.length, 3);
@@ -185,13 +191,14 @@ thinDoses["band-terminal-knee-extension"] = { ...blankDose };
 const thinWeek = resolveWeek(new Date(monday), "America/Los_Angeles", [], { planExerciseIds: thinIds, doses: thinDoses });
 const thinHome = thinWeek[1]!;
 assert.equal(thinHome.kind, "home");
-assert.match(thinHome.blocks.find((block) => block.id === "strength")?.note ?? "", /Short home session/);
-for (const id of ["band-row", "band-chest-press", "bridge", "lateral-band-walk", "band-biceps-curl", "dead-bug", "band-terminal-knee-extension"]) {
+assert.match(thinHome.blocks.find((block) => block.id === "strength")?.note ?? "", /short loop band \+ floor — no anchor needed/i);
+for (const id of ["bridge", "band-clam", "lateral-band-walk", "supine-band-hip-abduction", "dead-bug", "side-plank", "band-terminal-knee-extension"]) {
   assert.ok(ids(thinHome).includes(id), `thin home day missing ${id}`);
 }
 assert.equal(thinHome.blocks.find((block) => block.id === "strength")?.exercises.length, 6);
 assert.equal(thinHome.blocks.find((block) => block.id === "knee")?.exercises.length, 3);
-assert.equal(thinHome.blocks.find((block) => block.id === "strength")?.exercises.find((item) => item.exerciseId === "band-row")?.dose.sets, defaultPrehabDoses["band-row"].sets);
+assert.equal(thinHome.blocks.find((block) => block.id === "strength")?.exercises.find((item) => item.exerciseId === "bridge")?.dose.sets, defaultPrehabDoses.bridge.sets);
+assert.equal(ids(thinHome).includes("band-row"), false);
 assert.equal(thinHome.blocks.find((block) => block.id === "knee")?.exercises.find((item) => item.exerciseId === "band-terminal-knee-extension")?.dose.reps, defaultPrehabDoses["band-terminal-knee-extension"].reps);
 assert.equal(thinHome.blocks.find((block) => block.id === "knee")?.exercises.find((item) => item.exerciseId === "heel-slide")?.dose.reps, 8);
 assert.ok(ids(thinWeek[0]!).includes("single-leg-press"));
