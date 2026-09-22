@@ -1,4 +1,5 @@
 import type {
+  ExerciseDose,
   ExerciseMotionMedia,
   ExerciseMediaTileIndex,
   ExerciseRecord,
@@ -588,7 +589,6 @@ export const exercises = [
     name: "Band terminal knee extension",
     shortName: "Band knee extension",
     category: "activation",
-    planEligible: false,
     equipment: ["resistance_band", "support_surface"],
     description: "A small-range standing quadriceps exercise used only with clinician-selected band tension and timing; graft choice and any associated procedure may change when it is appropriate.",
     cues: ["Anchor the band securely behind the knee", "Begin with a soft bend, then straighten without forcing", "Keep the heel down and the thigh engaged"],
@@ -705,16 +705,150 @@ export const exercises = [
   },
 ] as const satisfies readonly ExerciseRecord[];
 
-/** The seven primary strengthening exercises specified for the default prehab plan. */
+/**
+ * Default right-knee prehab plan. Doses are general guidance for this episode.
+ * The treating clinician overrides exercise choice, range, and load.
+ */
 export const corePrehabExerciseIds = [
+  "heel-slide",
+  "quad-set",
+  "band-terminal-knee-extension",
+  "straight-leg-raise",
+  "bridge",
+  "lateral-band-walk",
+  "single-leg-balance",
+  "single-leg-press",
   "single-leg-knee-extension-machine",
   "single-leg-hamstring-curl-machine",
-  "single-leg-press",
   "squat",
   "standing-single-leg-heel-raise",
   "standing-hip-abduction-external-rotation-fire-hydrant",
   "modified-single-leg-deadlift",
+  "stationary-bike",
 ] as const;
+
+export const defaultPrehabDoses = {
+  "heel-slide": {
+    sets: 2,
+    reps: 15,
+    loadKg: null,
+    holdSeconds: null,
+    durationMinutes: null,
+    rangeNote: "Daily ROM. Slow. Stop for sharp medial pinch.",
+  },
+  "quad-set": {
+    sets: 3,
+    reps: 15,
+    loadKg: null,
+    holdSeconds: null,
+    durationMinutes: null,
+    rangeNote: "Daily. Hard squeeze 2–3s. Pair with heel props outside app if needed.",
+  },
+  "band-terminal-knee-extension": {
+    sets: 3,
+    reps: 12,
+    loadKg: null,
+    holdSeconds: null,
+    durationMinutes: null,
+    rangeNote: "TKE. Band behind the knee. Soft finish. Stop if the knee snaps backward.",
+  },
+  "straight-leg-raise": {
+    sets: 3,
+    reps: 12,
+    loadKg: null,
+    holdSeconds: null,
+    durationMinutes: null,
+    rangeNote: "Daily/home. No quad lag. Right (affected) side.",
+  },
+  "bridge": {
+    sets: 3,
+    reps: 12,
+    loadKg: null,
+    holdSeconds: null,
+    durationMinutes: null,
+    rangeNote: "Home band days OK with band above knees.",
+  },
+  "lateral-band-walk": {
+    sets: 3,
+    reps: 12,
+    loadKg: null,
+    holdSeconds: null,
+    durationMinutes: null,
+    rangeNote: "Home band day. Short steps, upright torso.",
+  },
+  "single-leg-balance": {
+    sets: 3,
+    reps: null,
+    loadKg: null,
+    holdSeconds: 30,
+    durationMinutes: null,
+    rangeNote: "Soft knee. Brace if wobbly. Right side first if stable enough.",
+  },
+  "single-leg-press": {
+    sets: 3,
+    reps: 10,
+    loadKg: null,
+    holdSeconds: null,
+    durationMinutes: null,
+    rangeNote: "Gym. Bilateral OK. Stop ~45–60° bend. Feet mid-high. Moderate load.",
+  },
+  "single-leg-knee-extension-machine": {
+    sets: 3,
+    reps: 12,
+    loadKg: null,
+    holdSeconds: null,
+    durationMinutes: null,
+    rangeNote: "Gym. Light–moderate. Smooth mid-range. Stop if anterior/medial bite.",
+  },
+  "single-leg-hamstring-curl-machine": {
+    sets: 3,
+    reps: 12,
+    loadKg: null,
+    holdSeconds: null,
+    durationMinutes: null,
+    rangeNote: "Gym. Controlled both directions.",
+  },
+  squat: {
+    sets: 3,
+    reps: 10,
+    loadKg: null,
+    holdSeconds: null,
+    durationMinutes: null,
+    rangeNote: "Gym. MINI only ~45° max. High box OK. No deep squat. Meniscus protection.",
+  },
+  "standing-single-leg-heel-raise": {
+    sets: 3,
+    reps: 12,
+    loadKg: null,
+    holdSeconds: null,
+    durationMinutes: null,
+    rangeNote: "Gym or home. Progress bilateral→single if quiet knee.",
+  },
+  "standing-hip-abduction-external-rotation-fire-hydrant": {
+    sets: 3,
+    reps: 12,
+    loadKg: null,
+    holdSeconds: null,
+    durationMinutes: null,
+    rangeNote: "Gym/home. Support as needed.",
+  },
+  "modified-single-leg-deadlift": {
+    sets: 3,
+    reps: 8,
+    loadKg: null,
+    holdSeconds: null,
+    durationMinutes: null,
+    rangeNote: "Gym. Light hinge. Soft knees. Hip-dominant, not deep knee bend.",
+  },
+  "stationary-bike": {
+    sets: null,
+    reps: null,
+    loadKg: null,
+    holdSeconds: null,
+    durationMinutes: 20,
+    rangeNote: "Primary cardio. Easy–moderate. Seat high. Prefer over steep treadmill incline.",
+  },
+} satisfies Record<(typeof corePrehabExerciseIds)[number], ExerciseDose>;
 
 const clinicianDose = {
   kind: "clinician_defined",
@@ -727,7 +861,7 @@ export const routines = [
     episodeId: "episode-right-acl-2026",
     phaseId: "prehab",
     name: "Prehab foundations",
-    description: "A draft movement and strength sequence to review with the treating clinician before use.",
+    description: "Starting doses for right-knee ACL and medial-meniscus prehab. General guidance only; the treating clinician overrides exercise choice, range, and load.",
     status: "draft",
     items: corePrehabExerciseIds.map((exerciseId, index) => ({
       id: `routine-right-prehab-${index + 1}`,
@@ -747,7 +881,7 @@ export const seedData = {
   episodes: [
     {
       id: "episode-right-acl-2026",
-      title: "Right knee ACL prehab",
+      title: "Right knee ACL and meniscus prehab",
       knee: "right",
       status: "active",
       stage: "pre_surgery",

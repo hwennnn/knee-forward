@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { exercises, rehabPhases, routines, sourceMetadata } from "../src/data";
+import { corePrehabExerciseIds, defaultPrehabDoses, exercises, rehabPhases, routines, sourceMetadata } from "../src/data";
 
 const expectedPanelHashes = {
   "/assets/exercise-panels/foundations-0.webp": "1dd28c6eee6af70b34f57f076b950fe91ffa4df043ba5cc18eacbba0723c5c7a",
@@ -87,7 +87,6 @@ for (const exercise of exercises) {
 }
 
 const educationOnlyExpansion = new Set([
-  "band-terminal-knee-extension",
   "chair-sit-to-stand",
   "supported-lateral-step-down",
   "box-assisted-single-leg-squat",
@@ -108,5 +107,44 @@ for (const exerciseId of educationOnlyExpansion) {
   assert.equal(routines.some((routine) => routine.items.some((item) => item.exerciseId === exerciseId)), false, `${exerciseId} must not be seeded into a routine`);
   assert.equal(exercise.media.visualScope, "exact_variation", `${exerciseId} generated still must depict the exact named variation`);
 }
+
+const prehabRoutine = routines.find((routine) => routine.id === "routine-right-prehab-foundations");
+assert.ok(prehabRoutine, "missing the default prehab routine");
+assert.equal(prehabRoutine.phaseId, "prehab");
+assert.equal(prehabRoutine.status, "draft", "seeded doses stay general guidance until a clinician confirms them in the app");
+assert.deepEqual(prehabRoutine.items.map((item) => item.exerciseId), [...corePrehabExerciseIds]);
+
+const bandTerminalKneeExtension = exercises.find((exercise) => exercise.id === "band-terminal-knee-extension");
+assert.ok(bandTerminalKneeExtension);
+assert.notEqual(bandTerminalKneeExtension.planEligible, false, "band terminal knee extension is part of the default prehab plan");
+assert.ok(bandTerminalKneeExtension.eligiblePhaseIds.includes("prehab"));
+
+for (const exerciseId of corePrehabExerciseIds) {
+  const exercise = exercises.find((candidate) => candidate.id === exerciseId);
+  assert.ok(exercise, `default plan references an unknown exercise: ${exerciseId}`);
+  assert.notEqual(exercise.planEligible, false, `${exerciseId} must be plan-eligible`);
+  assert.ok(exercise.eligiblePhaseIds.includes("prehab"), `${exerciseId} must be eligible in prehab`);
+  const dose = defaultPrehabDoses[exerciseId];
+  const recorded = dose.durationMinutes !== null || (dose.sets !== null && (dose.reps !== null || dose.holdSeconds !== null));
+  assert.equal(recorded, true, `${exerciseId} needs a seeded dose`);
+}
+
+assert.deepEqual(defaultPrehabDoses, {
+  "heel-slide": { sets: 2, reps: 15, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Daily ROM. Slow. Stop for sharp medial pinch." },
+  "quad-set": { sets: 3, reps: 15, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Daily. Hard squeeze 2–3s. Pair with heel props outside app if needed." },
+  "band-terminal-knee-extension": { sets: 3, reps: 12, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "TKE. Band behind the knee. Soft finish. Stop if the knee snaps backward." },
+  "straight-leg-raise": { sets: 3, reps: 12, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Daily/home. No quad lag. Right (affected) side." },
+  "bridge": { sets: 3, reps: 12, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Home band days OK with band above knees." },
+  "lateral-band-walk": { sets: 3, reps: 12, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Home band day. Short steps, upright torso." },
+  "single-leg-balance": { sets: 3, reps: null, loadKg: null, holdSeconds: 30, durationMinutes: null, rangeNote: "Soft knee. Brace if wobbly. Right side first if stable enough." },
+  "single-leg-press": { sets: 3, reps: 10, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Gym. Bilateral OK. Stop ~45–60° bend. Feet mid-high. Moderate load." },
+  "single-leg-knee-extension-machine": { sets: 3, reps: 12, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Gym. Light–moderate. Smooth mid-range. Stop if anterior/medial bite." },
+  "single-leg-hamstring-curl-machine": { sets: 3, reps: 12, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Gym. Controlled both directions." },
+  squat: { sets: 3, reps: 10, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Gym. MINI only ~45° max. High box OK. No deep squat. Meniscus protection." },
+  "standing-single-leg-heel-raise": { sets: 3, reps: 12, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Gym or home. Progress bilateral→single if quiet knee." },
+  "standing-hip-abduction-external-rotation-fire-hydrant": { sets: 3, reps: 12, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Gym/home. Support as needed." },
+  "modified-single-leg-deadlift": { sets: 3, reps: 8, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Gym. Light hinge. Soft knees. Hip-dominant, not deep knee bend." },
+  "stationary-bike": { sets: null, reps: null, loadKg: null, holdSeconds: null, durationMinutes: 20, rangeNote: "Primary cardio. Easy–moderate. Seat high. Prefer over steep treadmill incline." },
+});
 
 console.log(`Exercise catalog verified for ${exercises.length} records, including ${Object.keys(generatedStillHashes).length} generated stills.`);

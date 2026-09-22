@@ -1,4 +1,4 @@
-import { corePrehabExerciseIds, exercises, seedData } from "./data";
+import { corePrehabExerciseIds, defaultPrehabDoses, exercises, seedData } from "./data";
 import type {
   ExerciseDose,
   ExerciseRecord,
@@ -38,7 +38,7 @@ export const initialState: LocalAppState = {
   reminderDays: [1, 3, 5],
   reminderDismissedOn: null,
   planExerciseIds: corePrehabExerciseIds.slice(),
-  doses: Object.fromEntries(corePrehabExerciseIds.map((id) => [id, emptyDose()])),
+  doses: Object.fromEntries(corePrehabExerciseIds.map((id) => [id, { ...defaultPrehabDoses[id] }])),
   sessions: [],
   sessionDraft: null,
 };
@@ -54,6 +54,32 @@ export interface LoadedState {
 }
 
 type UnknownRecord = Record<string, unknown>;
+/** Previous shipped prehab placeholder: seven exercises and no recorded dose. */
+const legacyUnspecifiedPrehabExerciseIds = [
+  "single-leg-knee-extension-machine",
+  "single-leg-hamstring-curl-machine",
+  "single-leg-press",
+  "squat",
+  "standing-single-leg-heel-raise",
+  "standing-hip-abduction-external-rotation-fire-hydrant",
+  "modified-single-leg-deadlift",
+] as const;
+
+function doseIsBlank(dose: ExerciseDose) {
+  return dose.sets === null
+    && dose.reps === null
+    && dose.loadKg === null
+    && dose.holdSeconds === null
+    && dose.durationMinutes === null
+    && dose.rangeNote === "";
+}
+
+function isLegacyUnspecifiedPrehabPlan(planExerciseIds: readonly string[], doses: Record<string, ExerciseDose>) {
+  if (planExerciseIds.length !== legacyUnspecifiedPrehabExerciseIds.length) return false;
+  const expected = new Set<string>(legacyUnspecifiedPrehabExerciseIds);
+  return planExerciseIds.every((id) => expected.has(id) && doseIsBlank(doses[id] ?? emptyDose()));
+}
+
 const exerciseCatalog: readonly ExerciseRecord[] = exercises;
 const knownExerciseIds = new Set<string>(exerciseCatalog.map((exercise) => exercise.id));
 const planEligibleExerciseIds = new Set<string>(exerciseCatalog.filter((exercise) => exercise.planEligible !== false).map((exercise) => exercise.id));
@@ -360,7 +386,21 @@ export function parseState(value: unknown): LocalAppState {
   if (plannedSurgeryDate !== undefined && plannedSurgeryDate !== null && !validISODate(plannedSurgeryDate)) {
     throw new Error("The saved surgery date is invalid.");
   }
-  const planMatchesCurrentPhase = planExerciseIds.every((exerciseId) => exerciseCatalog
+  let resolvedPlanExerciseIds = planExerciseIds;
+  let planClinicianConfirmed = value.planClinicianConfirmed === true;
+  const upgradeLegacyPlan = affectedKnee === "right"
+    && rehabStage === "pre_surgery"
+    && currentPhaseId === "prehab"
+    && (value.sessionDraft === undefined || value.sessionDraft === null)
+    && isLegacyUnspecifiedPrehabPlan(planExerciseIds, doses);
+  if (upgradeLegacyPlan) {
+    resolvedPlanExerciseIds = [...corePrehabExerciseIds];
+    for (const exerciseId of corePrehabExerciseIds) {
+      if (doseIsBlank(doses[exerciseId] ?? emptyDose())) doses[exerciseId] = { ...defaultPrehabDoses[exerciseId] };
+    }
+    planClinicianConfirmed = false;
+  }
+  const planMatchesCurrentPhase = resolvedPlanExerciseIds.every((exerciseId) => exerciseCatalog
     .find((exercise) => exercise.id === exerciseId)
     ?.eligiblePhaseIds.includes(currentPhaseId));
 
@@ -375,11 +415,11 @@ export function parseState(value: unknown): LocalAppState {
       plannedSurgeryDate: (plannedSurgeryDate as LocalAppState["profile"]["plannedSurgeryDate"] | undefined) ?? null,
     },
     activeEpisodeId,
-    planClinicianConfirmed: value.planClinicianConfirmed === true && planMatchesCurrentPhase,
+    planClinicianConfirmed: planClinicianConfirmed && planMatchesCurrentPhase,
     reminderTime,
     reminderDays: [...new Set(reminderDays as number[])].sort(),
     reminderDismissedOn: (dismissed as LocalAppState["reminderDismissedOn"] | undefined) ?? null,
-    planExerciseIds,
+    planExerciseIds: resolvedPlanExerciseIds,
     doses,
     sessions: value.sessions.map((session) => parseSession(session, activeEpisodeId)),
     sessionDraft: value.sessionDraft === undefined || value.sessionDraft === null ? null : parseSessionDraft(value.sessionDraft, activeEpisodeId),

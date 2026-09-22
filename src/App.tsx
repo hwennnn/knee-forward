@@ -97,13 +97,18 @@ function consumeSharedPlanFromLocation(): { plan: SharedPlan | null; error: stri
   }
 }
 
-function doseLabel(dose?: ExerciseDose) {
+function doseLabel(dose?: ExerciseDose, includeNote = false) {
   if (!dose) return "Add your physio's dose";
   const load = dose.loadKg !== null ? ` at ${dose.loadKg} kg` : "";
-  if (dose.durationMinutes !== null) return `${dose.durationMinutes} min${load}`;
-  if (dose.sets !== null && dose.reps !== null) return `${dose.sets} sets × ${dose.reps} reps${load}`;
-  if (dose.sets !== null && dose.holdSeconds !== null) return `${dose.sets} × ${dose.holdSeconds}s holds${load}`;
-  return "Add your physio's dose";
+  const summary = dose.durationMinutes !== null
+    ? `${dose.durationMinutes} min${load}`
+    : dose.sets !== null && dose.reps !== null
+      ? `${dose.sets} sets × ${dose.reps} reps${load}`
+      : dose.sets !== null && dose.holdSeconds !== null
+        ? `${dose.sets} × ${dose.holdSeconds}s holds${load}`
+        : null;
+  if (!summary) return "Add your physio's dose";
+  return includeNote && dose.rangeNote ? `${summary} — ${dose.rangeNote}` : summary;
 }
 
 function doseIsComplete(dose?: ExerciseDose) {
@@ -819,13 +824,13 @@ function TodayPage({ state, completedThisWeek, sessionsByDay, onStart, onDiscard
             ? <SafetyBanner tone="success"><strong>Session in progress.</strong> Resume at exercise {state.sessionDraft.currentExerciseIndex + 1} of {state.sessionDraft.exercises.length}.</SafetyBanner>
             : planReady
             ? <SafetyBanner tone="success"><strong>Plan ready.</strong> Check symptoms before you start.</SafetyBanner>
-            : <SafetyBanner tone="warning"><strong>Setup needed.</strong> {incompatiblePlanCount > 0
+            : missingDoseCount > 0 || incompatiblePlanCount > 0
+            ? <SafetyBanner tone="warning"><strong>Setup needed.</strong> {incompatiblePlanCount > 0
               ? `Review ${incompatiblePlanCount} exercise${incompatiblePlanCount === 1 ? "" : "s"} for your current phase.`
-              : missingDoseCount > 0
-                ? `Add doses for ${missingDoseCount} exercise${missingDoseCount === 1 ? "" : "s"}.`
-                : "Confirm this plan."}</SafetyBanner>}
+              : `Add doses for ${missingDoseCount} exercise${missingDoseCount === 1 ? "" : "s"}.`}</SafetyBanner>
+            : <SafetyBanner tone="warning"><strong>Confirm once.</strong> Starting doses are filled in. Confirm if they match your clinician's plan.</SafetyBanner>}
           <div className="hero-actions">
-            <button className="primary-button primary-button--large" onClick={state.sessionDraft || planReady ? onStart : onPlan}>{state.sessionDraft || planReady ? <Play size={20} weight="fill" /> : <SlidersHorizontal size={20} />} {state.sessionDraft ? "Resume session" : planReady ? "Start session" : "Set up plan"}</button>
+            <button className="primary-button primary-button--large" onClick={state.sessionDraft || planReady ? onStart : onPlan}>{state.sessionDraft || planReady ? <Play size={20} weight="fill" /> : <SlidersHorizontal size={20} />} {state.sessionDraft ? "Resume session" : planReady ? "Start session" : missingDoseCount > 0 || incompatiblePlanCount > 0 ? "Set up plan" : "Review plan"}</button>
             <button className="secondary-button" onClick={onReminder}><Alarm size={20} /> {state.reminderTime}</button>
           </div>
           {state.sessionDraft && <button className="text-button draft-discard-button" onClick={onDiscardDraft}>Discard saved session</button>}
@@ -871,11 +876,11 @@ function PlanPage({ state, exercises: planExercises, missingDoseCount, incompati
   return (
     <div className="page-content">
       <header className="page-heading"><p>{state.profile.affectedKnee} knee · {stageLabel(state.profile.rehabStage)}</p><h1>Your rehab plan.</h1></header>
-      <SafetyBanner>Use only exercises and doses from your physiotherapist.</SafetyBanner>
+      <SafetyBanner>Starting doses are general guidance for this episode. Your clinician's instructions override them.</SafetyBanner>
       <div className="plan-layout">
         <section className="plan-list">
           <div className="section-heading"><div><h2>Recorded exercises</h2></div><button className="secondary-button" onClick={onCustomize}><SlidersHorizontal size={18} /> Customize</button></div>
-          {planExercises.map((exercise) => <RoutineRow key={exercise.id} exercise={exercise} dose={doseLabel(state.doses[exercise.id])} onOpen={() => onDose(exercise)} />)}
+          {planExercises.map((exercise) => <RoutineRow key={exercise.id} exercise={exercise} dose={doseLabel(state.doses[exercise.id], true)} onOpen={() => onDose(exercise)} />)}
           <div className={`plan-confirmation${state.planClinicianConfirmed ? " plan-confirmation--confirmed" : ""}`}>
             <div>
               {state.planClinicianConfirmed ? <CheckCircle size={23} weight="fill" /> : <ShieldCheck size={23} />}
