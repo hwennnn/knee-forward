@@ -1,4 +1,4 @@
-import { corePrehabExerciseIds, DEFAULT_GOAL_LABEL, defaultPrehabDoses, exercises, previousSeededPrehabDoses, previousSeededPrehabExerciseIds, SEEDED_PLAN_UPDATED_AT, seedData } from "./data";
+import { corePrehabExerciseIds, DEFAULT_GOAL_LABEL, defaultPrehabDoses, exercises, previousSeededPrehabDoses, previousSeededPrehabExerciseIds, previousWholeBodyDoses, previousWholeBodyExerciseIds, SEEDED_PLAN_UPDATED_AT, seedData } from "./data";
 import type {
   CheckIn,
   DayChoice,
@@ -513,6 +513,18 @@ export function parseState(value: unknown): LocalAppState {
     && previousSeededPrehabExerciseIds.every((exerciseId, index) => resolvedPlanExerciseIds[index] === exerciseId)
     && previousSeededPrehabExerciseIds.every((exerciseId) => sameDose(doses[exerciseId] ?? emptyDose(), previousSeededPrehabDoses[exerciseId]));
   if (unmodifiedPreviousSeed) {
+    resolvedPlanExerciseIds = [...corePrehabExerciseIds];
+    for (const exerciseId of corePrehabExerciseIds) doses[exerciseId] = { ...defaultPrehabDoses[exerciseId] };
+    planClinicianConfirmed = false;
+  }
+  const unmodifiedWholeBodySeed = affectedKnee === "right"
+    && rehabStage === "pre_surgery"
+    && currentPhaseId === "prehab"
+    && (value.sessionDraft === undefined || value.sessionDraft === null)
+    && resolvedPlanExerciseIds.length === previousWholeBodyExerciseIds.length
+    && previousWholeBodyExerciseIds.every((exerciseId, index) => resolvedPlanExerciseIds[index] === exerciseId)
+    && previousWholeBodyExerciseIds.every((exerciseId) => sameDose(doses[exerciseId] ?? emptyDose(), previousWholeBodyDoses[exerciseId]));
+  if (unmodifiedWholeBodySeed) {
     resolvedPlanExerciseIds = [...corePrehabExerciseIds];
     for (const exerciseId of corePrehabExerciseIds) doses[exerciseId] = { ...defaultPrehabDoses[exerciseId] };
     planClinicianConfirmed = false;

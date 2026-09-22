@@ -44,7 +44,7 @@ The panels were cropped from the source sheets, centered on individual square ca
 
 ## Whole-body placeholder
 
-`public/assets/exercise-stills/whole-body-placeholder.svg` is an original geometric mark drawn for this project (a circle and two strokes on the app colors, plus the words “Placeholder, not a demonstration”). It is shared by the fifteen whole-body catalog records that do not have a reviewed still or a Gym visual mapping: machine chest press, lat pulldown, seated row, shoulder press, biceps curl, triceps pressdown, dead bug, side plank, Pallof press, band row, band chest press, band overhead press, band biceps curl, band triceps extension, and band clam.
+`public/assets/exercise-stills/whole-body-placeholder.svg` is an original geometric mark drawn for this project (a circle and two strokes on the app colors, plus the words “Placeholder, not a demonstration”). It is shared by the whole-body catalog records that do not have a reviewed still or a Gym visual mapping: machine chest press, lat pulldown, seated row, shoulder press, biceps curl, triceps pressdown, dead bug, side plank, Pallof press, band row, band chest press, band overhead press, band biceps curl, band triceps extension, band clam, cable face pull, rear delt fly, chest-supported row, cable chest fly, straight-arm pulldown, hip abduction machine, seated calf raise, back extension, assisted pull-up, and assisted dip.
 
 It is not a drawing of those movements, not a crop of a rehab panel, and not a Gym visual GIF. `clinicalReviewStatus` is `pending` and `visualScope` is `generic_pattern`. The alt text says it is not a movement demonstration. Do not point these records at an existing knee still or motion file.
 

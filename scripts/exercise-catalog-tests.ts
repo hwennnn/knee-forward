@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { corePrehabExerciseIds, defaultPrehabDoses, exercises, previousSeededPrehabDoses, previousSeededPrehabExerciseIds, rehabPhases, routines, sourceMetadata } from "../src/data";
+import { corePrehabExerciseIds, defaultPrehabDoses, exercises, previousSeededPrehabDoses, previousWholeBodyDoses, previousWholeBodyExerciseIds, rehabPhases, routines, sourceMetadata } from "../src/data";
 
 const expectedPanelHashes = {
   "/assets/exercise-panels/foundations-0.webp": "1dd28c6eee6af70b34f57f076b950fe91ffa4df043ba5cc18eacbba0723c5c7a",
@@ -138,11 +138,39 @@ for (const exerciseId of corePrehabExerciseIds) {
   assert.equal(recorded, true, `${exerciseId} needs a seeded dose`);
 }
 
-for (const exerciseId of previousSeededPrehabExerciseIds) {
-  assert.deepEqual(defaultPrehabDoses[exerciseId], previousSeededPrehabDoses[exerciseId], `${exerciseId} protective dose must stay the seeded prehab dose`);
+const dailyKneeIds = ["heel-slide", "quad-set", "band-terminal-knee-extension", "straight-leg-raise"] as const;
+for (const exerciseId of dailyKneeIds) {
+  assert.deepEqual(defaultPrehabDoses[exerciseId], previousSeededPrehabDoses[exerciseId], `${exerciseId} daily knee dose stays protective`);
 }
-assert.equal(defaultPrehabDoses["machine-chest-press"]?.sets, 3);
-assert.equal(defaultPrehabDoses["band-row"]?.reps, 12);
-assert.equal(defaultPrehabDoses["side-plank"]?.holdSeconds, 20);
+assert.equal(previousWholeBodyDoses["machine-chest-press"].sets, 3, "the previous whole-body snapshot keeps the lighter chest dose");
+assert.equal(previousWholeBodyDoses["stationary-bike"].durationMinutes, 20);
+assert.equal(previousSeededPrehabDoses["single-leg-press"].sets, 3);
+assert.equal(defaultPrehabDoses["single-leg-press"].sets, 4);
+assert.equal(defaultPrehabDoses["single-leg-press"].loadKg, null);
+assert.match(defaultPrehabDoses["single-leg-press"].rangeNote, /45–60/);
+assert.match(defaultPrehabDoses["single-leg-press"].rangeNote, /depth stays shallow/);
+assert.equal(defaultPrehabDoses["single-leg-hamstring-curl-machine"].sets, 4);
+assert.equal(defaultPrehabDoses.squat.sets, 4);
+assert.match(defaultPrehabDoses.squat.rangeNote, /45°/);
+assert.match(defaultPrehabDoses.squat.rangeNote, /No deep squat/);
+assert.equal(defaultPrehabDoses["modified-single-leg-deadlift"].sets, 4);
+assert.match(defaultPrehabDoses["modified-single-leg-deadlift"].rangeNote, /Load the hinge/);
+assert.equal(defaultPrehabDoses["machine-chest-press"].sets, 4);
+assert.equal(defaultPrehabDoses["machine-chest-press"].reps, 8);
+assert.match(defaultPrehabDoses["lat-pulldown"].rangeNote, /1–2/);
+assert.equal(defaultPrehabDoses["biceps-curl"].sets, 3);
+assert.equal(defaultPrehabDoses["side-plank"].holdSeconds, 40);
+assert.equal(defaultPrehabDoses["pallof-press"].reps, 12);
+assert.equal(defaultPrehabDoses["band-row"].sets, 4);
+assert.equal(defaultPrehabDoses["stationary-bike"].durationMinutes, 30);
+assert.equal(defaultPrehabDoses["cable-face-pull"].loadKg, null);
+assert.equal(defaultPrehabDoses["assisted-dip"].sets, 3);
+for (const exerciseId of ["cable-face-pull", "reverse-fly", "chest-supported-row", "cable-chest-fly", "straight-arm-pulldown", "hip-abduction-machine", "seated-calf-raise", "back-extension", "assisted-pull-up", "assisted-dip"] as const) {
+  assert.ok(corePrehabExerciseIds.includes(exerciseId), `${exerciseId} belongs on the default plan`);
+  assert.equal(previousWholeBodyExerciseIds.includes(exerciseId), false, `${exerciseId} is new and must not be treated as the previous whole-body seed`);
+}
+for (const exerciseId of corePrehabExerciseIds) {
+  assert.equal(/lunge|jump|sprint|sled|bulgarian/.test(exerciseId), false, `${exerciseId} is outside the knee-safe plan`);
+}
 
 console.log(`Exercise catalog verified for ${exercises.length} records, including ${Object.keys(generatedStillHashes).length} generated stills.`);

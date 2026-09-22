@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { corePrehabExerciseIds, defaultPrehabDoses, previousSeededPrehabDoses, previousSeededPrehabExerciseIds } from "../src/data";
+import { corePrehabExerciseIds, defaultPrehabDoses, previousSeededPrehabDoses, previousSeededPrehabExerciseIds, previousWholeBodyDoses, previousWholeBodyExerciseIds } from "../src/data";
 import { initialPostResponse, performedSetOutcome, previousSetsForExercise } from "../src/sessionTracking";
 import { importState, initialState, parseState } from "../src/storage";
 import type { ExerciseDose, LocalAppState } from "../src/types";
@@ -239,8 +239,10 @@ for (const exerciseId of corePrehabExerciseIds) {
 }
 const reparsedDefault = parseState(JSON.parse(JSON.stringify(initialState)));
 assert.deepEqual([...reparsedDefault.planExerciseIds], [...corePrehabExerciseIds]);
-assert.equal(reparsedDefault.doses["stationary-bike"]?.durationMinutes, 20);
-assert.equal(reparsedDefault.doses["single-leg-balance"]?.holdSeconds, 30);
+assert.equal(reparsedDefault.doses["stationary-bike"]?.durationMinutes, 30);
+assert.equal(reparsedDefault.doses["single-leg-balance"]?.holdSeconds, 40);
+assert.equal(reparsedDefault.doses["machine-chest-press"]?.sets, 4);
+assert.equal(reparsedDefault.doses["machine-chest-press"]?.loadKg, null);
 
 const blankDose = (): ExerciseDose => ({
   sets: null,
@@ -339,6 +341,52 @@ assert.deepEqual(upgradedWholeBody.doses["single-leg-press"], defaultPrehabDoses
 const customizedPreviousSeed = structuredClone(previousSeed);
 customizedPreviousSeed.doses["heel-slide"] = { ...previousSeededPrehabDoses["heel-slide"], reps: 8 };
 assert.deepEqual([...parseState(customizedPreviousSeed).planExerciseIds], [...previousSeededPrehabExerciseIds]);
+
+const wholeBodySeed = structuredClone(initialState);
+wholeBodySeed.profile.displayName = "Houman";
+wholeBodySeed.profile.onboardingComplete = true;
+wholeBodySeed.planClinicianConfirmed = true;
+wholeBodySeed.planExerciseIds = [...previousWholeBodyExerciseIds];
+for (const id of Object.keys(wholeBodySeed.doses)) {
+  wholeBodySeed.doses[id] = blankDose();
+}
+for (const exerciseId of previousWholeBodyExerciseIds) {
+  wholeBodySeed.doses[exerciseId] = { ...previousWholeBodyDoses[exerciseId] };
+}
+const upgradedGymPlan = parseState(wholeBodySeed);
+assert.equal(upgradedGymPlan.profile.displayName, "Houman");
+assert.deepEqual([...upgradedGymPlan.planExerciseIds], [...corePrehabExerciseIds]);
+assert.equal(upgradedGymPlan.planClinicianConfirmed, false);
+assert.deepEqual(upgradedGymPlan.doses["cable-face-pull"], defaultPrehabDoses["cable-face-pull"]);
+assert.equal(upgradedGymPlan.doses["single-leg-press"]?.sets, 4);
+assert.equal(upgradedGymPlan.doses["assisted-dip"]?.loadKg, null);
+
+const customizedWholeBody = structuredClone(wholeBodySeed);
+customizedWholeBody.doses["machine-chest-press"] = { ...previousWholeBodyDoses["machine-chest-press"], reps: 6 };
+const preservedWholeBody = parseState(customizedWholeBody);
+assert.deepEqual([...preservedWholeBody.planExerciseIds], [...previousWholeBodyExerciseIds]);
+assert.equal(preservedWholeBody.doses["machine-chest-press"]?.reps, 6);
+assert.equal(preservedWholeBody.planExerciseIds.includes("cable-face-pull"), false);
+
+const wholeBodyWithDraft = structuredClone(wholeBodySeed);
+wholeBodyWithDraft.sessionDraft = {
+  id: "whole-body-draft",
+  episodeId: initialState.activeEpisodeId,
+  routineId: "routine-right-prehab-foundations",
+  startedAt: "2026-09-21T10:00:00.000Z",
+  updatedAt: "2026-09-21T10:05:00.000Z",
+  painBefore: 1,
+  swellingBefore: "none",
+  currentExerciseIndex: 0,
+  exercises: [{
+    exerciseId: "machine-chest-press",
+    exerciseName: "Chest press",
+    prescribedDose: { ...previousWholeBodyDoses["machine-chest-press"] },
+    outcome: null,
+    sets: [{ reps: null, loadKg: null, completed: false }],
+  }],
+};
+assert.deepEqual([...parseState(wholeBodyWithDraft).planExerciseIds], [...previousWholeBodyExerciseIds]);
 
 const missingCollections = structuredClone(initialState) as unknown as Record<string, unknown>;
 delete missingCollections.weightEntries;

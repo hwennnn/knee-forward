@@ -28,6 +28,9 @@ export const LOADED_KNEE_IDS = [
   "standing-single-leg-heel-raise",
   "standing-hip-abduction-external-rotation-fire-hydrant",
   "modified-single-leg-deadlift",
+  "hip-abduction-machine",
+  "seated-calf-raise",
+  "back-extension",
 ] as const;
 
 export const UPPER_BODY_IDS = [
@@ -45,6 +48,13 @@ export const UPPER_BODY_IDS = [
   "band-overhead-press",
   "band-biceps-curl",
   "band-triceps-extension",
+  "cable-face-pull",
+  "reverse-fly",
+  "chest-supported-row",
+  "cable-chest-fly",
+  "straight-arm-pulldown",
+  "assisted-pull-up",
+  "assisted-dip",
 ] as const;
 
 const LIGHT_BAND_IDS = ["lateral-band-walk"] as const;
@@ -55,27 +65,35 @@ const GYM_TEMPLATES: Record<GymTemplate, readonly { exerciseId: string; group: S
   A: [
     { exerciseId: "single-leg-press", group: "Lower" },
     { exerciseId: "single-leg-hamstring-curl-machine", group: "Lower" },
-    { exerciseId: "standing-single-leg-heel-raise", group: "Lower" },
+    { exerciseId: "hip-abduction-machine", group: "Hip and balance" },
+    { exerciseId: "seated-calf-raise", group: "Lower" },
     { exerciseId: "machine-chest-press", group: "Upper push" },
+    { exerciseId: "cable-chest-fly", group: "Upper push" },
     { exerciseId: "lat-pulldown", group: "Upper pull" },
+    { exerciseId: "cable-face-pull", group: "Upper pull" },
     { exerciseId: "biceps-curl", group: "Arms" },
     { exerciseId: "dead-bug", group: "Core" },
   ],
   B: [
-    { exerciseId: "single-leg-knee-extension-machine", group: "Lower" },
     { exerciseId: "squat", group: "Lower" },
-    { exerciseId: "standing-hip-abduction-external-rotation-fire-hydrant", group: "Lower" },
+    { exerciseId: "single-leg-knee-extension-machine", group: "Lower" },
+    { exerciseId: "standing-hip-abduction-external-rotation-fire-hydrant", group: "Hip and balance" },
+    { exerciseId: "standing-single-leg-heel-raise", group: "Lower" },
     { exerciseId: "shoulder-press", group: "Upper push" },
-    { exerciseId: "seated-row", group: "Upper pull" },
+    { exerciseId: "assisted-dip", group: "Upper push" },
+    { exerciseId: "chest-supported-row", group: "Upper pull" },
+    { exerciseId: "reverse-fly", group: "Upper pull" },
     { exerciseId: "triceps-pressdown", group: "Arms" },
     { exerciseId: "side-plank", group: "Core" },
   ],
   C: [
     { exerciseId: "modified-single-leg-deadlift", group: "Lower" },
     { exerciseId: "single-leg-hamstring-curl-machine", group: "Lower" },
-    { exerciseId: "standing-single-leg-heel-raise", group: "Lower" },
+    { exerciseId: "back-extension", group: "Hip and balance" },
     { exerciseId: "machine-chest-press", group: "Upper push" },
-    { exerciseId: "lat-pulldown", group: "Upper pull" },
+    { exerciseId: "seated-row", group: "Upper pull" },
+    { exerciseId: "straight-arm-pulldown", group: "Upper pull" },
+    { exerciseId: "assisted-pull-up", group: "Upper pull" },
     { exerciseId: "biceps-curl", group: "Arms" },
     { exerciseId: "pallof-press", group: "Core" },
   ],
@@ -238,22 +256,22 @@ function doseMatchesSeed(exerciseId: string, dose: ExerciseDose) {
     && dose.rangeNote === seeded.rangeNote;
 }
 
-function doseFor(exerciseId: string, doses: Record<string, ExerciseDose>, mode?: "gym-cardio" | "easy-cardio"): ExerciseDose | null {
+function doseFor(exerciseId: string, doses: Record<string, ExerciseDose>, mode?: "gym-cardio" | "long-cardio"): ExerciseDose | null {
   const stored = doses[exerciseId] ?? seededDose(exerciseId);
   if (!stored) return null;
   if (stored.durationMinutes === null && stored.sets === null) return null;
   if (exerciseId !== "stationary-bike" || !mode || !doseMatchesSeed(exerciseId, stored)) return stored;
-  if (mode === "easy-cardio") {
+  if (mode === "long-cardio") {
     return {
       ...stored,
-      durationMinutes: 35,
-      rangeNote: "Easy cardio. 30–45 minutes. Seat high. A flat walk can replace the bike. No running.",
+      durationMinutes: 40,
+      rangeNote: "35–45 minutes moderate. Seat high. A flat walk can replace the bike. No running.",
     };
   }
   return {
     ...stored,
-    durationMinutes: 25,
-    rangeNote: "Easy to moderate. 20–30 minutes. Seat high. A flat walk can replace the bike. No running.",
+    durationMinutes: 30,
+    rangeNote: "Moderate. 25–30 minutes. Seat high. Steady pace, not a fluff spin. A flat walk can replace the bike. No running.",
   };
 }
 
@@ -262,7 +280,7 @@ function pushExercises(
   items: readonly { exerciseId: string; group: string }[],
   planIds: ReadonlySet<string>,
   doses: Record<string, ExerciseDose>,
-  mode?: "gym-cardio" | "easy-cardio",
+  mode?: "gym-cardio" | "long-cardio",
 ) {
   for (const item of items) {
     if (!planIds.has(item.exerciseId)) continue;
@@ -283,7 +301,7 @@ function blocksFor(kind: SessionKind, template: GymTemplate | null, romOnly: boo
   } else if (kind === "home") {
     pushExercises(strength, HOME_STRENGTH, planIds, doses);
   } else if (kind === "cardio") {
-    pushExercises(cardio, [{ exerciseId: "stationary-bike", group: "Cardio" }], planIds, doses, "easy-cardio");
+    pushExercises(cardio, [{ exerciseId: "stationary-bike", group: "Cardio" }], planIds, doses, "long-cardio");
   } else if (lightBand && !romOnly) {
     pushExercises(strength, LIGHT_BAND_IDS.map((exerciseId) => ({ exerciseId, group: "Light band" })), planIds, doses);
   }
@@ -327,7 +345,7 @@ function blocksFor(kind: SessionKind, template: GymTemplate | null, romOnly: boo
     blocks.push({
       id: "strength",
       title: "Strength",
-      note: "Full home session: upper body with bands, hips, and core. No leg press, mini squat, or machine knee work. Leave about 2–3 reps in reserve.",
+      note: "Full home session: denser band work with a controlled tempo, hips, and core. No leg press, mini squat, or machine knee work. Last sets can be hard, with about 1–2 reps left.",
       exercises: strength,
     });
     blocks.push({
@@ -342,16 +360,16 @@ function blocksFor(kind: SessionKind, template: GymTemplate | null, romOnly: boo
     id: "strength",
     title: "Strength",
     note: kind === "gym"
-      ? `Gym ${template ?? ""}. Mini squat stays about 45°. Leg press stays about 45–60°. No deep squat, lunge, run, cut, pivot, or jump. Leave about 2–3 reps in reserve.`
-      : "No strength loading on this easy cardio day.",
+      ? `Gym ${template ?? ""}. Last 1–2 reps can be hard, with about 1–2 left. Mini squat stays about 45°. Leg press stays about 45–60°. No deep squat, lunge, run, cut, pivot, or jump. If the session runs long, drop an accessory before you add depth.`
+      : "No strength loading on this cardio day.",
     exercises: strength,
   });
   blocks.push({
     id: "cardio",
     title: "Cardio",
     note: kind === "gym"
-      ? "20–30 minutes easy to moderate. A flat walk can replace the bike."
-      : "30–45 minutes easy. A flat walk can replace the bike. No running.",
+      ? "25–30 minutes moderate. A flat walk can replace the bike. No running."
+      : "35–45 minutes moderate. A flat walk can replace the bike. No running.",
     exercises: cardio,
   });
   return blocks;
@@ -362,21 +380,21 @@ function copyFor(kind: SessionKind, template: GymTemplate | null, lightBand: boo
     return {
       badge: "Gym",
       headline: "You're at the gym.",
-      summary: `Whole-body strength ${template ?? ""}, a short knee block, and easy cardio.`.replace("  ", " "),
+      summary: `Harder gym strength ${template ?? ""}, a short knee block, and moderate cardio.`.replace("  ", " "),
     };
   }
   if (kind === "home") {
     return {
       badge: "Home",
       headline: "You're at home.",
-      summary: "Band strength for the whole body, plus the daily knee block.",
+      summary: "Denser band circuits for the whole body, plus the daily knee block.",
     };
   }
   if (kind === "cardio") {
     return {
       badge: "Home",
       headline: "You're at home.",
-      summary: "Easy cardio day. Knee range of motion, then 30–45 minutes on the bike or a flat walk.",
+      summary: "Moderate cardio day. Knee range of motion, then 35–45 minutes on the bike or a flat walk.",
     };
   }
   return {

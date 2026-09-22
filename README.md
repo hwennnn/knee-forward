@@ -5,13 +5,13 @@ Knee Forward is a local-first ACL rehabilitation companion and a general whole-b
 ## What is implemented
 
 - Guest-first use. The app works with no Supabase project.
-- Today answers location and exact doses: Knee block, Strength, Cardio, and Check-in. The default week is gym on Monday, Wednesday, and Friday; home band work on Tuesday and Thursday; easy cardio on Saturday; rest on Sunday. Time zone defaults to `America/Los_Angeles` and can be changed in Settings.
+- Today answers location and exact doses: Knee block, Strength, Cardio, and Check-in. The default week is gym on Monday, Wednesday, and Friday; denser home band work on Tuesday and Thursday; moderate cardio on Saturday; rest on Sunday. Time zone defaults to `America/Los_Angeles` and can be changed in Settings.
 - “Training at home today”, “At the gym today”, and “Rest / knee flared” remap the rest of the week. A home override replaces that gym day with the full band session and moves the missed gym day to a later non-adjacent weekday. A flare day is range of motion only and does not refill a gym day. Sunday is never turned into a hard knee day.
-- Whole-body gym templates A, B, and C rotate protective lower work with upper push, upper pull, arms, and core, plus easy bike or a flat walk. Home days use bands, hips, balance, and core. Starting doses stay inside the protective ranges (mini squat about 45°, leg press about 45–60°, no deep squat, lunge, run, cut, pivot, or jump).
+- Whole-body gym templates A, B, and C rotate harder protective lower work with upper push, upper pull, arms, and core, plus moderate bike or a flat walk. Home days use denser band circuits, hips, balance, and core. Starting doses stay inside the protective ranges (mini squat about 45°, leg press about 45–60°, no deep squat, lunge, run, cut, pivot, or jump). Specific kilograms are not seeded.
 - Optional morning weight in kilograms, a 7-day trend, and counts of strength sessions and cardio minutes. There is no calorie target and no numeric weight goal until one is entered.
 - Real static URLs for Today, Plan, Learn, and Progress, so refreshing or reopening a browser tab preserves the current section
 - Private first-run onboarding stored in the browser
-- A seeded right-knee pre-surgery plan with sets, reps, holds, and bike duration, so a new profile is not waiting on empty doses. See [docs/DEFAULT_PLAN.md](docs/DEFAULT_PLAN.md). The treating clinician's plan overrides these starting doses. An unmodified previous 15-exercise seed upgrades to the whole-body plan and asks for confirmation again. A customized plan is left alone.
+- A seeded right-knee pre-surgery plan with sets, reps, holds, and bike duration, so a new profile is not waiting on empty doses. See [docs/DEFAULT_PLAN.md](docs/DEFAULT_PLAN.md). The treating clinician's plan overrides these starting doses. An unmodified previous 15-exercise seed, or an unmodified previous whole-body seed, upgrades to the current gym plan and asks for confirmation again. A customized plan is left alone.
 - Editable sets, repetitions, holds, duration, load, and range notes supplied by a physiotherapist
 - A required dosage-complete confirmation gate before a recorded plan can run
 - A required pre-session safety review for symptoms, swelling, locking, instability, and urgent warning signs
@@ -20,7 +20,7 @@ Knee Forward is a local-first ACL rehabilitation companion and a general whole-b
 - Read-only previous-set hints, partial/skip/stop outcomes, and an automatically saved resumable workout draft
 - Post-session pain, swelling, and note logging
 - Exercise-level history with completed-set counts, highest recorded load, repetitions, and recorded load-volume
-- A phase-aware learning library. The original 32 exercises keep crisp WebP stills and approved Gym visual motion on Learn detail (WebM with MP4 fallback, never runtime GIF). Fifteen whole-body additions use one shared geometric placeholder. That image is not a movement demonstration and is not clinically reviewed.
+- A phase-aware learning library. The original 32 exercises keep crisp WebP stills and approved Gym visual motion on Learn detail (WebM with MP4 fallback, never runtime GIF). Whole-body and 24 Hour Fitness additions use one shared geometric placeholder. That image is not a movement demonstration and is not clinically reviewed.
 - Optional magic-link backup for `whman63@gmail.com` only, when `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are present at build time. Other addresses are rejected before a link is sent. See [docs/SUPABASE.md](docs/SUPABASE.md).
 - Local reminders plus an `.ics` calendar download
 - Progress history, weekly adherence, and symptom-response summaries

@@ -48,8 +48,18 @@ assert.ok(ids(gymMonday).includes("lat-pulldown"));
 assert.ok(ids(gymMonday).includes("single-leg-press"));
 assert.ok(ids(gymMonday).includes("stationary-bike"));
 assert.equal(ids(gymMonday).includes("band-row"), false);
-assert.equal(gymMonday.blocks.find((block) => block.id === "cardio")?.exercises[0]?.dose.durationMinutes, 25);
+assert.equal(gymMonday.blocks.find((block) => block.id === "cardio")?.exercises[0]?.dose.durationMinutes, 30);
+assert.match(gymMonday.blocks.find((block) => block.id === "cardio")?.exercises[0]?.dose.rangeNote ?? "", /25–30/);
+assert.match(gymMonday.blocks.find((block) => block.id === "cardio")?.note ?? "", /moderate/i);
 assert.equal(gymMonday.blocks.find((block) => block.id === "strength")?.exercises.find((item) => item.exerciseId === "single-leg-press")?.dose.rangeNote, defaultPrehabDoses["single-leg-press"].rangeNote);
+assert.equal(gymMonday.blocks.find((block) => block.id === "strength")?.exercises.find((item) => item.exerciseId === "single-leg-press")?.dose.sets, 4);
+assert.equal(gymMonday.blocks.find((block) => block.id === "strength")?.exercises.find((item) => item.exerciseId === "machine-chest-press")?.dose.sets, 4);
+assert.match(gymMonday.blocks.find((block) => block.id === "strength")?.note ?? "", /No deep squat/);
+assert.match(gymMonday.blocks.find((block) => block.id === "strength")?.note ?? "", /45–60/);
+assert.ok(ids(gymMonday).includes("cable-face-pull"));
+assert.ok(ids(gymMonday).includes("cable-chest-fly"));
+assert.ok(ids(gymMonday).includes("hip-abduction-machine"));
+assert.ok(ids(gymMonday).includes("seated-calf-raise"));
 
 const homeTuesday = defaults[1]!;
 assert.equal(homeTuesday.headline, "You're at home.");
@@ -61,24 +71,36 @@ for (const upperId of ["band-row", "band-chest-press", "band-overhead-press", "b
 assert.ok(ids(homeTuesday).includes("bridge"));
 assert.ok(ids(homeTuesday).includes("band-clam"));
 assert.ok(ids(homeTuesday).includes("single-leg-balance"));
+assert.equal(homeTuesday.blocks.find((block) => block.id === "strength")?.exercises.find((item) => item.exerciseId === "band-row")?.dose.sets, 4);
 for (const loadedId of LOADED_KNEE_IDS) assert.equal(ids(homeTuesday).includes(loadedId), false, `home day must not include ${loadedId}`);
 
 const templates = [defaults[0], defaults[2], defaults[4]];
 assert.deepEqual(templates.map((day) => day?.gymTemplate), ["A", "B", "C"]);
 assert.ok(ids(defaults[2]!).includes("squat"));
 assert.ok(ids(defaults[2]!).includes("shoulder-press"));
+assert.ok(ids(defaults[2]!).includes("assisted-dip"));
+assert.ok(ids(defaults[2]!).includes("chest-supported-row"));
+assert.ok(ids(defaults[2]!).includes("reverse-fly"));
 assert.ok(ids(defaults[4]!).includes("modified-single-leg-deadlift"));
 assert.ok(ids(defaults[4]!).includes("pallof-press"));
+assert.ok(ids(defaults[4]!).includes("back-extension"));
+assert.ok(ids(defaults[4]!).includes("straight-arm-pulldown"));
+assert.ok(ids(defaults[4]!).includes("assisted-pull-up"));
+const forbidden = ["supported-reverse-lunge", "supported-forward-lunge", "clinician-cleared-double-leg-landing", "box-assisted-single-leg-squat"];
 for (const day of templates) {
+  const strengthCount = day?.blocks.find((block) => block.id === "strength")?.exercises.length ?? 0;
+  assert.ok(strengthCount >= 8 && strengthCount <= 11, `${day?.gymTemplate} should list 8–11 strength moves`);
   assert.ok(day && ids(day).some((id) => (UPPER_BODY_IDS as readonly string[]).includes(id)));
   assert.ok(day && KNEE_BLOCK_IDS.every((id) => ids(day).includes(id)));
+  for (const id of forbidden) assert.equal(day ? ids(day).includes(id) : false, false, `${day?.gymTemplate} must not include ${id}`);
 }
 
 const saturday = defaults[5]!;
 assert.equal(saturday.kind, "cardio");
 assert.equal(saturday.headline, "You're at home.");
-assert.equal(saturday.blocks.find((block) => block.id === "cardio")?.exercises[0]?.dose.durationMinutes, 35);
-assert.match(saturday.blocks.find((block) => block.id === "cardio")?.exercises[0]?.dose.rangeNote ?? "", /30–45/);
+assert.equal(saturday.blocks.find((block) => block.id === "cardio")?.exercises[0]?.dose.durationMinutes, 40);
+assert.match(saturday.blocks.find((block) => block.id === "cardio")?.exercises[0]?.dose.rangeNote ?? "", /35–45/);
+assert.match(saturday.summary, /35–45/);
 for (const loadedId of LOADED_KNEE_IDS) assert.equal(ids(saturday).includes(loadedId), false);
 
 const sunday = defaults[6]!;
