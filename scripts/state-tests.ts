@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
+import { corePrehabExerciseIds, defaultPrehabDoses } from "../src/data";
 import { initialPostResponse, performedSetOutcome, previousSetsForExercise } from "../src/sessionTracking";
 import { importState, initialState, parseState } from "../src/storage";
-import type { LocalAppState } from "../src/types";
+import type { ExerciseDose, LocalAppState } from "../src/types";
 
 const exerciseId = "single-leg-knee-extension-machine";
 const prescribedDose = {
@@ -227,6 +228,84 @@ changedPhase.profile.currentPhaseId = "protect-and-settle";
 changedPhase.planClinicianConfirmed = true;
 assert.equal(parseState(changedPhase).planClinicianConfirmed, false, "a phase change must invalidate an incompatible plan confirmation");
 assert.doesNotThrow(() => parseState(changedPhase), "an old plan must remain available for review after a phase change");
+
+assert.equal(initialState.profile.affectedKnee, "right");
+assert.equal(initialState.profile.rehabStage, "pre_surgery");
+assert.equal(initialState.profile.currentPhaseId, "prehab");
+assert.equal(initialState.planClinicianConfirmed, false, "seeded doses still require one clinician-match confirmation");
+assert.deepEqual([...initialState.planExerciseIds], [...corePrehabExerciseIds]);
+for (const exerciseId of corePrehabExerciseIds) {
+  assert.deepEqual(initialState.doses[exerciseId], defaultPrehabDoses[exerciseId], `${exerciseId} must ship with its seeded dose`);
+}
+const reparsedDefault = parseState(JSON.parse(JSON.stringify(initialState)));
+assert.deepEqual([...reparsedDefault.planExerciseIds], [...corePrehabExerciseIds]);
+assert.equal(reparsedDefault.doses["stationary-bike"]?.durationMinutes, 20);
+assert.equal(reparsedDefault.doses["single-leg-balance"]?.holdSeconds, 30);
+
+const blankDose = (): ExerciseDose => ({
+  sets: null,
+  reps: null,
+  loadKg: null,
+  holdSeconds: null,
+  durationMinutes: null,
+  rangeNote: "",
+});
+const legacyPlanIds = [
+  "single-leg-knee-extension-machine",
+  "single-leg-hamstring-curl-machine",
+  "single-leg-press",
+  "squat",
+  "standing-single-leg-heel-raise",
+  "standing-hip-abduction-external-rotation-fire-hydrant",
+  "modified-single-leg-deadlift",
+];
+const legacyEmptyPlan = structuredClone(initialState);
+legacyEmptyPlan.profile.displayName = "Houman";
+legacyEmptyPlan.profile.onboardingComplete = true;
+legacyEmptyPlan.planExerciseIds = legacyPlanIds;
+legacyEmptyPlan.doses = Object.fromEntries(Object.keys(legacyEmptyPlan.doses).map((id) => [id, blankDose()]));
+const upgradedLegacyPlan = parseState(legacyEmptyPlan);
+assert.equal(upgradedLegacyPlan.profile.displayName, "Houman");
+assert.deepEqual([...upgradedLegacyPlan.planExerciseIds], [...corePrehabExerciseIds]);
+assert.deepEqual(upgradedLegacyPlan.doses["heel-slide"], defaultPrehabDoses["heel-slide"]);
+assert.deepEqual(upgradedLegacyPlan.doses["band-terminal-knee-extension"], defaultPrehabDoses["band-terminal-knee-extension"]);
+assert.equal(upgradedLegacyPlan.planClinicianConfirmed, false);
+
+const customizedLegacyPlan = structuredClone(legacyEmptyPlan);
+customizedLegacyPlan.doses.squat = { ...blankDose(), sets: 4, reps: 8, rangeNote: "Kept custom dose" };
+const preservedLegacyPlan = parseState(customizedLegacyPlan);
+assert.deepEqual([...preservedLegacyPlan.planExerciseIds], legacyPlanIds);
+assert.equal(preservedLegacyPlan.doses.squat?.rangeNote, "Kept custom dose");
+assert.equal(preservedLegacyPlan.planExerciseIds.includes("heel-slide"), false);
+
+const leftKneeLegacyPlan = structuredClone(legacyEmptyPlan);
+leftKneeLegacyPlan.profile.affectedKnee = "left";
+assert.deepEqual([...parseState(leftKneeLegacyPlan).planExerciseIds], legacyPlanIds);
+
+const laterPhaseLegacyPlan = structuredClone(legacyEmptyPlan);
+laterPhaseLegacyPlan.profile.rehabStage = "post_surgery";
+laterPhaseLegacyPlan.profile.currentPhaseId = "rebuild-capacity";
+assert.deepEqual([...parseState(laterPhaseLegacyPlan).planExerciseIds], legacyPlanIds);
+
+const legacyPlanWithDraft = structuredClone(legacyEmptyPlan);
+legacyPlanWithDraft.sessionDraft = {
+  id: "legacy-draft",
+  episodeId: initialState.activeEpisodeId,
+  routineId: "routine-right-prehab-foundations",
+  startedAt: "2026-08-13T10:00:00.000Z",
+  updatedAt: "2026-08-13T10:05:00.000Z",
+  painBefore: 1,
+  swellingBefore: "none",
+  currentExerciseIndex: 0,
+  exercises: [{
+    exerciseId: "squat",
+    exerciseName: "Squat",
+    prescribedDose: blankDose(),
+    outcome: null,
+    sets: [{ reps: null, loadKg: null, completed: false }],
+  }],
+};
+assert.deepEqual([...parseState(legacyPlanWithDraft).planExerciseIds], legacyPlanIds);
 
 const invalidReminderDate = structuredClone(initialState) as unknown as { reminderDismissedOn: string };
 invalidReminderDate.reminderDismissedOn = "2026-13-01";

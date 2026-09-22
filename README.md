@@ -7,7 +7,7 @@ Knee Forward is a local-first ACL rehabilitation companion. It helps someone rec
 - Guest-first use with no sign-in or server
 - Real static URLs for Today, Plan, Learn, and Progress, so refreshing or reopening a browser tab preserves the current section
 - Private first-run onboarding stored in the browser
-- The seven exercises from the first pre-surgery rehab visit
+- A seeded right-knee pre-surgery plan with sets, reps, holds, and bike duration, so a new profile is not waiting on empty doses. See [docs/DEFAULT_PLAN.md](docs/DEFAULT_PLAN.md). The treating clinician's plan overrides these starting doses.
 - Editable sets, repetitions, holds, duration, load, and range notes supplied by a physiotherapist
 - A required dosage-complete confirmation gate before a recorded plan can run
 - A required pre-session safety review for symptoms, swelling, locking, instability, and urgent warning signs
@@ -62,7 +62,7 @@ Performed set history is an observation record. Previous and highest values are 
 
 ## Medical boundary
 
-This app is educational. It does not diagnose an ACL injury, prescribe rehabilitation, or clear someone to run, jump, pivot, or return to sport. Rehabilitation progression is both time-based and milestone-based. The treating surgeon and physiotherapist decide what is appropriate, especially after meniscus, cartilage, or other ligament procedures and with graft-specific restrictions.
+This app is educational. It does not diagnose an ACL injury, prescribe rehabilitation, or clear someone to run, jump, pivot, or return to sport. Rehabilitation progression is both time-based and milestone-based. The treating surgeon and physiotherapist decide what is appropriate, especially after meniscus, cartilage, or other ligament procedures and with graft-specific restrictions. Bundled prehab doses are general guidance for the right-knee episode and do not replace those instructions.
 
 ## Clinical references
 
