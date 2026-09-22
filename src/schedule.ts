@@ -454,6 +454,8 @@ export function weekMovedGymDays(days: readonly ResolvedDay[]) {
   if (!labels.length) return "No gym day left this week. Hard knee work was not stacked to replace it.";
   const list = labels.length === 1
     ? labels[0]!
-    : `${labels.slice(0, -1).join(", ")}, and ${labels[labels.length - 1]}`;
+    : labels.length === 2
+      ? `${labels[0]} and ${labels[1]}`
+      : `${labels.slice(0, -1).join(", ")}, and ${labels[labels.length - 1]}`;
   return `Gym days this week: ${list}.`;
 }

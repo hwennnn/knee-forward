@@ -106,6 +106,7 @@ for (const loadedId of LOADED_KNEE_IDS) assert.equal(ids(flared[0]!).includes(lo
 for (const upperId of UPPER_BODY_IDS) assert.equal(ids(flared[0]!).includes(upperId), false);
 assert.equal(ids(flared[0]!).includes("stationary-bike"), false);
 assert.deepEqual(gymDayLabels(flared), ["Wednesday", "Friday"]);
+assert.equal(weekMovedGymDays(flared), "Gym days this week: Wednesday and Friday.");
 for (let index = 1; index < flared.length; index += 1) {
   assert.equal(flared[index - 1]!.kind === "gym" && flared[index]!.kind === "gym", false);
 }
