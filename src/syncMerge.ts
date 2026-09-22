@@ -3,6 +3,8 @@ import type { CheckIn, LocalAppState, SessionLog, WeightEntry } from "./types";
 import type { ScheduleOverride } from "./types";
 
 export interface RemoteSnapshot {
+  /** False when the server has sessions or weights but no plan row yet. */
+  hasPlan?: boolean;
   planUpdatedAt: string;
   profile: LocalAppState["profile"];
   activeEpisodeId: string;
@@ -31,6 +33,20 @@ export interface UserPlan {
   activeEpisodeId: string;
   planUpdatedAt: string;
   weightGoalKg: number | null;
+}
+
+export function checkInFromSession(session: SessionLog): CheckIn {
+  return {
+    id: session.id,
+    episodeId: session.episodeId,
+    sessionId: session.id,
+    recordedAt: session.completedAt,
+    painBefore: session.painBefore,
+    painAfter: session.painAfter,
+    swellingBefore: session.swellingBefore,
+    swellingAfter: session.swellingAfter,
+    updatedAt: session.completedAt,
+  };
 }
 
 export function planFromState(state: LocalAppState): UserPlan {
@@ -78,7 +94,7 @@ function mergeWeights(local: readonly WeightEntry[], remote: readonly WeightEntr
 
 export function mergeSnapshots(local: LocalAppState, remote: RemoteSnapshot | null): LocalAppState {
   if (!remote) return local;
-  const base = remote.planUpdatedAt > local.planUpdatedAt
+  const base = remote.hasPlan !== false && remote.planUpdatedAt > local.planUpdatedAt
     ? applyPlan(local, {
       planExerciseIds: remote.planExerciseIds,
       doses: remote.doses,

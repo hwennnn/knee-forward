@@ -9,7 +9,9 @@ import {
 import { EmptyState } from "./components";
 import { exercises } from "./data";
 import { AppSelect } from "./FormControls";
+import { timeZoneOf, zonedParts } from "./schedule";
 import type { LocalAppState, SessionExerciseLog, SessionSetLog } from "./types";
+import { formatWeightGoal, formatWeightTrend, sevenDayWeightTrend } from "./weightLog";
 
 type SessionsByDay = readonly { dateKey: string; dateLabel: string; label: string; done: boolean; today: boolean }[];
 
@@ -108,9 +110,17 @@ export function ProgressPage({ state, sessionsByDay }: ProgressPageProps) {
     0,
   );
 
+  const zone = timeZoneOf(state.profile);
+  const trend = sevenDayWeightTrend(state.weightEntries, zonedParts(new Date(), zone).date, state.weightGoalKg);
+
   return (
     <div className="page-content">
       <header className="page-heading"><p>Progress</p><h1>Your recorded history.</h1></header>
+      <section className="history-section">
+        <h2>Weight</h2>
+        <p>{formatWeightTrend(trend)}</p>
+        <p>{formatWeightGoal(state.weightGoalKg)}</p>
+      </section>
       <div className="metric-grid tracking-metrics">
         <article><CalendarCheck size={24} /><strong>{sortedSessions.length}</strong><span>sessions logged</span></article>
         <article><Barbell size={24} /><strong>{sortedSessions.reduce((sum, item) => sum + item.completedExerciseIds.length, 0)}</strong><span>exercises completed</span></article>

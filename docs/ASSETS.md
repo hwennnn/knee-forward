@@ -42,12 +42,18 @@ The 16 original 512 px panel PNGs were moved to `work/source-panel-pngs/`. Their
 
 The panels were cropped from the source sheets, centered on individual square canvases, and converted to WebP so the app does not stretch a sheet or expose neighboring panels. They also require physiotherapist review before public distribution.
 
+## Whole-body placeholder
+
+`public/assets/exercise-stills/whole-body-placeholder.svg` is an original geometric mark drawn for this project (a circle and two strokes on the app colors, plus the words “Placeholder, not a demonstration”). It is shared by the fifteen whole-body catalog records that do not have a reviewed still or a Gym visual mapping: machine chest press, lat pulldown, seated row, shoulder press, biceps curl, triceps pressdown, dead bug, side plank, Pallof press, band row, band chest press, band overhead press, band biceps curl, band triceps extension, and band clam.
+
+It is not a drawing of those movements, not a crop of a rehab panel, and not a Gym visual GIF. `clinicalReviewStatus` is `pending` and `visualScope` is `generic_pattern`. The alt text says it is not a movement demonstration. Do not point these records at an existing knee still or motion file.
+
 ## Mixed-media runtime policy
 
 - Primary media: a crisp WebP still on Learn cards, Learn detail, and workout screens.
 - Optional motion: Learn detail only, after the still and explanatory content.
 - Runtime motion: WebM first, MP4 fallback, and a static poster.
 - Runtime GIF: prohibited. Original Gym visual GIFs are preserved only under `work/source-motion-gifs/gymvisual/` for provenance.
-- Clinical status: the 32 motion mappings are approved; generated stills remain pending visual review. None is medical clearance.
+- Clinical status: the 32 motion mappings are approved; generated stills and the whole-body placeholder remain pending visual review. None is medical clearance. Catalog records without `demoMedia` must not be treated as covered by the Gym visual manifest.
 
 Motion provenance, rights, transformations, mapping decisions, and checksums are documented in [`MEDIA_LICENSES.md`](MEDIA_LICENSES.md) and the two media manifests.

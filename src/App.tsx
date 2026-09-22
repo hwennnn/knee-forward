@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Alarm,
   ArrowRight,
-  Barbell,
   BookOpen,
   CalendarCheck,
   CaretDown,
@@ -39,7 +37,14 @@ import { AppCheckbox, AppDatePicker, AppNumberField, AppSearchField, AppSelect, 
 import { applySharedPlan, createSharedPlanUrl, decodeSharedPlan } from "./planShare";
 import type { SharedPlan } from "./planShare";
 import type { StorageRecovery } from "./storage";
-import type { SessionExerciseStatus, SessionSetLog } from "./types";
+import type { DayChoice, SessionExerciseStatus, SessionSetLog } from "./types";
+import { isAllowlistedEmail } from "./authAllowlist";
+import { choiceFamily, isValidTimeZone, resolveWeek, setScheduleOverride, timeZoneOf, todayInWeek, zonedParts } from "./schedule";
+import { SyncPanel } from "./SyncPanel";
+import { checkInFromSession } from "./syncMerge";
+import { deleteCloudData, fetchRemoteSnapshot, getSupabase, pushDelta, reconcileCloud } from "./supabaseSync";
+import { TodayView } from "./TodayView";
+import { sevenDayWeightTrend, upsertWeightEntry, weekActivity } from "./weightLog";
 
 type CheckStatus = "pending" | "ready" | "adjust" | "stop";
 type CheckFlags = { reviewed: boolean; aboveBaseline: boolean; locking: boolean; instability: boolean; redFlag: boolean };
@@ -57,10 +62,6 @@ function isLocalPreviewHost() {
 }
 
 const learningMotionFor = (exercise: ExerciseRecord) => motionMediaForExerciseContext(exercise, "learn", isLocalPreviewHost());
-
-function todayLabel() {
-  return new Intl.DateTimeFormat("en-SG", { weekday: "long", month: "long", day: "numeric" }).format(new Date());
-}
 
 function stageLabel(stage: EpisodeStage) {
   if (stage === "pre_surgery") return "Pre-surgery";
@@ -119,6 +120,20 @@ function doseIsComplete(dose?: ExerciseDose) {
 
 function blankPerformedSets(dose: ExerciseDose): SessionSetLog[] {
   return Array.from({ length: dose.sets ?? 1 }, () => ({ reps: dose.reps, loadKg: dose.loadKg, completed: false }));
+}
+
+function planSignature(value: LocalAppState) {
+  return JSON.stringify({
+    profile: value.profile,
+    planExerciseIds: value.planExerciseIds,
+    doses: value.doses,
+    scheduleOverrides: value.scheduleOverrides,
+    reminderTime: value.reminderTime,
+    reminderDays: value.reminderDays,
+    reminderDismissedOn: value.reminderDismissedOn,
+    planClinicianConfirmed: value.planClinicianConfirmed,
+    weightGoalKg: value.weightGoalKg,
+  });
 }
 
 function localDateKey(date = new Date()): NonNullable<LocalAppState["reminderDismissedOn"]> {
@@ -222,7 +237,11 @@ function App() {
   const [libraryFilter, setLibraryFilter] = useState<"all" | "prehab" | "strength" | "mobility">("all");
   const [toast, setToast] = useState<string | null>(sharedPlanResult.error);
   const [persistenceWarning, setPersistenceWarning] = useState<string | null>(null);
+  const [authEmail, setAuthEmail] = useState<string | null>(null);
   const importInput = useRef<HTMLInputElement>(null);
+  const planSignatureRef = useRef<string | null>(null);
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   useEffect(() => {
     if (storageRecovery) return;
@@ -233,6 +252,58 @@ function App() {
       setPersistenceWarning("Knee Forward could not save to this browser. Keep this tab open and export a backup now.");
     }
   }, [state, storageRecovery]);
+  useEffect(() => {
+    const signature = planSignature(state);
+    if (planSignatureRef.current === null) {
+      planSignatureRef.current = signature;
+      return;
+    }
+    if (planSignatureRef.current === signature) return;
+    planSignatureRef.current = signature;
+    setState((previous) => ({ ...previous, planUpdatedAt: new Date().toISOString() }));
+  }, [state]);
+  useEffect(() => {
+    const supabase = getSupabase();
+    if (!supabase) return;
+    let active = true;
+    const applyEmail = (email: string | null) => {
+      if (email && !isAllowlistedEmail(email)) {
+        void supabase.auth.signOut();
+        setAuthEmail(null);
+        return;
+      }
+      setAuthEmail(email);
+    };
+    void supabase.auth.getSession().then(({ data }) => {
+      if (active) applyEmail(data.session?.user.email ?? null);
+    });
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      applyEmail(session?.user.email ?? null);
+    });
+    return () => {
+      active = false;
+      data.subscription.unsubscribe();
+    };
+  }, []);
+  useEffect(() => {
+    if (!authEmail || !state.syncConsentAt || storageRecovery) return;
+    let cancelled = false;
+    void fetchRemoteSnapshot().then(async (remote) => {
+      if (cancelled) return;
+      const merged = reconcileCloud(stateRef.current, remote);
+      await pushDelta(merged, remote);
+      if (cancelled) return;
+      if (JSON.stringify(merged) !== JSON.stringify(stateRef.current)) {
+        planSignatureRef.current = planSignature(merged);
+        setState(merged);
+      }
+    }).catch(() => {
+      if (!cancelled) setToast("Sync is waiting for a connection. This browser still has your local copy.");
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [authEmail, state.syncConsentAt, state.planUpdatedAt, state.sessions.length, state.checkIns.length, state.weightEntries, storageRecovery]);
   useEffect(() => {
     if (!toast) return;
     const liveRegion = document.getElementById("app-live-region");
@@ -274,7 +345,6 @@ function App() {
     }
   }, [state]);
   const activeEpisodeSessions = state.sessions.filter((session) => session.episodeId === state.activeEpisodeId);
-  const completedThisWeek = activeEpisodeSessions.filter((session) => Date.now() - new Date(session.completedAt).getTime() < 7 * 86_400_000).length;
   const sessionsByDay = Array.from({ length: 7 }, (_, index) => {
     const date = new Date();
     date.setDate(date.getDate() - (6 - index));
@@ -316,8 +386,46 @@ function App() {
   }, [libraryFilter, search]);
   const selectedDetailContext = mediaContextForAppSurface(tab);
 
+  const scheduleZone = timeZoneOf(state.profile);
+  const weekSchedule = resolveWeek(new Date(), scheduleZone, state.scheduleOverrides, {
+    planExerciseIds: state.planExerciseIds,
+    doses: state.doses,
+  });
+  const todaySchedule = todayInWeek(weekSchedule);
+  const todaySessionExercises = (todaySchedule?.blocks ?? []).flatMap((block) => block.exercises.flatMap((item) => {
+    const exercise = exerciseCatalog.find((candidate) => candidate.id === item.exerciseId);
+    return exercise ? [{ exercise, dose: item.dose }] : [];
+  }));
+  const weightTrend = sevenDayWeightTrend(
+    state.weightEntries,
+    zonedParts(new Date(), scheduleZone).date,
+    state.weightGoalKg,
+  );
+  const activity = weekActivity(activeEpisodeSessions, weekSchedule.map((day) => day.date), scheduleZone);
+
+  const chooseLocation = (choice: DayChoice) => {
+    if (!todaySchedule) return;
+    if (choice === "gym" && todaySchedule.weekday === 0) return;
+    if (choiceFamily(todaySchedule.kind) === choice) return;
+    setState((previous) => ({
+      ...previous,
+      scheduleOverrides: setScheduleOverride(previous.scheduleOverrides, todaySchedule.date, choice),
+    }));
+  };
+
+  const saveMorningWeight = (weightKg: number) => {
+    const entry = {
+      id: crypto.randomUUID(),
+      recordedOn: zonedParts(new Date(), scheduleZone).date as LocalAppState["weightEntries"][number]["recordedOn"],
+      weightKg,
+      updatedAt: new Date().toISOString(),
+    };
+    setState((previous) => ({ ...previous, weightEntries: upsertWeightEntry(previous.weightEntries, entry) }));
+    setToast("Morning weight saved");
+  };
+
   const startSession = () => {
-    if (readiness !== "ready" || !planReady) return;
+    if (readiness !== "ready" || !planReady || todaySessionExercises.length === 0) return;
     const postResponse = initialPostResponse(prePain, preSwelling);
     setPostPain(postResponse.painAfter);
     setPostSwelling(postResponse.swellingAfter);
@@ -331,8 +439,8 @@ function App() {
       painBefore: prePain,
       swellingBefore: preSwelling,
       currentExerciseIndex: 0,
-      exercises: planExercises.map((exercise) => {
-        const prescribedDose = { ...state.doses[exercise.id] };
+      exercises: todaySessionExercises.map(({ exercise, dose }) => {
+        const prescribedDose = { ...dose };
         return {
           exerciseId: exercise.id,
           exerciseName: exercise.name,
@@ -464,9 +572,15 @@ function App() {
       exerciseLogs,
       note: sessionNote,
     };
+    const checkIn = checkInFromSession(log);
     const nextState = state.sessions.some((session) => session.id === log.id)
       ? { ...state, sessionDraft: null }
-      : { ...state, sessions: [log, ...state.sessions], sessionDraft: null };
+      : {
+        ...state,
+        sessions: [log, ...state.sessions],
+        checkIns: state.checkIns.some((item) => item.id === checkIn.id) ? state.checkIns : [...state.checkIns, checkIn],
+        sessionDraft: null,
+      };
     try {
       saveState(nextState);
     } catch {
@@ -644,29 +758,31 @@ function App() {
           <a className="brand" href={pathForTab("today")}><img src="/assets/icon-192.png" alt="" /><span>Knee Forward</span></a>
           <button className="icon-button" onClick={() => setModal("settings")} aria-label="Settings"><Gear size={23} /></button>
         </header>
-        {tab === "today" && <TodayPage
+        {tab === "today" && todaySchedule && <TodayView
           state={state}
-          completedThisWeek={completedThisWeek}
-          sessionsByDay={sessionsByDay}
+          today={todaySchedule}
+          week={weekSchedule}
+          activity={activity}
+          trend={weightTrend}
+          planReady={planReady}
+          missingDoseCount={missingDoseCount}
+          incompatiblePlanCount={incompatiblePlanCount}
+          onLocation={chooseLocation}
           onStart={() => {
-            if (state.sessionDraft) {
-              resumeSession();
-            } else {
+            if (state.sessionDraft) resumeSession();
+            else {
               resetSessionInputs();
               setModal("checkin");
             }
           }}
           onDiscardDraft={discardSessionDraft}
-          onReminder={() => setModal("reminder")}
-          onSafety={() => setModal("safety")}
-          onExercise={setSelectedExercise}
-          exercises={planExercises}
-          planReady={planReady}
-          missingDoseCount={missingDoseCount}
-          incompatiblePlanCount={incompatiblePlanCount}
-          reminderDue={reminderDue}
           onPlan={() => window.location.assign(pathForTab("plan"))}
+          onExercise={setSelectedExercise}
+          onSaveWeight={saveMorningWeight}
+          exercises={new Map(exerciseCatalog.map((exercise) => [exercise.id, exercise]))}
+          reminderDue={reminderDue}
           onDismissReminder={() => setState((previous) => ({ ...previous, reminderDismissedOn: todayKey }))}
+          onSafety={() => setModal("safety")}
         />}
         {tab === "plan" && <PlanPage
           state={state}
@@ -712,6 +828,23 @@ function App() {
         onImport={() => importInput.current?.click()}
         onExport={() => exportState(state)}
         shareUrl={shareLink.url}
+        authEmail={authEmail}
+        onMessage={setToast}
+        onConsent={() => setState((previous) => ({ ...previous, syncConsentAt: new Date().toISOString() }))}
+        onSignOut={() => {
+          const supabase = getSupabase();
+          if (supabase) void supabase.auth.signOut();
+          setAuthEmail(null);
+        }}
+        onDeleteCloud={() => {
+          void deleteCloudData().then(() => {
+            setAuthEmail(null);
+            setState((previous) => ({ ...previous, syncConsentAt: null }));
+            setToast("Cloud backup deleted. This browser kept its local copy.");
+          }).catch((error: unknown) => {
+            setToast(error instanceof Error ? error.message : "Cloud backup could not be deleted.");
+          });
+        }}
         onShare={async () => {
           if (shareLink.error) {
             setToast(shareLink.error);
@@ -779,90 +912,6 @@ function NavItem({ icon, label, active, href }: { icon: React.ReactElement; labe
   return <a className={`nav-item${active ? " nav-item--active" : ""}`} aria-current={active ? "page" : undefined} href={href}>{icon}<span>{label}</span></a>;
 }
 
-function TodayPage({ state, completedThisWeek, sessionsByDay, onStart, onDiscardDraft, onReminder, onSafety, onExercise, exercises: planExercises, planReady, missingDoseCount, incompatiblePlanCount, reminderDue, onPlan, onDismissReminder }: {
-  state: LocalAppState;
-  completedThisWeek: number;
-  sessionsByDay: { dateKey: string; dateLabel: string; label: string; done: boolean; today: boolean }[];
-  onStart: () => void;
-  onDiscardDraft: () => void;
-  onReminder: () => void;
-  onSafety: () => void;
-  onExercise: (exercise: ExerciseRecord) => void;
-  exercises: readonly ExerciseRecord[];
-  planReady: boolean;
-  missingDoseCount: number;
-  incompatiblePlanCount: number;
-  reminderDue: boolean;
-  onPlan: () => void;
-  onDismissReminder: () => void;
-}) {
-  return (
-    <div className="page-content">
-      <header className="page-heading">
-        <p>{todayLabel()}</p>
-        <h1>{state.profile.displayName ? `Today's rehab, ${state.profile.displayName}.` : "Today's rehab."}</h1>
-      </header>
-      {reminderDue && <section className="due-banner" role="status">
-        <Alarm size={24} weight="fill" />
-        <div><strong>Rehab reminder</strong><span>{state.reminderTime}. Check your knee before you start.</span></div>
-        <button className="text-button" onClick={onDismissReminder}>Dismiss today</button>
-      </section>}
-      <section className="today-grid">
-        <article className="session-hero">
-          <div className="session-hero__top">
-            <div>
-              <h2>Your recorded plan</h2>
-              <p>{planExercises.length} exercises</p>
-            </div>
-            <div className="session-mark"><Barbell size={32} weight="duotone" /></div>
-          </div>
-          <div className="hero-exercises">
-            {planExercises.slice(0, 4).map((exercise) => <ExerciseVisual key={exercise.id} media={exercise.media} compact />)}
-            {planExercises.length > 4 && <span className="more-exercises">+{planExercises.length - 4}</span>}
-          </div>
-          {state.sessionDraft
-            ? <SafetyBanner tone="success"><strong>Session in progress.</strong> Resume at exercise {state.sessionDraft.currentExerciseIndex + 1} of {state.sessionDraft.exercises.length}.</SafetyBanner>
-            : planReady
-            ? <SafetyBanner tone="success"><strong>Plan ready.</strong> Check symptoms before you start.</SafetyBanner>
-            : missingDoseCount > 0 || incompatiblePlanCount > 0
-            ? <SafetyBanner tone="warning"><strong>Setup needed.</strong> {incompatiblePlanCount > 0
-              ? `Review ${incompatiblePlanCount} exercise${incompatiblePlanCount === 1 ? "" : "s"} for your current phase.`
-              : `Add doses for ${missingDoseCount} exercise${missingDoseCount === 1 ? "" : "s"}.`}</SafetyBanner>
-            : <SafetyBanner tone="warning"><strong>Confirm once.</strong> Starting doses are filled in. Confirm if they match your clinician's plan.</SafetyBanner>}
-          <div className="hero-actions">
-            <button className="primary-button primary-button--large" onClick={state.sessionDraft || planReady ? onStart : onPlan}>{state.sessionDraft || planReady ? <Play size={20} weight="fill" /> : <SlidersHorizontal size={20} />} {state.sessionDraft ? "Resume session" : planReady ? "Start session" : missingDoseCount > 0 || incompatiblePlanCount > 0 ? "Set up plan" : "Review plan"}</button>
-            <button className="secondary-button" onClick={onReminder}><Alarm size={20} /> {state.reminderTime}</button>
-          </div>
-          {state.sessionDraft && <button className="text-button draft-discard-button" onClick={onDiscardDraft}>Discard saved session</button>}
-        </article>
-
-        <aside className="status-panel">
-          <div className="status-panel__header"><span>This week</span><button className="text-button" onClick={onSafety}>Safety <Info size={16} /></button></div>
-          <strong className="runway-number">{completedThisWeek}</strong>
-          <span className="runway-label">session{completedThisWeek === 1 ? "" : "s"} logged</span>
-        </aside>
-      </section>
-
-      <section className="weekly-strip">
-        <div><strong>Last 7 days</strong><span>Session history</span></div>
-        <div className="week-dots">{sessionsByDay.map((day) => <div key={day.dateKey} role="img" aria-label={`${day.dateLabel}: ${day.done ? "session recorded" : "no session recorded"}${day.today ? ", today" : ""}`}><span aria-hidden="true" className={`${day.done ? "done" : ""}${day.today ? " today" : ""}`}>{day.done ? <Check size={15} weight="bold" /> : ""}</span><small aria-hidden="true">{day.label}</small></div>)}</div>
-      </section>
-
-      <section className="section-block">
-        <div className="section-heading"><div><h2>Your plan</h2></div><span>{planExercises.length} exercises</span></div>
-        <div className="exercise-card-grid">
-          {planExercises.map((exercise) => (
-            <button className="exercise-card" key={exercise.id} onClick={() => onExercise(exercise)}>
-              <ExerciseVisual media={exercise.media} />
-              <span><strong>{exercise.shortName}</strong><small>{doseLabel(state.doses[exercise.id])}</small></span>
-              <ArrowRight size={18} />
-            </button>
-          ))}
-        </div>
-      </section>
-    </div>
-  );
-}
 
 function PlanPage({ state, exercises: planExercises, missingDoseCount, incompatiblePlanCount, onDose, onCustomize, onConfirm }: {
   state: LocalAppState;
@@ -1192,7 +1241,7 @@ function SharedPlanImportModal({ plan, onClose, onImport }: { plan: SharedPlan; 
   </Modal>;
 }
 
-function SettingsModal({ state, setState, onClose, onExport, onImport, shareUrl, onShare }: {
+function SettingsModal({ state, setState, onClose, onExport, onImport, shareUrl, onShare, authEmail, onMessage, onConsent, onSignOut, onDeleteCloud }: {
   state: LocalAppState;
   setState: React.Dispatch<React.SetStateAction<LocalAppState>>;
   onClose: () => void;
@@ -1200,7 +1249,14 @@ function SettingsModal({ state, setState, onClose, onExport, onImport, shareUrl,
   onImport: () => void;
   shareUrl: string;
   onShare: () => void;
+  authEmail: string | null;
+  onMessage: (message: string) => void;
+  onConsent: () => void;
+  onSignOut: () => void;
+  onDeleteCloud: () => void;
 }) {
+  const [timeZoneDraft, setTimeZoneDraft] = useState(state.profile.timeZone ?? "");
+  const [weightGoalDraft, setWeightGoalDraft] = useState(state.weightGoalKg === null ? "" : String(state.weightGoalKg));
   const contextLocked = state.sessionDraft !== null;
   const updateContext = (patch: Partial<Pick<LocalAppState["profile"], "affectedKnee" | "rehabStage" | "currentPhaseId">>) => {
     if (contextLocked) return;
@@ -1211,7 +1267,38 @@ function SettingsModal({ state, setState, onClose, onExport, onImport, shareUrl,
     }));
   };
   return <Modal title="Settings" onClose={onClose}>
-    <section className="settings-section"><h3>Profile</h3><AppTextField label="Name or nickname" autoComplete="nickname" maxLength={40} value={state.profile.displayName} onChange={(displayName) => setState((previous) => ({ ...previous, profile: { ...previous.profile, displayName: displayName.slice(0, 40) } }))} /></section>
+    <section className="settings-section">
+      <h3>Profile</h3>
+      <AppTextField label="Name or nickname" autoComplete="nickname" maxLength={40} value={state.profile.displayName} onChange={(displayName) => setState((previous) => ({ ...previous, profile: { ...previous.profile, displayName: displayName.slice(0, 40) } }))} />
+      <AppTextField label="Goal" maxLength={80} value={state.profile.goalLabel} onChange={(goalLabel) => setState((previous) => ({ ...previous, profile: { ...previous.profile, goalLabel: goalLabel.slice(0, 80) } }))} />
+      <AppTextField label="Time zone" value={timeZoneDraft} placeholder="America/Los_Angeles" onChange={setTimeZoneDraft} />
+      <button className="secondary-button" type="button" onClick={() => {
+        const timeZone = timeZoneDraft.trim();
+        if (timeZone && !isValidTimeZone(timeZone)) {
+          onMessage("Enter a time zone like America/Los_Angeles, or leave it blank.");
+          return;
+        }
+        setState((previous) => ({ ...previous, profile: { ...previous.profile, timeZone: timeZone || null } }));
+        onMessage(timeZone ? `Week clock set to ${timeZone}.` : "Week clock set to America/Los_Angeles.");
+      }}>Save time zone</button>
+      <p className="field-help">Leave the time zone blank to use America/Los_Angeles. The week follows that clock.</p>
+      <AppTextField label="Weight goal (kg, optional)" value={weightGoalDraft} onChange={setWeightGoalDraft} />
+      <button className="secondary-button" type="button" onClick={() => {
+        const trimmed = weightGoalDraft.trim();
+        if (!trimmed) {
+          setState((previous) => ({ ...previous, weightGoalKg: null }));
+          onMessage("Weight goal cleared.");
+          return;
+        }
+        const weightGoalKg = Number(trimmed);
+        if (!Number.isFinite(weightGoalKg) || weightGoalKg < 20 || weightGoalKg > 400) {
+          onMessage("Enter a weight goal in kilograms, or leave it blank.");
+          return;
+        }
+        setState((previous) => ({ ...previous, weightGoalKg }));
+        onMessage("Weight goal saved.");
+      }}>Save weight goal</button>
+    </section>
     <section className="settings-section">
       <h3>Rehab context</h3>
       <fieldset className="field-block" disabled={contextLocked}>
@@ -1229,7 +1316,15 @@ function SettingsModal({ state, setState, onClose, onExport, onImport, shareUrl,
         : <p className="field-help">Changing knee or phase requires you to review and confirm the recorded plan again.</p>}
     </section>
     <section className="settings-section"><h3>Share plan</h3><p>Includes exercises and doses only.</p><AppTextField label="Plan link" readOnly value={shareUrl} onFocus={(event) => event.currentTarget.select()} /><button className="secondary-button" disabled={!shareUrl} onClick={onShare}><LinkSimple size={18} /> Copy link</button></section>
-    <section className="settings-section"><h3>Backup</h3><p>Backups include all data stored in this browser.</p><div className="settings-actions"><button className="secondary-button" onClick={onExport}><DownloadSimple size={18} /> Export backup</button><button className="secondary-button" onClick={onImport}><UploadSimple size={18} /> Import backup</button></div></section>
+    <SyncPanel
+      state={state}
+      authEmail={authEmail}
+      onMessage={onMessage}
+      onConsent={onConsent}
+      onSignOut={onSignOut}
+      onDeleteCloud={onDeleteCloud}
+    />
+    <section className="settings-section"><h3>Backup</h3><p>Export includes the plan, sessions, check-ins, and weight log stored in this browser. Deleting the cloud backup does not erase this copy.</p><div className="settings-actions"><button className="secondary-button" onClick={onExport}><DownloadSimple size={18} /> Export backup</button><button className="secondary-button" onClick={onImport}><UploadSimple size={18} /> Import backup</button></div></section>
   </Modal>;
 }
 
