@@ -529,6 +529,26 @@ export function parseState(value: unknown): LocalAppState {
     for (const exerciseId of corePrehabExerciseIds) doses[exerciseId] = { ...defaultPrehabDoses[exerciseId] };
     planClinicianConfirmed = false;
   }
+  // Partial, confirmed, or edited right-knee prehab plans still receive catalog moves that
+  // were added after they were saved. Existing doses stay. An open session draft is left
+  // alone so the in-progress workout is not rewritten. There is no excluded-exercise flag:
+  // a core id removed in the editor is appended again on the next load. Confirmation is
+  // cleared only when this append adds ids to a plan that was already confirmed.
+  const backfillRightKneePrehab = affectedKnee === "right"
+    && rehabStage === "pre_surgery"
+    && currentPhaseId === "prehab"
+    && (value.sessionDraft === undefined || value.sessionDraft === null);
+  if (backfillRightKneePrehab) {
+    const present = new Set(resolvedPlanExerciseIds);
+    const missing = corePrehabExerciseIds.filter((exerciseId) => !present.has(exerciseId));
+    if (missing.length > 0) {
+      resolvedPlanExerciseIds = [...resolvedPlanExerciseIds, ...missing];
+      for (const exerciseId of missing) {
+        if (doseIsBlank(doses[exerciseId] ?? emptyDose())) doses[exerciseId] = { ...defaultPrehabDoses[exerciseId] };
+      }
+      if (planClinicianConfirmed) planClinicianConfirmed = false;
+    }
+  }
   const goalLabel = profile.goalLabel;
   if (goalLabel !== undefined && !validString(goalLabel, 80)) throw new Error("The saved profile goal is invalid.");
   const timeZone = profile.timeZone;

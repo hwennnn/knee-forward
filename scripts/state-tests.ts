@@ -276,9 +276,13 @@ assert.equal(upgradedLegacyPlan.planClinicianConfirmed, false);
 const customizedLegacyPlan = structuredClone(legacyEmptyPlan);
 customizedLegacyPlan.doses.squat = { ...blankDose(), sets: 4, reps: 8, rangeNote: "Kept custom dose" };
 const preservedLegacyPlan = parseState(customizedLegacyPlan);
-assert.deepEqual([...preservedLegacyPlan.planExerciseIds], legacyPlanIds);
+assert.deepEqual([...preservedLegacyPlan.planExerciseIds], [
+  ...legacyPlanIds,
+  ...corePrehabExerciseIds.filter((id) => !legacyPlanIds.includes(id)),
+]);
 assert.equal(preservedLegacyPlan.doses.squat?.rangeNote, "Kept custom dose");
-assert.equal(preservedLegacyPlan.planExerciseIds.includes("heel-slide"), false);
+assert.deepEqual(preservedLegacyPlan.doses["heel-slide"], defaultPrehabDoses["heel-slide"]);
+assert.equal(preservedLegacyPlan.planClinicianConfirmed, false);
 
 const leftKneeLegacyPlan = structuredClone(legacyEmptyPlan);
 leftKneeLegacyPlan.profile.affectedKnee = "left";
@@ -340,7 +344,11 @@ assert.deepEqual(upgradedWholeBody.doses["single-leg-press"], defaultPrehabDoses
 
 const customizedPreviousSeed = structuredClone(previousSeed);
 customizedPreviousSeed.doses["heel-slide"] = { ...previousSeededPrehabDoses["heel-slide"], reps: 8 };
-assert.deepEqual([...parseState(customizedPreviousSeed).planExerciseIds], [...previousSeededPrehabExerciseIds]);
+const backfilledPreviousSeed = parseState(customizedPreviousSeed);
+assert.deepEqual([...backfilledPreviousSeed.planExerciseIds], [...corePrehabExerciseIds]);
+assert.equal(backfilledPreviousSeed.doses["heel-slide"]?.reps, 8);
+assert.deepEqual(backfilledPreviousSeed.doses["band-row"], defaultPrehabDoses["band-row"]);
+assert.equal(backfilledPreviousSeed.planClinicianConfirmed, false, "adding catalog moves to a confirmed plan asks for confirmation again");
 
 const wholeBodySeed = structuredClone(initialState);
 wholeBodySeed.profile.displayName = "Houman";
@@ -363,10 +371,19 @@ assert.equal(upgradedGymPlan.doses["assisted-dip"]?.loadKg, null);
 
 const customizedWholeBody = structuredClone(wholeBodySeed);
 customizedWholeBody.doses["machine-chest-press"] = { ...previousWholeBodyDoses["machine-chest-press"], reps: 6 };
+customizedWholeBody.doses["cable-face-pull"] = { ...defaultPrehabDoses["cable-face-pull"], reps: 6 };
 const preservedWholeBody = parseState(customizedWholeBody);
-assert.deepEqual([...preservedWholeBody.planExerciseIds], [...previousWholeBodyExerciseIds]);
+assert.deepEqual([...preservedWholeBody.planExerciseIds], [...corePrehabExerciseIds]);
 assert.equal(preservedWholeBody.doses["machine-chest-press"]?.reps, 6);
-assert.equal(preservedWholeBody.planExerciseIds.includes("cable-face-pull"), false);
+assert.equal(preservedWholeBody.doses["cable-face-pull"]?.reps, 6, "a dose already stored for a missing id is not replaced");
+assert.equal(preservedWholeBody.planClinicianConfirmed, false);
+
+const confirmedCurrentPlan = structuredClone(initialState);
+confirmedCurrentPlan.planClinicianConfirmed = true;
+confirmedCurrentPlan.doses["heel-slide"] = { ...defaultPrehabDoses["heel-slide"], reps: 9 };
+const stillConfirmed = parseState(confirmedCurrentPlan);
+assert.equal(stillConfirmed.planClinicianConfirmed, true, "confirmation stays when no new ids were added");
+assert.equal(stillConfirmed.doses["heel-slide"]?.reps, 9);
 
 const wholeBodyWithDraft = structuredClone(wholeBodySeed);
 wholeBodyWithDraft.sessionDraft = {

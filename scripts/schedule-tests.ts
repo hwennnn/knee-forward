@@ -11,7 +11,6 @@ import {
 } from "../src/schedule";
 
 const plan = {
-  planExerciseIds: initialState.planExerciseIds,
   doses: initialState.doses,
 };
 
@@ -144,5 +143,26 @@ assert.equal(singapore.find((day) => day.isToday)?.kind, "gym");
 const losAngeles = weekOn("2026-09-22T16:30:00.000Z");
 assert.equal(losAngeles.find((day) => day.isToday)?.date, "2026-09-22");
 assert.equal(losAngeles.find((day) => day.isToday)?.kind, "home");
+
+const thinIds = ["heel-slide", "quad-set", "straight-leg-raise", "bridge", "lateral-band-walk", "single-leg-balance"];
+const blankDose = { sets: null, reps: null, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "" };
+const thinDoses: Record<string, typeof blankDose> = {};
+for (const id of thinIds) thinDoses[id] = { ...defaultPrehabDoses[id] };
+thinDoses["heel-slide"] = { ...defaultPrehabDoses["heel-slide"], reps: 8 };
+thinDoses["band-row"] = { ...blankDose };
+thinDoses["band-terminal-knee-extension"] = { ...blankDose };
+const thinWeek = resolveWeek(new Date(monday), "America/Los_Angeles", [], { planExerciseIds: thinIds, doses: thinDoses });
+const thinHome = thinWeek[1]!;
+assert.equal(thinHome.kind, "home");
+assert.match(thinHome.blocks.find((block) => block.id === "strength")?.note ?? "", /Full home session/);
+for (const id of ["band-row", "band-chest-press", "band-biceps-curl", "band-triceps-extension", "band-clam", "dead-bug", "side-plank", "band-terminal-knee-extension"]) {
+  assert.ok(ids(thinHome).includes(id), `thin home day missing ${id}`);
+}
+assert.equal(thinHome.blocks.find((block) => block.id === "strength")?.exercises.find((item) => item.exerciseId === "band-row")?.dose.sets, defaultPrehabDoses["band-row"].sets);
+assert.equal(thinHome.blocks.find((block) => block.id === "knee")?.exercises.find((item) => item.exerciseId === "band-terminal-knee-extension")?.dose.reps, defaultPrehabDoses["band-terminal-knee-extension"].reps);
+assert.equal(thinHome.blocks.find((block) => block.id === "knee")?.exercises.find((item) => item.exerciseId === "heel-slide")?.dose.reps, 8);
+assert.ok(ids(thinWeek[0]!).includes("single-leg-press"));
+assert.equal(thinIds.includes("band-row"), false);
+assert.equal(thinIds.includes("band-terminal-knee-extension"), false);
 
 console.log("Schedule tests passed.");

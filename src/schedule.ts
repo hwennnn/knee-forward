@@ -142,8 +142,8 @@ export interface ResolvedDay {
   exerciseIds: readonly string[];
 }
 
+/** Doses for day resolution. Membership in the saved plan does not hide a template exercise. */
 export interface PlanDoseContext {
-  planExerciseIds: readonly string[];
   doses: Record<string, ExerciseDose>;
 }
 
@@ -256,20 +256,21 @@ function doseMatchesSeed(exerciseId: string, dose: ExerciseDose) {
     && dose.rangeNote === seeded.rangeNote;
 }
 
+/** Saved dose when it can be performed; otherwise the seeded prehab dose. A zero-filled map entry is treated as missing. */
 function doseFor(exerciseId: string, doses: Record<string, ExerciseDose>, mode?: "gym-cardio" | "long-cardio"): ExerciseDose | null {
-  const stored = doses[exerciseId] ?? seededDose(exerciseId);
-  if (!stored) return null;
-  if (stored.durationMinutes === null && stored.sets === null) return null;
-  if (exerciseId !== "stationary-bike" || !mode || !doseMatchesSeed(exerciseId, stored)) return stored;
+  const stored = doses[exerciseId];
+  const usable = stored && (stored.sets !== null || stored.durationMinutes !== null) ? stored : seededDose(exerciseId);
+  if (!usable || (usable.durationMinutes === null && usable.sets === null)) return null;
+  if (exerciseId !== "stationary-bike" || !mode || !doseMatchesSeed(exerciseId, usable)) return usable;
   if (mode === "long-cardio") {
     return {
-      ...stored,
+      ...usable,
       durationMinutes: 40,
       rangeNote: "35–45 minutes moderate. Seat high. A flat walk can replace the bike. No running.",
     };
   }
   return {
-    ...stored,
+    ...usable,
     durationMinutes: 30,
     rangeNote: "Moderate. 25–30 minutes. Seat high. Steady pace, not a fluff spin. A flat walk can replace the bike. No running.",
   };
@@ -278,32 +279,30 @@ function doseFor(exerciseId: string, doses: Record<string, ExerciseDose>, mode?:
 function pushExercises(
   target: ScheduledExercise[],
   items: readonly { exerciseId: string; group: string }[],
-  planIds: ReadonlySet<string>,
   doses: Record<string, ExerciseDose>,
   mode?: "gym-cardio" | "long-cardio",
 ) {
   for (const item of items) {
-    if (!planIds.has(item.exerciseId)) continue;
     const dose = doseFor(item.exerciseId, doses, item.exerciseId === "stationary-bike" ? mode : undefined);
     if (!dose) continue;
     target.push({ exerciseId: item.exerciseId, group: item.group, dose });
   }
 }
 
-function blocksFor(kind: SessionKind, template: GymTemplate | null, romOnly: boolean, lightBand: boolean, planIds: ReadonlySet<string>, doses: Record<string, ExerciseDose>): ScheduleBlock[] {
+function blocksFor(kind: SessionKind, template: GymTemplate | null, romOnly: boolean, lightBand: boolean, doses: Record<string, ExerciseDose>): ScheduleBlock[] {
   const knee: ScheduledExercise[] = [];
-  pushExercises(knee, KNEE_BLOCK_IDS.map((exerciseId) => ({ exerciseId, group: "Knee" })), planIds, doses);
+  pushExercises(knee, KNEE_BLOCK_IDS.map((exerciseId) => ({ exerciseId, group: "Knee" })), doses);
   const strength: ScheduledExercise[] = [];
   const cardio: ScheduledExercise[] = [];
   if (kind === "gym" && template) {
-    pushExercises(strength, GYM_TEMPLATES[template], planIds, doses);
-    pushExercises(cardio, [{ exerciseId: "stationary-bike", group: "Cardio" }], planIds, doses, "gym-cardio");
+    pushExercises(strength, GYM_TEMPLATES[template], doses);
+    pushExercises(cardio, [{ exerciseId: "stationary-bike", group: "Cardio" }], doses, "gym-cardio");
   } else if (kind === "home") {
-    pushExercises(strength, HOME_STRENGTH, planIds, doses);
+    pushExercises(strength, HOME_STRENGTH, doses);
   } else if (kind === "cardio") {
-    pushExercises(cardio, [{ exerciseId: "stationary-bike", group: "Cardio" }], planIds, doses, "long-cardio");
+    pushExercises(cardio, [{ exerciseId: "stationary-bike", group: "Cardio" }], doses, "long-cardio");
   } else if (lightBand && !romOnly) {
-    pushExercises(strength, LIGHT_BAND_IDS.map((exerciseId) => ({ exerciseId, group: "Light band" })), planIds, doses);
+    pushExercises(strength, LIGHT_BAND_IDS.map((exerciseId) => ({ exerciseId, group: "Light band" })), doses);
   }
   const blocks: ScheduleBlock[] = [{
     id: "knee",
@@ -422,7 +421,6 @@ export function resolveWeek(anchor: Date, timeZone: string, overrides: readonly 
   const letters: GymTemplate[] = ["A", "B", "C"];
   const templateAt = new Map<number, GymTemplate>();
   gymOrder.forEach((index, order) => templateAt.set(index, letters[Math.min(order, 2)]!));
-  const planIds = new Set(plan.planExerciseIds);
   return dates.map((date, index) => {
     const weekday = index === 6 ? 0 : index + 1;
     const defaultKind = DEFAULT_KIND[index] ?? "rest";
@@ -436,7 +434,7 @@ export function resolveWeek(anchor: Date, timeZone: string, overrides: readonly 
     const template = kind === "gym" ? templateAt.get(index) ?? "A" : null;
     const lightBand = kind === "rest" && pin !== "rest";
     const romOnly = pin === "rest";
-    const blocks = blocksFor(kind, template, romOnly, lightBand, planIds, plan.doses);
+    const blocks = blocksFor(kind, template, romOnly, lightBand, plan.doses);
     const text = copyFor(kind, template, lightBand);
     const exerciseIds = blocks.flatMap((block) => block.exercises.map((exercise) => exercise.exerciseId));
     return {

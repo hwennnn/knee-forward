@@ -388,7 +388,6 @@ function App() {
 
   const scheduleZone = timeZoneOf(state.profile);
   const weekSchedule = resolveWeek(new Date(), scheduleZone, state.scheduleOverrides, {
-    planExerciseIds: state.planExerciseIds,
     doses: state.doses,
   });
   const todaySchedule = todayInWeek(weekSchedule);

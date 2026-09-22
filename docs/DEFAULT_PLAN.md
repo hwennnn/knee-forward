@@ -16,11 +16,19 @@ A saved plan is left alone once any of its doses is filled, the exercise list is
 
 ## Unmodified previous 15-exercise seed
 
-A right-knee prehab plan that still matches `previousSeededPrehabExerciseIds` and `previousSeededPrehabDoses` exactly, with no session draft, is replaced by the current gym plan. Confirmation is cleared so the person reviews the new list once. Any edited dose or exercise list stays as saved. Those historical doses stay frozen even when `defaultPrehabDoses` gets harder.
+A right-knee prehab plan that still matches `previousSeededPrehabExerciseIds` and `previousSeededPrehabDoses` exactly, with no session draft, is replaced by the current gym plan. Confirmation is cleared so the person reviews the new list once. Those historical doses stay frozen even when `defaultPrehabDoses` gets harder.
 
 ## Unmodified previous whole-body seed
 
-A right-knee prehab plan that still matches `previousWholeBodyExerciseIds` and `previousWholeBodyDoses` exactly, with no session draft, is replaced by the current 24 Hour Fitness plan (extra machines plus harder strength doses). Confirmation is cleared once. A customized dose or a changed exercise list is left alone. An open session draft blocks the replacement.
+A right-knee prehab plan that still matches `previousWholeBodyExerciseIds` and `previousWholeBodyDoses` exactly, with no session draft, is replaced by the current 24 Hour Fitness plan (extra machines plus harder strength doses). Confirmation is cleared once. An open session draft blocks the replacement.
+
+## Partial, confirmed, and edited plans
+
+Today shows the full day template (knee block, gym template A/B/C, home strength, or cardio). An exercise is not hidden because it is missing from `planExerciseIds`. The dose on screen is the saved dose when that dose has sets or a duration. A missing or zero-filled dose uses `defaultPrehabDoses`. A saved dose that already has sets or a duration is kept, including when it differs from the seed. Bike length overlays still apply only while the stored bike dose matches the seed.
+
+On load, a right-knee prehab plan with no open session draft appends any `corePrehabExerciseIds` that are missing. Doses already stored for those ids are kept. Blank doses are filled from `defaultPrehabDoses`. Left-knee plans, later phases, and an open session draft are not rewritten.
+
+Confirmation is cleared only when that append adds at least one id to a plan that was already confirmed. A confirmed plan that already lists every core id stays confirmed. There is no excluded-exercise flag, so a core exercise removed in the plan editor is appended again the next time a right-knee prehab plan loads. `planExerciseIds` is still the list for the plan editor, share links, and the logging library. The day view does not use it as a filter.
 
 Daily knee-block doses (heel slide, quad set, terminal knee extension, straight-leg raise) stay the protective seed. Strength doses do not.
 
