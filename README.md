@@ -1,13 +1,17 @@
 # Knee Forward
 
-Knee Forward is a local-first ACL rehabilitation companion. It helps someone record and follow a clinician-provided exercise plan, learn common rehabilitation movements, track symptom response, and maintain a practical routine without creating an account.
+Knee Forward is a local-first ACL rehabilitation companion and a general whole-body training guide. It shows the exact session for today (gym, home, or rest), keeps a clinician-overridable right-knee prehab plan, and tracks optional morning weight plus session behavior. Guest use needs no account. Sign-in is an optional magic-link backup.
 
 ## What is implemented
 
-- Guest-first use with no sign-in or server
+- Guest-first use. The app works with no Supabase project.
+- Today answers location and exact doses: Knee block, Strength, Cardio, and Check-in. The default week is gym on Monday, Wednesday, and Friday; home band work on Tuesday and Thursday; easy cardio on Saturday; rest on Sunday. Time zone defaults to `America/Los_Angeles` and can be changed in Settings.
+- “Training at home today”, “At the gym today”, and “Rest / knee flared” remap the rest of the week. A home override replaces that gym day with the full band session and moves the missed gym day to a later non-adjacent weekday. A flare day is range of motion only and does not refill a gym day. Sunday is never turned into a hard knee day.
+- Whole-body gym templates A, B, and C rotate protective lower work with upper push, upper pull, arms, and core, plus easy bike or a flat walk. Home days use bands, hips, balance, and core. Starting doses stay inside the protective ranges (mini squat about 45°, leg press about 45–60°, no deep squat, lunge, run, cut, pivot, or jump).
+- Optional morning weight in kilograms, a 7-day trend, and counts of strength sessions and cardio minutes. There is no calorie target and no numeric weight goal until one is entered.
 - Real static URLs for Today, Plan, Learn, and Progress, so refreshing or reopening a browser tab preserves the current section
 - Private first-run onboarding stored in the browser
-- A seeded right-knee pre-surgery plan with sets, reps, holds, and bike duration, so a new profile is not waiting on empty doses. See [docs/DEFAULT_PLAN.md](docs/DEFAULT_PLAN.md). The treating clinician's plan overrides these starting doses.
+- A seeded right-knee pre-surgery plan with sets, reps, holds, and bike duration, so a new profile is not waiting on empty doses. See [docs/DEFAULT_PLAN.md](docs/DEFAULT_PLAN.md). The treating clinician's plan overrides these starting doses. An unmodified previous 15-exercise seed upgrades to the whole-body plan and asks for confirmation again. A customized plan is left alone.
 - Editable sets, repetitions, holds, duration, load, and range notes supplied by a physiotherapist
 - A required dosage-complete confirmation gate before a recorded plan can run
 - A required pre-session safety review for symptoms, swelling, locking, instability, and urgent warning signs
@@ -16,8 +20,8 @@ Knee Forward is a local-first ACL rehabilitation companion. It helps someone rec
 - Read-only previous-set hints, partial/skip/stop outcomes, and an automatically saved resumable workout draft
 - Post-session pain, swelling, and note logging
 - Exercise-level history with completed-set counts, highest recorded load, repetitions, and recorded load-volume
-- A phase-aware learning library with 32 exercises and crisp WebP stills as the primary media for cards, detail, and workouts
-- Approved Learn-detail motion for all 32 exercises from the Gym visual exercise dataset, served as WebM with MP4 fallback and never as runtime GIF
+- A phase-aware learning library. The original 32 exercises keep crisp WebP stills and approved Gym visual motion on Learn detail (WebM with MP4 fallback, never runtime GIF). Fifteen whole-body additions use one shared geometric placeholder. That image is not a movement demonstration and is not clinically reviewed.
+- Optional magic-link backup for `whman63@gmail.com` only, when `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are present at build time. Other addresses are rejected before a link is sent. See [docs/SUPABASE.md](docs/SUPABASE.md).
 - Local reminders plus an `.ics` calendar download
 - Progress history, weekly adherence, and symptom-response summaries
 - Validated JSON backup and restore, with non-destructive recovery for unreadable local data
@@ -56,7 +60,7 @@ Twenty-seven Gym visual assets provide 32 exercise mappings in the Learn detail 
 
 ## Data and privacy
 
-Knee Forward stores settings and history in browser `localStorage` under `knee-forward:state:v1`. Nothing is uploaded. Surgery dates are entered only in local Settings and are not included in the public seed or plan links. Full backups include all local data, so treat exported files as private.
+Knee Forward stores settings and history in browser `localStorage` under `knee-forward:state:v1`. Cloud sync is off unless the deployment was built with Supabase and the invited person chooses **Upload and sync**. Surgery dates are entered only in Settings and are not included in the public seed or plan links. Full backups include all local data, so treat exported files as private. Magic-link mail and any future push text must not include symptoms, notes, or weight.
 
 Performed set history is an observation record. Previous and highest values are never treated as a recommendation, a progression target, or clearance to increase load.
 
@@ -73,4 +77,4 @@ This app is educational. It does not diagnose an ACL injury, prescribe rehabilit
 
 ## Next production step
 
-The proposed Supabase migration, row-level security model, data-merging flow, and notification path are documented in [docs/PRODUCTION.md](docs/PRODUCTION.md).
+Schema, allowlist, and sync behavior are in [docs/SUPABASE.md](docs/SUPABASE.md). The VPS release path is in [docs/DEPLOY.md](docs/DEPLOY.md). Remaining production work, including closed-browser reminders, is in [docs/PRODUCTION.md](docs/PRODUCTION.md).

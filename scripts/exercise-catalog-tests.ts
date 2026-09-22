@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { corePrehabExerciseIds, defaultPrehabDoses, exercises, rehabPhases, routines, sourceMetadata } from "../src/data";
+import { corePrehabExerciseIds, defaultPrehabDoses, exercises, previousSeededPrehabDoses, previousSeededPrehabExerciseIds, rehabPhases, routines, sourceMetadata } from "../src/data";
 
 const expectedPanelHashes = {
   "/assets/exercise-panels/foundations-0.webp": "1dd28c6eee6af70b34f57f076b950fe91ffa4df043ba5cc18eacbba0723c5c7a",
@@ -99,7 +99,16 @@ const educationOnlyExpansion = new Set([
   "bridge-march",
 ]);
 
-assert.equal(exercises.length, 32, "catalog should contain the 32 reviewed exercise records");
+const wholeBodyPlaceholders = exercises.filter((exercise) => exercise.media.kind === "image" && exercise.media.src.endsWith("whole-body-placeholder.svg"));
+assert.equal(exercises.length, 32 + wholeBodyPlaceholders.length, "catalog should keep the 32 reviewed records and the whole-body placeholders");
+assert.ok(wholeBodyPlaceholders.length >= 10, "whole-body movements need their own records");
+for (const exercise of wholeBodyPlaceholders) {
+  assert.equal(exercise.demoMedia, undefined, `${exercise.id} must not reuse a knee demonstration as if it were this movement`);
+  assert.equal(exercise.planEligible === false, false, `${exercise.id} is part of the whole-body plan`);
+  assert.equal(exercise.media.clinicalReviewStatus, "pending");
+  assert.equal(exercise.media.visualScope, "generic_pattern");
+  assert.match(exercise.media.alt, /not a movement demonstration/i);
+}
 for (const exerciseId of educationOnlyExpansion) {
   const exercise = exercises.find((candidate) => candidate.id === exerciseId);
   assert.ok(exercise, `missing education-only exercise: ${exerciseId}`);
@@ -129,22 +138,11 @@ for (const exerciseId of corePrehabExerciseIds) {
   assert.equal(recorded, true, `${exerciseId} needs a seeded dose`);
 }
 
-assert.deepEqual(defaultPrehabDoses, {
-  "heel-slide": { sets: 2, reps: 15, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Daily ROM. Slow. Stop for sharp medial pinch." },
-  "quad-set": { sets: 3, reps: 15, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Daily. Hard squeeze 2–3s. Pair with heel props outside app if needed." },
-  "band-terminal-knee-extension": { sets: 3, reps: 12, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "TKE. Band behind the knee. Soft finish. Stop if the knee snaps backward." },
-  "straight-leg-raise": { sets: 3, reps: 12, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Daily/home. No quad lag. Right (affected) side." },
-  "bridge": { sets: 3, reps: 12, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Home band days OK with band above knees." },
-  "lateral-band-walk": { sets: 3, reps: 12, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Home band day. Short steps, upright torso." },
-  "single-leg-balance": { sets: 3, reps: null, loadKg: null, holdSeconds: 30, durationMinutes: null, rangeNote: "Soft knee. Brace if wobbly. Right side first if stable enough." },
-  "single-leg-press": { sets: 3, reps: 10, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Gym. Bilateral OK. Stop ~45–60° bend. Feet mid-high. Moderate load." },
-  "single-leg-knee-extension-machine": { sets: 3, reps: 12, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Gym. Light–moderate. Smooth mid-range. Stop if anterior/medial bite." },
-  "single-leg-hamstring-curl-machine": { sets: 3, reps: 12, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Gym. Controlled both directions." },
-  squat: { sets: 3, reps: 10, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Gym. MINI only ~45° max. High box OK. No deep squat. Meniscus protection." },
-  "standing-single-leg-heel-raise": { sets: 3, reps: 12, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Gym or home. Progress bilateral→single if quiet knee." },
-  "standing-hip-abduction-external-rotation-fire-hydrant": { sets: 3, reps: 12, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Gym/home. Support as needed." },
-  "modified-single-leg-deadlift": { sets: 3, reps: 8, loadKg: null, holdSeconds: null, durationMinutes: null, rangeNote: "Gym. Light hinge. Soft knees. Hip-dominant, not deep knee bend." },
-  "stationary-bike": { sets: null, reps: null, loadKg: null, holdSeconds: null, durationMinutes: 20, rangeNote: "Primary cardio. Easy–moderate. Seat high. Prefer over steep treadmill incline." },
-});
+for (const exerciseId of previousSeededPrehabExerciseIds) {
+  assert.deepEqual(defaultPrehabDoses[exerciseId], previousSeededPrehabDoses[exerciseId], `${exerciseId} protective dose must stay the seeded prehab dose`);
+}
+assert.equal(defaultPrehabDoses["machine-chest-press"]?.sets, 3);
+assert.equal(defaultPrehabDoses["band-row"]?.reps, 12);
+assert.equal(defaultPrehabDoses["side-plank"]?.holdSeconds, 20);
 
 console.log(`Exercise catalog verified for ${exercises.length} records, including ${Object.keys(generatedStillHashes).length} generated stills.`);

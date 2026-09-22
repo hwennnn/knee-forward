@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { corePrehabExerciseIds, defaultPrehabDoses } from "../src/data";
+import { corePrehabExerciseIds, defaultPrehabDoses, previousSeededPrehabDoses, previousSeededPrehabExerciseIds } from "../src/data";
 import { initialPostResponse, performedSetOutcome, previousSetsForExercise } from "../src/sessionTracking";
 import { importState, initialState, parseState } from "../src/storage";
 import type { ExerciseDose, LocalAppState } from "../src/types";
@@ -310,6 +310,49 @@ assert.deepEqual([...parseState(legacyPlanWithDraft).planExerciseIds], legacyPla
 const invalidReminderDate = structuredClone(initialState) as unknown as { reminderDismissedOn: string };
 invalidReminderDate.reminderDismissedOn = "2026-13-01";
 assert.throws(() => parseState(invalidReminderDate), /reminder acknowledgement is invalid/);
+
+const previousSeed = structuredClone(initialState);
+previousSeed.planExerciseIds = [...previousSeededPrehabExerciseIds];
+previousSeed.profile.displayName = "Houman";
+previousSeed.profile.onboardingComplete = true;
+previousSeed.planClinicianConfirmed = true;
+for (const id of Object.keys(previousSeed.doses)) {
+  previousSeed.doses[id] = {
+    sets: null,
+    reps: null,
+    loadKg: null,
+    holdSeconds: null,
+    durationMinutes: null,
+    rangeNote: "",
+  };
+}
+for (const exerciseId of previousSeededPrehabExerciseIds) {
+  previousSeed.doses[exerciseId] = { ...previousSeededPrehabDoses[exerciseId] };
+}
+const upgradedWholeBody = parseState(previousSeed);
+assert.equal(upgradedWholeBody.profile.displayName, "Houman");
+assert.deepEqual([...upgradedWholeBody.planExerciseIds], [...corePrehabExerciseIds]);
+assert.deepEqual(upgradedWholeBody.doses["band-row"], defaultPrehabDoses["band-row"]);
+assert.equal(upgradedWholeBody.planClinicianConfirmed, false);
+assert.deepEqual(upgradedWholeBody.doses["single-leg-press"], defaultPrehabDoses["single-leg-press"]);
+
+const customizedPreviousSeed = structuredClone(previousSeed);
+customizedPreviousSeed.doses["heel-slide"] = { ...previousSeededPrehabDoses["heel-slide"], reps: 8 };
+assert.deepEqual([...parseState(customizedPreviousSeed).planExerciseIds], [...previousSeededPrehabExerciseIds]);
+
+const missingCollections = structuredClone(initialState) as unknown as Record<string, unknown>;
+delete missingCollections.weightEntries;
+delete missingCollections.checkIns;
+delete missingCollections.scheduleOverrides;
+delete missingCollections.planUpdatedAt;
+delete missingCollections.syncConsentAt;
+delete missingCollections.weightGoalKg;
+const parsedMissing = parseState(missingCollections);
+assert.deepEqual(parsedMissing.weightEntries, []);
+assert.deepEqual(parsedMissing.checkIns, []);
+assert.deepEqual(parsedMissing.scheduleOverrides, []);
+assert.equal(parsedMissing.syncConsentAt, null);
+assert.equal(parsedMissing.weightGoalKg, null);
 
 await assert.rejects(
   () => importState(new File([new Uint8Array(2_000_001)], "oversized.json", { type: "application/json" })),

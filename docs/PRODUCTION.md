@@ -1,6 +1,6 @@
 # Production path
 
-The local MVP deliberately has no account boundary. Production should preserve that guest experience and offer sign-in only as an optional backup and sync feature.
+The app still has no required account. Guest use stays on `localStorage`. Sign-in is optional backup for one invited address. The implemented schema, hook, and client flow are in [SUPABASE.md](SUPABASE.md). Deploy is a push to the tracked branch on the VPS; see [DEPLOY.md](DEPLOY.md).
 
 ## Repository boundary
 
@@ -15,7 +15,7 @@ interface RehabRepository {
 }
 ```
 
-The existing local implementation becomes `LocalStorageRehabRepository`. A later `SupabaseSyncRepository` can compose with it instead of replacing local storage.
+`createLocalStorageRehabRepository` in `src/repository.ts` is the local implementation. `src/supabaseSync.ts` composes with `mergeSnapshots` in `src/syncMerge.ts`: last write wins for the plan (`planUpdatedAt`), sessions and check-ins append by id, and weight entries keep the newer value for each calendar day. The browser copy is never removed by sync.
 
 ## Suggested Supabase tables
 
@@ -38,13 +38,13 @@ Each finalized session now owns immutable exercise snapshots and performed set r
 
 ## Auth and migration flow
 
-1. Continue to let a guest use the entire guide locally.
-2. Offer **Back up and sync** only when the user asks for cross-device access.
-3. Authenticate with Supabase Auth.
-4. Preview how many local episodes, plans, and sessions will upload.
-5. Upload only after explicit consent.
-6. Retain the local copy for offline use.
-7. Never merge episodes solely by knee side; use episode UUIDs.
+1. Continue to let a guest use the entire guide locally. If the Supabase env vars are absent, Settings says sync is not set up.
+2. Offer **Back up and sync** only from Settings.
+3. Authenticate with email magic link only. The client and `hook_before_user_created` allow `whman63@gmail.com` and no other address. A non-allowlisted session is signed out.
+4. Preview how many local plans, sessions, and weight entries will upload.
+5. Upload only after **Upload and sync**.
+6. Retain the local copy for offline use. Export downloads that copy. **Delete cloud backup** calls `delete_my_cloud_data()` and signs out; it does not wipe the browser.
+7. Never merge episodes solely by knee side; use episode UUIDs. Check-ins synced to the server omit the free-text session note.
 
 ## Row-level security
 

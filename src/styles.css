@@ -123,6 +123,26 @@ a { color: inherit; text-decoration: none; }
 .due-banner strong, .due-banner span { display: block; }
 .due-banner span { margin-top: 2px; color: var(--muted); font-size: .8rem; }
 
+.goal-line { margin: -8px 0 18px; color: var(--muted); font-weight: 650; }
+.day-badge-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.day-badge { display: inline-flex; align-items: center; min-height: 28px; padding: 0 10px; border-radius: 999px; font-size: .75rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.day-badge--gym { background: var(--accent); color: var(--accent-ink); }
+.day-badge--home { background: var(--brand); color: var(--surface); }
+.day-badge--rest { background: var(--surface-2); color: var(--ink); }
+.day-template { color: var(--muted); font-size: .78rem; font-weight: 750; }
+.location-switch { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.location-switch button { min-height: 42px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); cursor: pointer; font-weight: 750; }
+.location-switch button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+.location-switch button:disabled { opacity: .55; cursor: not-allowed; }
+.week-move-note, .behavior-line { color: var(--muted); }
+.week-plan { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; margin-top: 18px; }
+.week-plan > div { display: grid; justify-items: center; gap: 6px; padding: 10px 4px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.week-plan > div.is-today { outline: 2px solid var(--brand-2); }
+.week-plan small { color: var(--muted); font-weight: 750; }
+.check-in-grid, .weight-form { display: grid; gap: 10px; }
+.weight-form > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.weight-form input { min-height: 44px; min-width: 140px; padding: 0 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: inherit; }
+.exercise-card > span small { display: block; }
 .today-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(260px, .65fr); gap: 20px; }
 .session-hero, .status-panel, .weekly-strip, .plan-list, .phase-path, .progress-chart, .history-section, .metric-grid article, .source-section {
   border: 1px solid var(--line);
@@ -531,6 +551,8 @@ a { color: inherit; text-decoration: none; }
   .week-dots { gap: 7px; }
   .week-dots > div > span { width: 24px; height: 24px; }
   .section-block { margin-top: 34px; }
+  .week-plan { grid-template-columns: repeat(7, minmax(46px, 1fr)); }
+  .location-switch { display: grid; }
   .exercise-card-grid { grid-template-columns: 1fr; }
   .exercise-card { grid-template-columns: 90px minmax(0, 1fr) 18px; min-height: 90px; }
   .exercise-card .exercise-visual { width: 90px; height: 90px; }
